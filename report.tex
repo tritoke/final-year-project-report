@@ -1,0 +1,105 @@
+\documentclass[12pt, a4paper]{third-rep}
+
+\usepackage{url}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% citations stuff
+% \usepackage[backend=biber,
+% style=numeric,
+% citestyle=authoryear]{biblatex}
+% \usepackage[superscript]{cite} % makes citations superscript
+
+% hyperlink setup
+\usepackage{hyperref}
+\definecolor{mydarkblue}{rgb}{0,0.08,0.45}
+\hypersetup{
+    pdftitle={},
+    pdfsubject={},
+    pdfkeywords={},
+    pdfborder=0 0 0,
+    pdfpagemode=UseNone,
+    colorlinks=true,
+    linkcolor=mydarkblue,
+    citecolor=mydarkblue,
+    filecolor=mydarkblue,
+    urlcolor=mydarkblue,
+}
+
+%% Uncomment the following lines if you want to include the date as a
+%% header in draft versions. See the documentation for fancyhdr for
+%% more ways of modifying headers (texdoc fancyhdr will show you the
+%% docs) 
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{}  % left head
+\chead{Draft: \today} % centre head
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+
+% title stuff
+\usepackage{titlesec}
+\newcommand{\PreContentTitleFormat}{\titleformat{\chapter}[display]{\scshape\Large}
+{\Large\filleft\MakeUppercase{\chaptertitlename} \Huge\thechapter}
+{1ex}
+{}
+[\vspace{1ex}\titlerule]}
+
+\newcommand{\ContentTitleFormat}{\titleformat{\chapter}[display]{\scshape\huge}
+{\Large\filleft\MakeUppercase{\chaptertitlename} \Huge\thechapter}
+{1ex}
+{\titlerule\vspace{1ex}\filright}
+[\vspace{1ex}\titlerule]}
+
+% glossary stuff
+\usepackage[toc]{glossaries}
+\setacronymstyle{long-short}
+\makenoidxglossaries{}
+\loadglsentries{glossary}
+
+%% The best way to latex just one chapter is to uncomment lines such as
+%% the next:
+\includeonly{chapter1}
+
+\title{Exploring \glsentrylong{pake} Algorithms}
+\author{Sam Leonard}
+\supervisor{Professor Bernardo Magri}
+\reportyear{2023}
+\studentid{f41751sl}
+
+\abstractfile{abstract.tex}
+\thanksfile{merci.tex}
+
+\begin{document}
+
+\dotitleandabstract
+
+%% Generate contents etc
+\tableofcontents
+
+%% These include the actual text
+\include{chapter1}
+\include{chapter2}
+\include{chapter3}
+\include{chapter4}
+\include{chapter5}
+
+% print the glossary
+\printnoidxglossaries{}
+
+% this causes the references to be listed
+\bibliography{refs}             
+
+% this determines the style in which
+% the references are printed, other
+% possible values are plain and abbrv
+\bibliographystyle{alpha}       
+                                
+                                
+%% Appendices start here
+% \appendix
+% \include{appendix1}
+
+\end{document}

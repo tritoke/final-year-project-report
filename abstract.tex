@@ -1,0 +1,10 @@
+\gls{pake} algorithms are a niche kind of cryptography where parties seek
+to establish a strong shared key, from a low entropy secret such as a password.
+This makes the particularly attractive to some domains, such as \gls{iiot}.
+However many \gls{pake} algorithms are unsuitable for \gls{iot} applications, due
+to their heavy computational requirements. \gls{aucpace} is a new \gls{pake}
+protocol which aims to make \glspl{pake} accessible to \gls{iiot} by utilising
+\gls{ecc}, \glspl{vpake} and a novel augmented approach. This project aims to
+provide an approachable and developer-focused implementation of \gls{aucpace}
+in Rust and to contribute this implementation back to RustCrypto to promote wider
+adoption of \gls{pake} algorithms.
