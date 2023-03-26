@@ -2,17 +2,47 @@
 
 \usepackage{url}
 \usepackage{listings}
-\usepackage{xcolor}
 
-% citations stuff
-% \usepackage[backend=biber,
-% style=numeric,
-% citestyle=authoryear]{biblatex}
-% \usepackage[superscript]{cite} % makes citations superscript
+% colours
+\usepackage{xcolor}
+\definecolor{mydarkblue}{rgb}{0,0.08,0.45}
+\definecolor{mintbg}{rgb}{0.95,0.95,0.95}
+
+% tcolorbox my beloved
+% \usepackage[most]{tcolorbox}
+% \tcbuselibrary{minted}
+% \newtcbinputlisting[auto counter]{\pythoncode}[3][]{%
+%   listing file={#3},
+%   listing engine=minted,
+%   listing options={basicstyle=\footnotesize\listingsfont},
+%   listing only,
+%   minted language=python,
+%   minted style=colorful,
+%   colback=mintbg,
+%   colframe=gray!75!black,
+%   fonttitle=\bfseries,
+%   breakable,
+%   title={Listing \thetcbcounter: #2},
+%   #1
+% }
+
+% minted replaces listings
+\usepackage{minted}
+\usepackage{dingbat}
+\setminted[python]{
+    breaklines,
+    bgcolor=mintbg,
+    breakautoindent=false,
+    breaksymbolleft=\raisebox{0.8ex}{\small\reflectbox{\carriagereturn}},
+    breaksymbolindentleft=0pt,
+    breaksymbolsepleft=0pt,
+    breaksymbolright=\small\carriagereturn,
+    breaksymbolindentright=0pt,
+    breaksymbolsepright=0pt,
+}
 
 % hyperlink setup
 \usepackage{hyperref}
-\definecolor{mydarkblue}{rgb}{0,0.08,0.45}
 \hypersetup{
     pdftitle={},
     pdfsubject={},
@@ -31,13 +61,13 @@
 %% more ways of modifying headers (texdoc fancyhdr will show you the
 %% docs) 
 
-\usepackage{fancyhdr}
-\pagestyle{fancy}
-\lhead{}  % left head
-\chead{Draft: \today} % centre head
-\lfoot{}
-\cfoot{\thepage}
-\rfoot{}
+% \usepackage{fancyhdr}
+% \pagestyle{fancy}
+% \lhead{}  % left head
+% \chead{Draft: \today} % centre head
+% \lfoot{}
+% \cfoot{\thepage}
+% \rfoot{}
 
 % title stuff
 \usepackage{titlesec}
@@ -59,9 +89,8 @@
 \makenoidxglossaries{}
 \loadglsentries{glossary}
 
-%% The best way to latex just one chapter is to uncomment lines such as
-%% the next:
-\includeonly{chapter1}
+% only work on a chapter at a time to improve compile times
+%\includeonly{appendix1}
 
 \title{Exploring \glsentrylong{pake} Algorithms}
 \author{Sam Leonard}
@@ -90,16 +119,17 @@
 \printnoidxglossaries{}
 
 % this causes the references to be listed
-\bibliography{refs}             
+% \bibliography{refs}             
 
 % this determines the style in which
 % the references are printed, other
 % possible values are plain and abbrv
 \bibliographystyle{alpha}       
-                                
+\nocite{*}
+\bibliography{refs}
                                 
 %% Appendices start here
-% \appendix
-% \include{appendix1}
+\appendix
+\include{appendix1}
 
 \end{document}

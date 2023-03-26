@@ -1,0 +1,6 @@
+[submodule "eke_python"]
+	path = eke_python
+	url = https://github.com/tritoke/eke_python
+[submodule "srp_python"]
+	path = srp_python
+	url = https://github.com/tritoke/srp_python

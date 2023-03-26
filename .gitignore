@@ -313,3 +313,5 @@ TSWLatexianTemp*
 
 # End of https://www.toptal.com/developers/gitignore/api/latex
 
+# don't include latex package documentation
+docs/

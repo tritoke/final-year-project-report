@@ -13,28 +13,26 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +10 abstract.tex
 badd +1 glossary.tex
-badd +1 report.tex
-badd +1 chapter1.tex
-badd +5 chapter2.tex
-badd +3 chapter3.tex
-badd +3 chapter4.tex
-badd +5 chapter5.tex
+badd +0 report.tex
+badd +0 chapter1.tex
+badd +0 refs.bib
+badd +0 appendix1.tex
 argglobal
 %argdel
-$argadd abstract.tex
 $argadd glossary.tex
 $argadd report.tex
 $argadd chapter1.tex
+$argadd refs.bib
+$argadd appendix1.tex
 set stal=2
+tabnew +setlocal\ bufhidden=wipe
+tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabrewind
 edit glossary.tex
 argglobal
-2argu
-balt abstract.tex
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -50,12 +48,12 @@ if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 3
-normal! 027|
+normal! 03|
 tabnext
 edit report.tex
 argglobal
-3argu
-balt abstract.tex
+2argu
+balt glossary.tex
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -66,20 +64,17 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 35 - ((34 * winheight(0) + 28) / 56)
+let s:l = 35 - ((27 * winheight(0) + 28) / 56)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 35
-normal! 014|
+normal! 0
 tabnext
 edit chapter1.tex
 argglobal
-if bufexists(fnamemodify("chapter1.tex", ":p")) | buffer chapter1.tex | else | edit chapter1.tex | endif
-if &buftype ==# 'terminal'
-  silent file chapter1.tex
-endif
-balt report.tex
+3argu
+balt glossary.tex
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -95,6 +90,48 @@ if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 8
+normal! 02|
+tabnext
+edit refs.bib
+argglobal
+4argu
+balt glossary.tex
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=99
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 59 - ((27 * winheight(0) + 28) / 56)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 59
+normal! 021|
+tabnext
+edit appendix1.tex
+argglobal
+5argu
+balt glossary.tex
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=99
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 3 - ((2 * winheight(0) + 28) / 56)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 3
 normal! 0
 tabnext 3
 set stal=1
