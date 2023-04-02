@@ -192,7 +192,7 @@ With regards to Cryptography elliptic curves tend to come in one of two forms:
   \item Montgomery Form: $by^2 = x^3 + ax^2 + x$
 \end{itemize}
 
-\begin{figure}
+\begin{figure}[H]
   \centering
   \begin{tikzpicture}[thick,>=latex]
     \begin{scope}
@@ -234,7 +234,7 @@ With regards to Cryptography elliptic curves tend to come in one of two forms:
     \node at (8,-5) {Montgomery Form};
   \end{tikzpicture}
 
-  \caption{Elliptic curves over $\ZZ_{89}$, Inspired by TikZ for Cryptographers\cite{tikz-crypto}}
+  \caption{Elliptic curves over $\RR$, Adapted from TikZ for Cryptographers\cite{tikz-crypto}}
 \end{figure}
 
 Weierstra\ss{} form is special as it is the general case for all elliptic curves, meaning all elliptic curves can be expressed as a Weierstra\ss{} curve.
@@ -246,61 +246,13 @@ To perform Cryptography with elliptic curves we need to define an "\gls{abgroup}
 An \gls{abgroup} is a group whose group operation is also commutative, for example the addition operator over the integers: ($+$, $\ZZ$) is an \gls{abgroup}.
 \glspl{abgroup} form the basis of many modern Cryptographic algorithms, a \gls{dh} key exchange can be performed in any \gls{abgroup} for instance.
 
-To define an abelian group over our elliptic curves we need a set $G$, our set will be the set of integer points on the curve mod a prime $p$ - $\{ x | x \in \ZZ_p \text{ and } \exists (y \in \ZZ_p) [By^2 = x^3 + Ax^2 + x] \}$.
-It is helpful to visualalise this so lets take our curves from before and see how they look in a small group - $\ZZ_{89}$.
-
-\begin{center}
-\begin{tikzpicture}[thick,>=latex]
-  % Generate list of points with Sage:
-  % sage: E = EllipticCurve(Integers(89), [-2,1])
-  % sage: points = [(int(P[0]), int(P[1])) for P in E.points()]
-  % yes this is suspect as fuck but it all works because modular arithmetic 🙃
-  % sage: print([(x,y if y <= 44 else y-89) for x,y in points])
-  \begin{scope}[scale=.060]
-    \draw[|<->|,gray] (0,-44) -- (0,44) node[above] {$y \in \mathbb{Z}_{89}$};
-    \draw[->|,gray] (0,0) -- (89,0) node[right] {$x \in \mathbb{Z}_{89}$};
-    \foreach \point in {
-      (0, 1), (0, 1), (0, -1), (1, 0), (2, 19), (2, -19), (3, 17), (3, -17), (4, 18), (4, -18), (9, 0), (10, 25),
-      (10, -25), (11, 8), (11, -8), (13, 6), (13, -6), (14, 15), (14, -15), (15, 26), (15, -26), (20, 29), (20, -29),
-      (21, 26), (21, -26), (23, 14), (23, -14), (24, 31), (24, -31), (25, 1), (25, -1), (26, 9), (26, -9), (27, 36),
-      (27, -36), (31, 2), (31, -2), (32, 24), (32, -24), (33, 19), (33, -19), (39, 18), (39, -18), (43, 37),
-      (43, -37), (45, 16), (45, -16), (46, 18), (46, -18), (47, 32), (47, -32), (49, 28), (49, -28), (50, 37),
-      (50, -37), (53, 26), (53, -26), (54, 19), (54, -19), (57, 7), (57, -7), (58, 40), (58, -40), (61, 34),
-      (61, -34), (63, 30), (63, -30), (64, 1), (64, -1), (65, 38), (65, -38), (66, 42), (66, -42), (71, 41),
-      (71, -41), (72, 27), (72, -27), (75, 20), (75, -20), (76, 12), (76, -12), (79, 0), (80, 25), (80, -25),
-      (81, 22), (81, -22), (83, 8), (83, -8), (84, 8), (84, -8), (85, 37), (85, -37), (86, 43), (86, -43),
-      (88, 25), (88, -25)
-    } {\node at \point {$\bullet$};}
-  \end{scope}
-
-  \node[right] at (0,-3.5) {$y^2 = x^3 - 2 x + 1$ over $\mathbb{Z}_{89}$};
-  \node at (2.8,3.6) {Short Weierstra\ss{} Form};
-
-  % Generate list of points with Python:
-  % >>> f=lambda x,y: (int(2 * y**2) % 89) == ((x**3 -3*(x**2) - x) % 89)
-  % >>> # yes this is suspect as fuck but it all works because modular arithmetic 🙃
-  % >>> points = [(x,y if y <= 44 else y - 89) for x in range(89) for y in range(89) if f(x, y)]
-  % >>> print(points)
-  \begin{scope}[xshift=8cm,scale=.060]
-    \draw[|<->|,gray] (0,-44) -- (0,44) node[above] {$y \in \mathbb{Z}_{89}$};
-    \draw[->|,gray] (0,0) -- (89,0) node[right] {$x \in \mathbb{Z}_{89}$};
-    \foreach \point in {
-      (0, 0), (5, 44), (5, -44), (7, 36), (7, -36), (8, 44), (8, -44), (9, 4), (9, -4), (10, 16), (10, -16), (11, 16), (11, -16), (18, 14), (18, -14), (20, 39), (20, -39), (21, 40), (21, -40), (23, 28), (23, -28), (24, 42), (24, -42), (26, 14), (26, -14), (27, 18), (27, -18), (28, 21), (28, -21), (29, 4), (29, -4), (31, 20), (31, -20), (35, 15), (35, -15), (38, 8), (38, -8), (39, 13), (39, -13), (40, 11), (40, -11), (43, 35), (43, -35), (45, 19), (45, -19), (46, 9), (46, -9), (47, 5), (47, -5), (48, 14), (48, -14), (53, 17), (53, -17), (54, 4), (54, -4), (55, 13), (55, -13), (56, 22), (56, -22), (58, 30), (58, -30), (60, 24), (60, -24), (61, 12), (61, -12), (63, 1), (63, -1), (65, 35), (65, -35), (66, 11), (66, -11), (70, 34), (70, -34), (71, 16), (71, -16), (72, 10), (72, -10), (73, 35), (73, -35), (75, 11), (75, -11), (76, 37), (76, -37), (78, 2), (78, -2), (79, 44), (79, -44), (80, 39), (80, -39), (81, 39), (81, -39), (84, 6), (84, -6), (87, 13), (87, -13)
-    } {\node at \point {$\bullet$};}
-  \end{scope}
-
-  \node at (10.6,3.6) {Montgomery Form};
-  \node[right] at (8,-3.5) {$2y^2 = x^3 - 3x^2 - x$ over $\mathbb{Z}_{89}$};
-
-  \node at (7,-4.5) {Inspired by TikZ for Cryptographers\cite{tikz-crypto}};
-\end{tikzpicture}
-\end{center}
-
-This now looks very different to when we were looking at them in $\RR$, however it shows very clearly what the elements of our set look like. They are points in the 2d coordinate plane with a symmetry around the Y-axis, this is worth noting as it is the basis for forming our group's binary operator.
-
-Lets build our binary operator, for this to work we need to define the notion of adding two points together, and it needs to be associative, have an inverse, have some notion of an "identity" and it needs to be commutative.
-To start with we will define point addition using the "Chord rule" and then handle the edge cases.
-The Chord rule
+Our \gls{abgroup} is built on the idea of "adding" points on the curve.
+To add two points, we find the line which passes through our two points and we continue along that line until we hit our curve again.
+We then reflect this point in the $x$-axis to get our result.
+What if we want to add our point to itself? Now there isn't a unique line through one point, however we are making the rules so in this case we will take the tangent to the curve at that point and then we can treat it the same as before.
+What if our line doesn't intersect with the curve? In this case we define a new point called the "neutral element" - $\mathcal{O}$.
+It is also called the point at infinity as it can be considered to be the single point at the end of every vertical line at infinity.
+\Cref{fig:point-add-rules} illustrates all of these rules and edge cases.
 
 \begin{figure}[H]
   \centering
@@ -345,6 +297,62 @@ The Chord rule
   \caption{Elliptic Curve Group Operations, reproduced from TikZ for Cryptographers\cite{tikz-crypto}}
   \label{fig:point-add-rules}
 \end{figure}
+
+However it's not quite that simple for us.
+We cannot use $\RR$ as computers only have finite resources, we instead need to define our operations over some subset of the integers.
+% To define an abelian group over our elliptic curves we need a set $G$, our set will be the set of integer points on the curve mod a prime $p$ - $\{ x | x \in \ZZ_p \text{ and } \exists (y \in \ZZ_p) [By^2 = x^3 + Ax^2 + x] \}$.
+% It is helpful to visualalise this so lets take our curves from before and see how they look in a small group - $\ZZ_{89}$.
+% 
+% \begin{figure}[H]
+%   \begin{tikzpicture}[thick,>=latex]
+%     % Generate list of points with Sage:
+%     % sage: E = EllipticCurve(Integers(89), [-2,1])
+%     % sage: points = [(int(P[0]), int(P[1])) for P in E.points()]
+%     % yes this is suspect as fuck but it all works because modular arithmetic 🙃
+%     % sage: print([(x,y if y <= 44 else y-89) for x,y in points])
+%     \begin{scope}[scale=.060]
+%       \draw[|<->|,gray] (0,-44) -- (0,44) node[above] {$y \in \mathbb{Z}_{89}$};
+%       \draw[->|,gray] (0,0) -- (89,0) node[right] {$x \in \mathbb{Z}_{89}$};
+%       \foreach \point in {
+%         (0, 1), (0, 1), (0, -1), (1, 0), (2, 19), (2, -19), (3, 17), (3, -17), (4, 18), (4, -18), (9, 0), (10, 25),
+%         (10, -25), (11, 8), (11, -8), (13, 6), (13, -6), (14, 15), (14, -15), (15, 26), (15, -26), (20, 29), (20, -29),
+%         (21, 26), (21, -26), (23, 14), (23, -14), (24, 31), (24, -31), (25, 1), (25, -1), (26, 9), (26, -9), (27, 36),
+%         (27, -36), (31, 2), (31, -2), (32, 24), (32, -24), (33, 19), (33, -19), (39, 18), (39, -18), (43, 37),
+%         (43, -37), (45, 16), (45, -16), (46, 18), (46, -18), (47, 32), (47, -32), (49, 28), (49, -28), (50, 37),
+%         (50, -37), (53, 26), (53, -26), (54, 19), (54, -19), (57, 7), (57, -7), (58, 40), (58, -40), (61, 34),
+%         (61, -34), (63, 30), (63, -30), (64, 1), (64, -1), (65, 38), (65, -38), (66, 42), (66, -42), (71, 41),
+%         (71, -41), (72, 27), (72, -27), (75, 20), (75, -20), (76, 12), (76, -12), (79, 0), (80, 25), (80, -25),
+%         (81, 22), (81, -22), (83, 8), (83, -8), (84, 8), (84, -8), (85, 37), (85, -37), (86, 43), (86, -43),
+%         (88, 25), (88, -25)
+%       } {\node at \point {$\bullet$};}
+%     \end{scope}
+% 
+%     \node[right] at (0,-3.5) {$y^2 = x^3 - 2 x + 1$ over $\mathbb{Z}_{89}$};
+%     \node at (2.8,3.6) {Short Weierstra\ss{} Form};
+% 
+%     % Generate list of points with Python:
+%     % >>> f=lambda x,y: (int(2 * y**2) % 89) == ((x**3 -3*(x**2) - x) % 89)
+%     % >>> # yes this is suspect as fuck but it all works because modular arithmetic 🙃
+%     % >>> points = [(x,y if y <= 44 else y - 89) for x in range(89) for y in range(89) if f(x, y)]
+%     % >>> print(points)
+%     \begin{scope}[xshift=8cm,scale=.060]
+%       \draw[|<->|,gray] (0,-44) -- (0,44) node[above] {$y \in \mathbb{Z}_{89}$};
+%       \draw[->|,gray] (0,0) -- (89,0) node[right] {$x \in \mathbb{Z}_{89}$};
+%       \foreach \point in {
+%         (0, 0), (5, 44), (5, -44), (7, 36), (7, -36), (8, 44), (8, -44), (9, 4), (9, -4), (10, 16), (10, -16), (11, 16), (11, -16), (18, 14), (18, -14), (20, 39), (20, -39), (21, 40), (21, -40), (23, 28), (23, -28), (24, 42), (24, -42), (26, 14), (26, -14), (27, 18), (27, -18), (28, 21), (28, -21), (29, 4), (29, -4), (31, 20), (31, -20), (35, 15), (35, -15), (38, 8), (38, -8), (39, 13), (39, -13), (40, 11), (40, -11), (43, 35), (43, -35), (45, 19), (45, -19), (46, 9), (46, -9), (47, 5), (47, -5), (48, 14), (48, -14), (53, 17), (53, -17), (54, 4), (54, -4), (55, 13), (55, -13), (56, 22), (56, -22), (58, 30), (58, -30), (60, 24), (60, -24), (61, 12), (61, -12), (63, 1), (63, -1), (65, 35), (65, -35), (66, 11), (66, -11), (70, 34), (70, -34), (71, 16), (71, -16), (72, 10), (72, -10), (73, 35), (73, -35), (75, 11), (75, -11), (76, 37), (76, -37), (78, 2), (78, -2), (79, 44), (79, -44), (80, 39), (80, -39), (81, 39), (81, -39), (84, 6), (84, -6), (87, 13), (87, -13)
+%       } {\node at \point {$\bullet$};}
+%     \end{scope}
+% 
+%     \node at (10.6,3.6) {Montgomery Form};
+%     \node[right] at (8,-3.5) {$2y^2 = x^3 - 3x^2 - x$ over $\mathbb{Z}_{89}$};
+% 
+%   \end{tikzpicture}
+% 
+%   \caption{Elliptic curves over $\ZZ_{89}$, Adapted from TikZ for Cryptographers\cite{tikz-crypto}}
+%   \label{fig:ellip-curve-ff}
+% \end{figure}
+
+% This now looks very different to when we were looking at them in $\RR$, however it shows very clearly what the elements of our set look like. They are points in the 2d coordinate plane with a symmetry around the Y-axis, this is worth noting as it is the basis for forming our group's binary operator.
 
 \section{Modern PAKEs}
 \section{AuCPace}
