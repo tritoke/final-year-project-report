@@ -83,7 +83,7 @@
     \setlength{\itemsep}{-2pt}%
     \item The author of this \expandafter{\@thesis} (including any appendices and/or
       schedules to this thesis) owns certain copyright or related rights
-      in it (the ``Copyright'') and s/he has given The University of
+      in it (the ``Copyright'') and they have given The University of
       Manchester certain rights to use such Copyright, including for
       administrative purposes.
     \item Copies of this thesis, either in full or in extracts and

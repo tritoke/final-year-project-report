@@ -43,6 +43,15 @@
       url = {https://eprint.iacr.org/2018/163}
 }
 
+@misc{montgom-ladder,
+      author = {Daniel J.  Bernstein and Tanja Lange},
+      title = {Montgomery curves and the Montgomery ladder},
+      howpublished = {Cryptology ePrint Archive, Paper 2017/293},
+      year = {2017},
+      note = {\url{https://eprint.iacr.org/2017/293}},
+      url = {https://eprint.iacr.org/2017/293}
+}
+
 @misc{eke,
       title     = "Encrypted key exchange: Password-based protocols secure against
                    dictionary attacks",
@@ -75,10 +84,43 @@
       isbn="978-3-540-30574-3"
 }
 
+@InProceedings{ecc-first-use-miller,
+      author="Miller, Victor S.",
+      editor="Williams, Hugh C.",
+      title="Use of Elliptic Curves in Cryptography",
+      booktitle="Advances in Cryptology --- CRYPTO '85 Proceedings",
+      year="1986",
+      publisher="Springer Berlin Heidelberg",
+      address="Berlin, Heidelberg",
+      pages="417--426",
+      abstract="We discuss the use of elliptic curves in cryptography. In particular, we propose an analogue of the Diffie-Hellmann key exchange protocol which appears to be immune from attacks of the style of Western, Miller, and Adleman. With the current bounds for infeasible attack, it appears to be about 20{\%} faster than the Diffie-Hellmann scheme over GF(p). As computational power grows, this disparity should get rapidly bigger.",
+      isbn="978-3-540-39799-1"
+}
+
+@article{ecc-first-use-koblitz,
+  title={Elliptic curve cryptosystems},
+  author={Koblitz, Neal},
+  journal={Mathematics of computation},
+  volume={48},
+  number={177},
+  pages={203--209},
+  year={1987}
+}
+
+@article{state-of-ecc,
+  title={The state of elliptic curve cryptography},
+  author={Koblitz, Neal and Menezes, Alfred and Vanstone, Scott},
+  journal={Designs, codes and cryptography},
+  volume={19},
+  pages={173--193},
+  year={2000},
+  publisher={Springer}
+}
+
 @misc{pake-blog,
       url={https://blog.cryptographyengineering.com/2018/10/19/lets-talk-about-pake/},
       note={\url{https://blog.cryptographyengineering.com/2018/10/19/lets-talk-about-pake/}},
-      journal={Let's talk about PAKE},
+      title={Let's talk about PAKE},
       author={Green, Matthew},
       year={2018},
       month={Oct}
@@ -92,12 +134,87 @@
       year={2018},
 }
 
-@misc{srp,
-      title={The SRP authentication and key exchange system},
+@misc{apple-keychain-srp,
+      url={https://support.apple.com/en-gb/guide/security/sec3e341e75d/web},
+      note={\url{https://support.apple.com/en-gb/guide/security/sec3e341e75d/web}},
+      title={Escrow security for iCloud Keychain},
+      author={Apple Platform Security},
+      year={2021},
+      month={may},
+}
+
+@techreport{srp,
       author={Wu, Tom},
-      month={September},
+      title={The SRP Authentication and Key Exchange System},
+      howpublished={Internet Requests for Comments},
+      type={RFC},
+      number=2945,
       year={2000},
-      publisher={Stanford University},
-      note={\href{https://www.rfc-editor.org/rfc/rfc2945}{Request for Comments (RFC) 2945}},
+      month={September},
+      publisher={RFC Editor},
+      institution={RFC Editor},
+      url={https://www.rfc-editor.org/rfc/rfc2945.txt},
+      note={\url{https://www.rfc-editor.org/rfc/rfc2945.txt}}
+}
+
+@techreport{tls-srp,
+      author={T. Wu and D. Taylor and N. Mavrogiannopoulos and T. Perrin},
+      title={Using the Secure Remote Password (SRP) Protocol for TLS Authentication},
+      howpublished={Internet Requests for Comments},
+      type={RFC},
+      number=5054,
+      year={2007},
+      month={November},
+      publisher={RFC Editor},
+      institution={RFC Editor},
+      url={https://www.rfc-editor.org/rfc/rfc5054.txt},
+      note={\url{https://www.rfc-editor.org/rfc/rfc5054.txt}}
+}
+
+@techreport{eap,
+      author={John Vollbrecht and James D. Carlson and Larry Blunk and Dr. Bernard D. Aboba and Henrik Levkowetz},
+      title={Extensible Authentication Protocol (EAP)},
+      howpublished={Internet Requests for Comments},
+      type={rfc},
+      number=3748,
+      year={2004},
+      month={June},
+      publisher={RFC Editor},
+      institution={RFC Editor},
+      url={https://www.rfc-editor.org/rfc/rfc3748.txt},
+      note={\url{https://www.rfc-editor.org/rfc/rfc3748.txt}}
+}
+
+@techreport{eap-eke,
+      author={Y. Sheffer and G. Zorn and H. Tschofenig and S. Fluhrer},
+      title={An EAP Authentication Method Based on the Encrypted Key Exchange (EKE) Protocol},
+      howpublished={Internet Requests for Comments},
+      type={rfc},
+      number=6124,
+      year={2011},
+      month={February},
+      publisher={RFC Editor},
+      institution={RFC Editor},
+      url={https://www.rfc-editor.org/rfc/rfc6124.txt},
+      note={\url{https://www.rfc-editor.org/rfc/rfc6124.txt}}
+}
+
+@techreport{nist-ecc-reqs,
+   author = {National Institute of Standards and Technology},
+   title = {Recommendation for Key Management: Part 1 – General},
+   institution = {U.S. Department of Commerce},
+   address= {Washington, D.C.},
+   number = {Federal Information Processing Standards Publications (FIPS PUBS) 140-2, Change Notice 2 December 03, 2002},
+   DOI = {10.6028/10.6028/NIST.SP.800-57pt1r5},
+   year = {2020},
+}
+
+@misc{tikz-crypto,
+  author = {J\'er\'emy Jean},
+  title = {{TikZ for Cryptographers}},
+  howpublished = {
+    \url{https://www.iacr.org/authors/tikz/}
+  },
+  year = {2016},
 }
 

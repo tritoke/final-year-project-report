@@ -1,7 +1,7 @@
 \documentclass[12pt, a4paper]{third-rep}
 
-\usepackage{url}
-\usepackage{listings}
+% go fast
+% \def\compileFast{a}
 
 % colours
 \usepackage{xcolor}
@@ -10,8 +10,8 @@
 \definecolor{listingframe}{rgb}{1,0.31,0}
 
 % tcolorbox my beloved
-\usepackage[most]{tcolorbox}
-\tcbuselibrary{minted,breakable,skins,raster}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,listings,raster,minted,breakable}
 \newtcbinputlisting[auto counter]{\pythoncode}[3][]{
   enhanced jigsaw,breakable,
   boxrule=0.2mm,top=1mm,bottom=1mm,left=1mm,right=1mm,
@@ -29,6 +29,10 @@
   #1
 }
 
+% graphics
+\usepackage{graphicx}
+\graphicspath{ {assets/} }
+
 % minted replaces listings
 \usepackage{minted}
 \usepackage{dingbat}
@@ -36,10 +40,10 @@
     breaklines,
     breakanywhere,
     autogobble,
-    samepage=false,
 }
 
 % hyperlink setup
+\usepackage{url}
 \usepackage{hyperref}
 \hypersetup{
     pdftitle={},
@@ -54,12 +58,34 @@
     urlcolor=mydarkblue,
 }
 
+% used for nesting figures
+\usepackage{subcaption}
+
+% Maths/CS symbols
+\usepackage{stmaryrd}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+
+% cleverly decides how to reference a given ref
+% must be loaded after hyperref and amsmath
+\usepackage{cleveref}
+
+% cite things with a small superscript number
+\usepackage[superscript,biblabel]{cite}
+
+% package for defining custom math symbols
+\usepackage{stackengine}
+\stackMath
+\newcommand{\cryptoSample}{\shortleftarrow\kern-1.5ex\text{\scriptsize \$}}
+
 %% Uncomment the following lines if you want to include the date as a
 %% header in draft versions. See the documentation for fancyhdr for
 %% more ways of modifying headers (texdoc fancyhdr will show you the
 %% docs) 
 
 % \usepackage{fancyhdr}
+% \setlength{\headheight}{14.5pt} % silence warnings
 % \pagestyle{fancy}
 % \lhead{}  % left head
 % \chead{Draft: \today} % centre head
@@ -87,8 +113,65 @@
 \makenoidxglossaries{}
 \loadglsentries{glossary}
 
+% Tikz stuff
+\usepackage{tikz}
+\ifx\compileFast\undefined
+  \usepackage{tikzpeople}
+\else
+  \usepackage[draft]{tikzpeople}
+\fi
+
+% plotting things
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{intersections,decorations.markings}
+
+\newcommand{\plotcurve}[3][thick, every plot/.style={smooth}]{
+  % plot curve y^2 = x^3 + a x + b in range [-3,3]^2
+  % parameter 1 (optional): style options for curve (color, etc)
+  % parameter 2: curve parameter a
+  % parameter 3: curve parameter b
+  \draw[gray] (-3,-3) rectangle (3,3);
+  \draw[->,>=latex,gray] (-3,0) -- (3,0);
+  \draw[->,>=latex,gray] (0,-3) -- (0,3);
+  \draw[name path=curve, #1] plot[id=curve#2#3, raw gnuplot] function {
+    f(x,y) = y**2 - x**3 - #2*x - #3;
+    set xrange [-3:3];
+    set yrange [-3:3];
+    set view 0,0;
+    set isosample 50,50;
+    set cont base;
+    set cntrparam levels incre 0,0.1,0;
+    unset surface;
+    splot f(x,y);
+  };
+}
+
+\tikzset{
+  tangent/.style={
+    decoration={markings, mark=at position #1 with {
+      \coordinate (tangent point-\pgfkeysvalueof{/pgf/decoration/mark info/sequence number}) at (0pt,0pt);
+      \coordinate (tangent unit vector-\pgfkeysvalueof{/pgf/decoration/mark info/sequence number}) at (1,0pt);
+      \coordinate (tangent orthogonal unit vector-\pgfkeysvalueof{/pgf/decoration/mark info/sequence number}) at (0pt,1);
+    }},
+    postaction=decorate
+  },
+  use tangent/.style={
+    shift=(tangent point-#1),
+    x=(tangent unit vector-#1),
+    y=(tangent orthogonal unit vector-#1)
+  },
+  use tangent/.default=1
+}
+
+% crypgraphy stuff
+\usepackage[operators, sets]{cryptocode}
+
 % only work on a chapter at a time to improve compile times
-%\includeonly{appendix1}
+\ifx\compileFast\undefined
+\else
+  \includeonly{chapter1,appendix1,appendix2}
+\fi
 
 \title{Exploring Password-Authenticated Key-Exchange Algorithms}
 \author{Sam Leonard}
@@ -116,16 +199,13 @@
 % print the glossary
 \printnoidxglossaries{}
 
-% this causes the references to be listed
-% \bibliography{refs}             
-
 % this determines the style in which
 % the references are printed, other
 % possible values are plain and abbrv
-\bibliographystyle{alpha}       
+\bibliographystyle{plain}       
 \nocite{*}
 \bibliography{refs}
-                                
+
 %% Appendices start here
 \appendix
 \include{appendix1}

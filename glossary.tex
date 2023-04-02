@@ -3,17 +3,87 @@
   name={Online Cryptography},
   description={
     Online cryptography is where interactions with the cryptosystem are only possible
-    via real-time interactions with the server. Primarily this is to prevent offline computation.
+    via real-time interactions with the server. Primarily this is to prevent offline computation%
+  }
+}
+
+\newglossaryentry{symcrypto} {
+  name={Symmetric Cryptography},
+  description={
+    Symmetric Cryptography is where the both the sender and receiver share the same secret key. It is normally computationally more efficient, the most common such scheme is \gls{aes}%
+  }
+}
+
+\newglossaryentry{asymcrypto} {
+  name={Asymmetric Cryptography},
+  description={
+    Asymmetric Cryptography is where the the sender and receiver each have two keys - a public key which can be freely shared, and a private key which must be kept secret. Common examples of this are the RSA scheme and the various DH flavours%
+  }
+}
+
+\newglossaryentry{bpake} {
+  name={Balanced PAKE},
+  description={
+    A Balanced PAKE is one in which both parties share knowledge the same secret.
+    This is in contrast to other schemes such as Verifier-based/Augmented PAKEs.
+  }
+}
+
+\newglossaryentry{apake} {
+  name={Augmented PAKE},
+  description={
+    A Balanced PAKE is one in which both parties share knowledge the same secret.
+    This is in contrast to other schemes such as Verifier-based/Augmented PAKEs.
+  }
+}
+
+\newglossaryentry{sgprime} {
+  name={Sophie Germain Prime},
+  text={Sophie Germain prime},
+  description={
+    A number $n$ is a Sophie Germain Prime if $n$ is prime and the $2n+1$ is also prime.
+  }
+}
+
+\newglossaryentry{safeprime} {
+  name={Safe Prime},
+  text={safe prime},
+  description={
+    A number $2n+1$ is a Safe Prime if $n$ is prime, it is the effectively the other part of a Sophie Germain prime.
+  }
+}
+
+\newglossaryentry{veri} {
+  name={Verifier},
+  text={verifier},
+  description={
+    A representation of the user's password put through some one-way function.
+    This could be as simple as just storing a hash of the password, though for most PAKEs the verifier is an element of whatever group we are working in.
+    An example can be seen on page \pageref{text:srp-verifier-generation}%
+  }
+}
+
+\newglossaryentry{abgroup} {
+  name={Abelian Group},
+  description={
+    A group whose operator is also commutative. e.g. Addition over $\ZZ$.\
   }
 }
 
 % acronyms
-\newacronym{pake}{PAKE}{Password Authenticated Key Exchange}
-\newacronym{iot}{IOT}{Internet of Things}
-\newacronym{iiot}{IIOT}{Industrial Internet of Things}
+\newacronym{aes}{AES}{Advanced Encryption Scheme}
 \newacronym{aucpace}{AuCPace}{Augmented Composable Password Authenticated Connection Establishment}
+\newacronym{dh}{DH}{Diffie-Hellman}
+\newacronym{eap}{EAP}{Extensible Authentication Protocol}
 \newacronym{ecc}{ECC}{Elliptic Curve Cryptography}
-\newacronym{vpake}{V-PAKE}{Verifier based PAKE}
+\newacronym{eke}{EKE}{Encrypted Key Exchange}
+\newacronym{iiot}{IIOT}{Industrial Internet of Things}
+\newacronym{iot}{IOT}{Internet of Things}
+\newacronym{tls}{TLS}{Transport Layer Security}
 \newacronym{mcu}{MCU}{Microcontroller}
+\newacronym{pake}{PAKE}{Password-Authenticated Key-Exchange}
+\newacronym{rsa}{RSA}{Rivest-Shamir-Adleman}
 \newacronym{srp}{SRP}{Secure Remote Password}
-\newacronym{dh}{DH}{Diffie Hellman}
+\newacronym{nist}{NIST}{National Institute of Standards and Technology}
+\newacronym{vpake}{V-PAKE}{Verifier based PAKE}
+\newacronym{spake}{SPAKE}{Simple Password-Authenticated Key-Exchange}
