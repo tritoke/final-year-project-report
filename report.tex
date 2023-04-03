@@ -1,7 +1,7 @@
 \documentclass[12pt, a4paper]{third-rep}
 
 % go fast
-% \def\compileFast{a}
+\def\compileFast{a}
 
 % colours
 \usepackage{xcolor}
@@ -72,7 +72,11 @@
 \usepackage{cleveref}
 
 % cite things with a small superscript number
-\usepackage[superscript,biblabel]{cite}
+% \usepackage[superscript,biblabel]{cite}
+
+% biblatex stuff
+\usepackage[style=alphabetic]{biblatex}
+\addbibresource{refs.bib}
 
 % package for defining custom math symbols
 \usepackage{stackengine}
@@ -199,12 +203,7 @@
 % print the glossary
 \printnoidxglossaries{}
 
-% this determines the style in which
-% the references are printed, other
-% possible values are plain and abbrv
-\bibliographystyle{plain}
-\nocite{*}
-\bibliography{refs}
+\printbibliography{}
 
 %% Appendices start here
 \appendix

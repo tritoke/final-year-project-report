@@ -119,16 +119,16 @@
 
 @misc{pake-blog,
       url={https://blog.cryptographyengineering.com/2018/10/19/lets-talk-about-pake/},
-      note={\url{https://blog.cryptographyengineering.com/2018/10/19/lets-talk-about-pake/}},
+      note={\url{https://blog.cryptographyengineering.com/2018/10/19/lets-talk-about-pake/}, accessed 3rd April, 2023},
       title={Let's talk about PAKE},
       author={Green, Matthew},
       year={2018},
-      month={Oct}
+      month={10}
 }
 
 @misc{srp-blog,
       url={https://blog.cryptographyengineering.com/should-you-use-srp/},
-      note={\url{https://blog.cryptographyengineering.com/should-you-use-srp/}},
+      note={\url{https://blog.cryptographyengineering.com/should-you-use-srp/}, accessed 3rd April, 2023},
       title={Should you use SRP?},
       author={Green, Matthew},
       year={2018},
@@ -136,11 +136,11 @@
 
 @misc{apple-keychain-srp,
       url={https://support.apple.com/en-gb/guide/security/sec3e341e75d/web},
-      note={\url{https://support.apple.com/en-gb/guide/security/sec3e341e75d/web}},
+      note={\url{https://support.apple.com/en-gb/guide/security/sec3e341e75d/web}, accessed 3rd April, 2023},
       title={Escrow security for iCloud Keychain},
       author={Apple Platform Security},
       year={2021},
-      month={may},
+      month={5},
 }
 
 @techreport{srp,
@@ -150,7 +150,7 @@
       type={RFC},
       number=2945,
       year={2000},
-      month={September},
+      month={9},
       publisher={RFC Editor},
       institution={RFC Editor},
       url={https://www.rfc-editor.org/rfc/rfc2945.txt},
@@ -164,7 +164,7 @@
       type={RFC},
       number=5054,
       year={2007},
-      month={November},
+      month={11},
       publisher={RFC Editor},
       institution={RFC Editor},
       url={https://www.rfc-editor.org/rfc/rfc5054.txt},
@@ -178,7 +178,7 @@
       type={rfc},
       number=3748,
       year={2004},
-      month={June},
+      month={6},
       publisher={RFC Editor},
       institution={RFC Editor},
       url={https://www.rfc-editor.org/rfc/rfc3748.txt},
@@ -192,29 +192,105 @@
       type={rfc},
       number=6124,
       year={2011},
-      month={February},
+      month={2},
       publisher={RFC Editor},
-      institution={RFC Editor},
+      institu2={RFC Editor},
       url={https://www.rfc-editor.org/rfc/rfc6124.txt},
       note={\url{https://www.rfc-editor.org/rfc/rfc6124.txt}}
 }
 
 @techreport{nist-ecc-reqs,
-   author = {National Institute of Standards and Technology},
-   title = {Recommendation for Key Management: Part 1 – General},
-   institution = {U.S. Department of Commerce},
-   address= {Washington, D.C.},
-   number = {Federal Information Processing Standards Publications (FIPS PUBS) 140-2, Change Notice 2 December 03, 2002},
-   DOI = {10.6028/10.6028/NIST.SP.800-57pt1r5},
-   year = {2020},
+      author = {National Institute of Standards and Technology},
+      title = {Recommendation for Key Management: Part 1 – General},
+      institution = {U.S. Department of Commerce},
+      address= {Washington, D.C.},
+      number = {Federal Information Processing Standards Publications (FIPS PUBS) 140-2, Change Notice 2 December 03, 2002},
+      DOI = {10.6028/10.6028/NIST.SP.800-57pt1r5},
+      year = {2020},
 }
 
 @misc{tikz-crypto,
-  author = {J\'er\'emy Jean},
-  title = {{TikZ for Cryptographers}},
-  howpublished = {
-    \url{https://www.iacr.org/authors/tikz/}
-  },
-  year = {2016},
+      author = {J\'er\'emy Jean},
+      title = {{TikZ for Cryptographers}},
+      howpublished = {
+        \url{https://www.iacr.org/authors/tikz/}
+      },
+      year = {2016},
+}
+
+@inproceedings{elligator2,
+      title={Elligator: elliptic-curve points indistinguishable from uniform random strings},
+      author={Bernstein, Daniel J and Hamburg, Mike and Krasnova, Anna and Lange, Tanja},
+      booktitle={Proceedings of the 2013 ACM SIGSAC conference on Computer \& communications security},
+      pages={967--980},
+      year={2013}
+}
+
+@inproceedings{completeness-attack,
+      title={Exceptional procedure attack on elliptic curve cryptosystems},
+      author={Izu, Tetsuya and Takagi, Tsuyoshi},
+      booktitle={Public Key Cryptography—PKC 2003: 6th International Workshop on Practice and Theory in Public Key Cryptography Miami, FL, USA, January 6--8, 2003 Proceedings 6},
+      pages={224--239},
+      year={2002},
+      organization={Springer}
+}
+
+@inproceedings{small-subgroup-attack,
+      title={A key recovery attack on discrete log-based schemes using a prime order subgroup},
+      author={Lim, Chae Hoon and Lee, Pil Joong},
+      booktitle={Advances in Cryptology—CRYPTO'97: 17th Annual International Cryptology Conference Santa Barbara, California, USA August 17--21, 1997 Proceedings 17},
+      pages={249--263},
+      year={1997},
+      organization={Springer}
+}
+
+@inproceedings{invalid-curve-attack,
+      title={Differential fault attacks on elliptic curve cryptosystems},
+      author={Biehl, Ingrid and Meyer, Bernd and M{\"u}ller, Volker},
+      booktitle={Advances in Cryptology—CRYPTO 2000: 20th Annual International Cryptology Conference Santa Barbara, California, USA, August 20--24, 2000 Proceedings 20},
+      pages={131--146},
+      year={2000},
+      organization={Springer}
+}
+
+@misc{safecurves,
+      title={Daniel J. Bernstein and Tanja Lange. SafeCurves: choosing safe curves for elliptic-curve cryptography.},
+      author={Daniel J. Bernstein and Tanja Lange.},
+      note={\url{https://safecurves.cr.yp.to}, accessed 3rd April 2023}
+}
+
+@inproceedings{curve-rigidity,
+      title={Security dangers of the NIST curves},
+      author={Bernstein, Daniel J and Lange, Tanja},
+      booktitle={Invited talk, International State of the Art Cryptography Workshop, Athens, Greece},
+      year={2013}
+}
+
+@inproceedings{multiplicative-transfer-attack,
+      title={Reducing elliptic curve logarithms to logarithms in a finite field},
+      author={Menezes, Alfred and Vanstone, Scott and Okamoto, Tatsuaki},
+      booktitle={Proceedings of the twenty-third annual ACM symposium on Theory of computing},
+      pages={80--89},
+      year={1991}
+}
+
+@article{additive-transfer-attack,
+      title={Evaluation of discrete logarithms in a group of $\rho$-torsion points of an elliptic curve in characteristic $\rho$},
+      author={Semaev, Igor},
+      journal={Mathematics of computation},
+      volume={67},
+      number={221},
+      pages={353--356},
+      year={1998}
+}
+
+@article{pollard-rho,
+      title={Monte Carlo methods for index computation ($\mod p$)},
+      author={Pollard, John M},
+      journal={Mathematics of computation},
+      volume={32},
+      number={143},
+      pages={918--924},
+      year={1978}
 }
 
