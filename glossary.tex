@@ -1,3 +1,6 @@
+% fix fragile thing
+\glsnoexpandfields
+
 % glossary entries
 \newglossaryentry{ocrypto} {
   name={Online Cryptography},
@@ -73,7 +76,16 @@
 \newglossaryentry{ff} {
   name={Finite Field},
   description={
-    A Finite Field is a finite set with an associated addition and multiplication operator, where the operators satisfy the field axioms. Namely they are: Associative, Commutative, Distributive, they have inverses and identity elements.
+    A Finite Field is a finite set with an associated addition and multiplication operator, where the operators satisfy the field axioms. Namely they are: Associative, Commutative, Distributive, they have inverses and identity elements%
+  }
+}
+
+\newglossaryentry{opaque} {
+  name={OPAQUE},
+  description={
+    An Asymmetric PAKE Protocol Secure Against Pre-Computation Attacks.
+    \gls{apake} Winner of the \gls{cfrg} PAKE selection process.
+    The name is a play on words from OPAKE, where O is \gls{oprf}%
   }
 }
 
@@ -92,6 +104,11 @@
 \newacronym{rsa}{RSA}{Rivest-Shamir-Adleman}
 \newacronym{srp}{SRP}{Secure Remote Password}
 \newacronym{nist}{NIST}{National Institute of Standards and Technology}
-\newacronym{vpake}{V-PAKE}{Verifier based PAKE}
-\newacronym{spake}{SPAKE}{Simple Password-Authenticated Key-Exchange}
+\newacronym{vpake}{V-PAKE}{Verifier based \glsentryshort{pake}}
+\newacronym{spake}{SPAKE}{Simple \glsentryshort{pake}}
 \newacronym{ecdlp}{ECDLP}{Elliptic Curve Discrete Logarithm Problem}
+\newacronym{ietf}{IETF}{Internet Engineering Task Force}
+\newacronym{irtf}{IRTF}{Internet Research Task Force}
+\newacronym{cfrg}{CFRG}{Crypto Forum Research Group}
+\newacronym{cpace}{CPace}{Composable Password Authenticated Connection Establishment}
+\newacronym{oprf}{OPRF}{Oblivious Pseudo Random Function}

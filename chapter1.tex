@@ -298,10 +298,7 @@ It is also called the point at infinity as it can be considered to be the single
   \label{fig:point-add-rules}
 \end{figure}
 
-However it's not quite that simple for us.
-We cannot use $\RR$ as computers only have finite resources we need a finite set to work in.
-Instead we define our operations over a \gls{ff}, we will use the \gls{ff} of the integers mod a prime, denoted $\ZZ_p$ for some prime $p$. Lets take a look at what our finite fields look like in a small finite field - $\ZZ_{89}$.
-
+However it's not quite that simple for us. We cannot use $\RR$ as computers only have finite resources we need a finite set to work in. Instead we define our operations over a \gls{ff}, we will use the \gls{ff} of the integers mod a prime, denoted $\ZZ_p$ for some prime $p$. Lets take a look at what our finite fields look like in a small finite field - $\ZZ_{89}$.
 \begin{figure}[H]
   \centering
 
@@ -376,5 +373,13 @@ All of these attacks individually can weaken or even break the security of a giv
 However choosing the right curve is a good step in the right direction and can mitigate many of the attacks listed above.
 
 \section{Modern PAKEs}
+Recently many novel \glspl{pake} algorithms have been published, this is partly due to a request from the \gls{ietf} for the \gls{irtf} \gls{cfrg} to carry out a selection process to choose a \gls{pake} for usage in \gls{ietf} protocols.
+That process concluded in 2020 with \gls{cpace} and \gls{opaque} being chosen as the recommended \gls{bpake} and \gls{apake} respectively\cite{cfrg-pake-selection-results}.
+
+Some time has passed since this process and we now have some new \glspl{pake} with various interesting properties that are worth taking a look at.
+
+\subsection
+
 \section{AuCPace}
 \section{Who are RustCrypto?}
+
