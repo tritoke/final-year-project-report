@@ -64,12 +64,9 @@
 \usepackage{amssymb}
 \usepackage{amsfonts}
 
-% cleverly decides how to reference a given ref
-% must be loaded after hyperref and amsmath
-\usepackage{cleveref}
-
-% cite things with a small superscript number
-% \usepackage[superscript,biblabel]{cite}
+% booktabs makes tables better
+\usepackage{booktabs}
+\captionsetup[table]{hypcap=false}
 
 % biblatex stuff
 \usepackage[style=alphabetic,natbib]{biblatex}
@@ -163,6 +160,12 @@
 
 % crypgraphy stuff
 \usepackage[operators, sets]{cryptocode}
+
+% cleverly decides how to reference a given ref
+% must be loaded after hyperref and amsmath
+\usepackage{cleveref}
+% fix cleverref for cryptocode package
+% \pcfixcleverref
 
 % only work on a chapter at a time to improve compile times
 % \includeonly{chapter1,appendix1,appendix2}

@@ -50,19 +50,16 @@ In \cref{chap:appendix-eke} you can find a Python implementation of this scheme
   \item $\cryptoSample$: Sampling from a given set - $x \cryptoSample \ \mathbb{R}$ means to choose $x$ at random from the set of real numbers.
 \end{itemize}
 
-\begin{figure}[H]
-  \centering
-
-  \begin{tabular}{ |c|c|l| }
-    \hline
+\begin{center}
+  \captionof{table}{\gls{eke} shared parameters}
+  \begin{tabular}{ ccl }
+    \toprule
     Shared Parameter & Secret & Explanation \\
-    \hline
-    $P$ & yes & the shared password \\ \hline
+    \midrule
+    $P$ & yes & the shared password \\
+    \bottomrule
   \end{tabular}
-
-  \caption{\gls{eke} shared parameters}
-  \label{fig:eke-shared-params}
-\end{figure}
+\end{center}
 
 \begin{figure}[H]
   \pseudocodeblock[head=EKE-RSA]{
@@ -94,25 +91,22 @@ They are very similar so we will just explore \glslink{spake}{SPAKE2} as we are 
     This has the advantage of reducing the number of messages that need to be sent.
 \end{enumerate}
 
-\begin{figure}[H]
-  \centering
-
-  \begin{tabular}{ |c|c|p{0.6\linewidth}| }
-    \hline
+\begin{center}
+  \captionof{table}{\gls{spake} shared parameters}
+  \begin{tabular}{ ccp{0.6\linewidth} }
+    \toprule
     Shared Parameter & Secret & Explanation \\
-    \hline
-    $pw$ & yes & the shared password encoded as an element of $\ZZ_p$ \\ \hline
-    $\GG$ & no & the mathematical group in which we will perform all opertions \\  \hline
-    $g$ & no & the generator of $\GG$ \\ \hline
-    $p$ & no & the \gls{safeprime} which defines the finite field for all operations in $\GG$ \\ \hline
-    $M$ & no & an element in $\GG$ associated with user $A$ \\ \hline
-    $N$ & no & an element in $\GG$ associated with user $B$ \\ \hline
-    $H$ & no & a secure hash function \\ \hline
+    \midrule
+    $pw$ & yes & the shared password encoded as an element of $\ZZ_p$ \\
+    $\GG$ & no & the mathematical group in which we will perform all opertions \\ 
+    $g$ & no & the generator of $\GG$ \\
+    $p$ & no & the \gls{safeprime} which defines the finite field for all operations in $\GG$ \\
+    $M$ & no & an element in $\GG$ associated with user $A$ \\
+    $N$ & no & an element in $\GG$ associated with user $B$ \\
+    $H$ & no & a secure hash function \\
+    \bottomrule
   \end{tabular}
-
-  \caption{\gls{spake} shared parameters}
-  \label{fig:spake-shared-params}
-\end{figure}
+\end{center}
 
 \begin{figure}[H]
   \pseudocodeblock[head=SPAKE2]{
@@ -139,24 +133,21 @@ Finally we will look at \gls{srp} an \gls{apake} first published in 1998, unlike
 \gls{srp} is likely the most used \gls{pake} protocol in the world due to it's use in Apple's iCloud Keychain \cite{apple-keychain-srp} and it's availability as a \gls{tls} ciphersuite \cite{tls-srp}.
 However it is quite weird for what it does and there is no security proof for it \cite{srp-blog}. An implementation of the protocol in Python can be found in \cref{chap:appendix-srp}.
 
-\begin{figure}[H]
-  \centering
-
-  \begin{tabular}{ |c|c|p{0.7\linewidth}| }
-    \hline
+\begin{center}
+  \captionof{table}{\gls{srp} parameters}
+  \begin{tabular}{ c c p{0.7\linewidth} }
+    \toprule
     Parameter & Secret & Explanation \\
-    \hline
-    $v$ & yes & the \gls{veri}\label{text:srp-verifier-generation} stored by the server: $v=g^{H(s,I,P)}$ \\ \hline
-    $P$ & yes & the user's password \\ \hline
-    $I$ & no & the user's name \\ \hline
-    $g$ & no & the generator of $\GG$ \\ \hline
-    $p$ & no & the \gls{safeprime} which defines the finite field for all operations in $\GG$ \\ \hline
-    $H$ & no & a secure hash function \\ \hline
+    \midrule
+    $v$ & yes & the \gls{veri}\label{text:srp-verifier-generation} stored by the server: $v=g^{H(s,I,P)}$ \\
+    $P$ & yes & the user's password \\
+    $I$ & no & the user's name \\
+    $g$ & no & the generator of $\GG$ \\
+    $p$ & no & the \gls{safeprime} which defines the finite field for all operations in $\GG$ \\
+    $H$ & no & a secure hash function \\
+    \bottomrule
   \end{tabular}
-
-  \caption{\gls{srp} parameters}
-  \label{fig:srp-shared-params}
-\end{figure}
+\end{center}
 
 \begin{figure}[H]
   \pseudocodeblock[head=SRP]{
@@ -400,15 +391,91 @@ A unique bonus of this protocol as well is it takes into account the real-world 
 
 \clearpage
 \section{Choosing a PAKE to implement}
-There were a number of factors I considered when choosing which \gls{pake} to implement:
+There were a number of factors to consider when choosing which \gls{pake} to implement:
 \begin{itemize}
   \item{How widely applicable is the protocol?}
   \item{How many existing implementations are there?}
-  \item{How good are existing solutions?}
+  \item{How good are existing solutions (solutions that aren't the given protocol)?}
+  \item{Is there potential to contribute an implementation back to an open source project?}
 \end{itemize}
 
+After a conversation with the RustCrypto core team on Zulip, it was agreed that an implementation of any of these protocols would be readibly accepted into their collection of \glspl{pake} -- \url{https://github.com/RustCrypto/PAKEs}.
+I will talk more about RustCrypto and who they are in \cref{sec:whom-rustcrypto}.
+For now I will omit considerations about open source contribution.
+
+\begin{center}
+  \captionof{table}{Modern \gls{pake} Protocol Comparison}
+  \begin{tabular}{ lllll }
+    \toprule
+    Protocol & Applicability & Implementations & Existing Solutions \\
+    \midrule
+    CHIP+CRISP & WiFi & C++ reference impl & \gls{psk} \\
+    \gls{khape} & Replacing \gls{pki} & Educational Rust impl & \gls{opaque} \\
+    \gls{aucpace} & \gls{iiot} & C reference impl + Go impl & hard coding the key \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+As \gls{aucpace} is the only \gls{pake} in the list where there is a completely inadequate current solution.
+\gls{aucpace} also targets a rapidly growing area, the combined risk of this and the insecure nature of hard coding the key means that \gls{aucpace} is uniquely positioned to make a large difference to the security of the \gls{iiot} landscape.
+It is for these reasons that I have chosen to create an implementation of \gls{aucpace} and to contribute it back to the open source community via RustCrypto.
+
 \section{AuCPace in detail}
+Now that we have chosen to implemented \gls{aucpace} it is worth going over the protocol itself to understand better what implementing it will entail.
+
+\begin{figure}[H]
+  \pseudocodeblock[head=AuCPace,codesize=\footnotesize]{
+    \textbf{Server} \< \< \textbf{Client} \\
+    \
+    \< \< \pclb[-1.5\baselineskip]
+    \pcintertext[center]{Agree on $ssid$} \\[-1.5\baselineskip][\hline]
+    \
+    s \sample \bin^{k_1} \< \< s \sample \bin^{k_1} \\
+    \< \sendmessageright*{s} \< \\
+    \< \sendmessageleft*{t} \< \\
+    ssid = \text{H}_0(s||t) \< \< ssid = \text{H}_0(s||t) \\[][\hline]
+    \
+    \< \< \pclb[-0.5\baselineskip]
+    \pcintertext[center]{AuCPace Augmentation Layer} \\[-1.5\baselineskip][\hline]
+    \
+    x \sample \{1 \dots m_{\mathcal{J}}\} \< \< \\
+    X = B^{c_{\mathcal{J}}} \< \< \\
+    \< \sendmessageleft*{\text{username}} \< \\
+    W,\text{salt} = \text{lookup$W$(user)} \< \< \\
+    \< \sendmessageright*{\mathcal{J},X,\text{salt},\sigma} \< \\
+    \< \< w = \text{PBKDF}_{\sigma}(pw, \text{user, salt}) \\
+    \text{if lookup failed}\ PRS \sample \bin^{k_2} \< \< \text{abort if $X$ invalid} \\
+    \text{else}\ PRS = W^{x\ c_\mathcal{J}} \< \< PRS = X^{w\ c_{\mathcal{J}}} \\[][\hline]
+    \
+    \< \< \pclb[-0.5\baselineskip]
+    \pcintertext[center]{CPace substep} \\[-1.5\baselineskip][\hline]
+    \
+    g' = \text{H}_1(ssid||PRS||CI) \< \< g' = \text{H}_1(ssid||PRS||CI) \\
+    G = \text{Map2Point}(g') \< \< G = \text{Map2Point}(g') \\
+    y_a \sample \{ 1 \dots m_{\mathcal{J}} \} \< \< y_b \sample \{ 1 \dots m_{\mathcal{J}} \} \\
+    Y_a = G^{y_a\ c_{\mathcal{J}}} \< \< Y_b = G^{y_b\ c_{\mathcal{J}}} \\
+    \< \sendmessageright*{Y_a} \< \\
+    \< \sendmessageleft*{Y_b} \< \\
+    K = Y_b^{y_a\ c_{\mathcal{J}}} \< \< K = Y_a^{y_b\ c_{\mathcal{J}}} \\
+    \text{abort if $Y_b$ invalid} \< \< \text{abort if $Y_b$ invalid} \\
+    sk_1 = \text{H}_2(ssid||K) \< \< K = sk_1 = \text{H}_2(ssid||K) \\[][\hline]
+    \
+    \< \< \pclb[-0.5\baselineskip]
+    \pcintertext[center]{Explicit mutual authentication} \\[-1.5\baselineskip][\hline]
+    \
+    T_a = \text{H}_3(ssid||sk_1) \< \< T_a = \text{H}_3(ssid||sk_1) \\
+    T_b = \text{H}_4(ssid||sk_1) \< \< T_b = \text{H}_4(ssid||sk_1) \\
+    \< \sendmessageleft*{T_b} \< \\
+    \< \sendmessageright*{T_a} \< \\
+    \text{verify}\ T_b \< \< \text{verify}\ T_a \\
+    sk = \text{H}_5(ssid||sk_1) \< \< sk = \text{H}_5(ssid||sk_1) \\[][\hline]
+  }
+
+  \caption{\gls{aucpace} Protocol}
+  \label{fig:aucpace-protocol}
+\end{figure}
 
 \section{Who are RustCrypto?}
+\label{sec:whom-rustcrypto}
 
 
