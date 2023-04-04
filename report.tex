@@ -1,8 +1,5 @@
 \documentclass[12pt, a4paper]{third-rep}
 
-% go fast
-\def\compileFast{a}
-
 % colours
 \usepackage{xcolor}
 \definecolor{mydarkblue}{rgb}{0,0.08,0.45}
@@ -75,7 +72,7 @@
 % \usepackage[superscript,biblabel]{cite}
 
 % biblatex stuff
-\usepackage[style=alphabetic]{biblatex}
+\usepackage[style=alphabetic,natbib]{biblatex}
 \addbibresource{refs.bib}
 
 % package for defining custom math symbols
@@ -119,11 +116,7 @@
 
 % Tikz stuff
 \usepackage{tikz}
-\ifx\compileFast\undefined
-  \usepackage{tikzpeople}
-\else
-  \usepackage[draft]{tikzpeople}
-\fi
+\usepackage{tikzpeople}
 
 % plotting things
 \usepackage{pgfplots}
@@ -172,10 +165,7 @@
 \usepackage[operators, sets]{cryptocode}
 
 % only work on a chapter at a time to improve compile times
-\ifx\compileFast\undefined
-\else
-  \includeonly{chapter1,appendix1,appendix2}
-\fi
+% \includeonly{chapter1,appendix1,appendix2}
 
 \title{Exploring Password-Authenticated Key-Exchange Algorithms}
 \author{Sam Leonard}

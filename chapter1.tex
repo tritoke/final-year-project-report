@@ -33,7 +33,7 @@ There are two main types of \gls{pake} algorithm - \glspl{apake} and \glspl{bpak
 \clearpage
 
 \subsection{A brief history of PAKE algorithms}
-The first \gls{pake} algorithm was Bellovin and Merritt's \gls{eke} scheme\cite{eke}.
+The first \gls{pake} algorithm was Bellovin and Merritt's \gls{eke} scheme \cite{eke}.
 It works using a mix of \gls{symcrypto} and \gls{asymcrypto} to perform a key exchange.
 This comes with many challenges and subtle mistakes that are easy to make;
 primarily for the security of the system whatever is encrypted by the shared secret key(P) must be indistinguishable from random data.
@@ -41,7 +41,7 @@ Otherwise an attacker can determine whether their guess at a trial decryption is
 The \gls{rsa} variant of \gls{eke} has this issue - the \gls{rsa} parameter $e$ is what is encrypted and sent in the first message.
 For \gls{rsa} all valid values of $e$ are odd, so this would prevent it being used.
 This is solved by adding $1$ to $e$ with a $50\%$ chance.
-\Cref{fig:eke-rsa} shows this protocol in full. While many of the initial variants on \gls{eke} have been shown to flawed/vulnerable, later variants have made it into real world use, such as in \gls{eap}\cite{eap} where it is available as \gls{eap}-\gls{eke}\cite{eap-eke}.
+\Cref{fig:eke-rsa} shows this protocol in full. While many of the initial variants on \gls{eke} have been shown to flawed/vulnerable, later variants have made it into real world use, such as in \gls{eap} \cite{eap} where it is available as \gls{eap}-\gls{eke} \cite{eap-eke}.
 In \cref{chap:appendix-eke} you can find a Python implementation of this scheme
 
 \subsubsection{An Aside on Notation}
@@ -83,9 +83,8 @@ In \cref{chap:appendix-eke} you can find a Python implementation of this scheme
 \clearpage
 
 \subsubsection{SPAKE}
-\glslink{spake}{SPAKE1} and \glslink{spake}{SPAKE2} are \glspl{bpake}' which were introduced slightly later on by Michel Abdalla and David Pointcheval\cite{spake} as variations on \gls{eke}.
-\glslink{spake}{SPAKE2} and \glslink{spake}{SPAKE2} are very similar so we will just explore \glslink{spake}{SPAKE2} as we are more interested in \glslink{ocrypto}{online} algorithms.
-\glslink{spake}{SPAKE2} is also 
+\glslink{spake}{SPAKE1} and \glslink{spake}{SPAKE2} are \glspl{bpake}' which were introduced slightly later on by Michel Abdalla and David Pointcheval \cite{spake} as variations on \gls{eke}.
+They are very similar so we will just explore \glslink{spake}{SPAKE2} as we are more interested in \glslink{ocrypto}{online} algorithms.
 \gls{spake} differs from EKE in the following ways:
 
 \begin{enumerate}
@@ -137,8 +136,8 @@ In \cref{chap:appendix-eke} you can find a Python implementation of this scheme
 \subsubsection{SRP}
 Finally we will look at \gls{srp} an \gls{apake} first published in 1998, unlike \glslink{spake}{SPAKE2} it is not a modification of \gls{eke}.
 \gls{srp} has gone through many revisions, at time of writing \glslink{srp}{SRP6a} is the latest version.
-\gls{srp} is likely the most used \gls{pake} protocol in the world due to it's use in Apple's iCloud Keychain\cite{apple-keychain-srp} and it's availability as a \gls{tls} ciphersuite\cite{tls-srp}.
-However it is quite weird for what it does and there is no security proof for it\cite{srp-blog}. An implementation of the protocol in Python can be found in \cref{chap:appendix-srp}.
+\gls{srp} is likely the most used \gls{pake} protocol in the world due to it's use in Apple's iCloud Keychain \cite{apple-keychain-srp} and it's availability as a \gls{tls} ciphersuite \cite{tls-srp}.
+However it is quite weird for what it does and there is no security proof for it \cite{srp-blog}. An implementation of the protocol in Python can be found in \cref{chap:appendix-srp}.
 
 \begin{figure}[H]
   \centering
@@ -181,9 +180,9 @@ However it is quite weird for what it does and there is no security proof for it
 
 \section{Elliptic Curve Cryptography}
 Many modern Cryptograhpic protocols make use of a mathematical object known as an elliptic curve.
-First proposed in 1985 independently by Neal Koblitz\cite{ecc-first-use-koblitz} and Victor S. Miller\cite{ecc-first-use-miller}.
-Elliptic curves are attractive to cryptographers as they maintain a very high level of strength at smaller key sizes, this allows for protocols to consume less bandwidth, less memory and execute faster\cite{state-of-ecc}.
-To illustrate just how great the size savings are - \gls{nist} suggests that an elliptic curve key of just 256 bits provides the same level of security as an \gls{rsa} key of 3072 bits\cite{nist-ecc-reqs}.
+First proposed in 1985 independently by Neal Koblitz \cite{ecc-first-use-koblitz} and Victor S. Miller \cite{ecc-first-use-miller}.
+Elliptic curves are attractive to cryptographers as they maintain a very high level of strength at smaller key sizes, this allows for protocols to consume less bandwidth, less memory and execute faster \cite{state-of-ecc}.
+To illustrate just how great the size savings are - \gls{nist} suggests that an elliptic curve key of just 256 bits provides the same level of security as an \gls{rsa} key of 3072 bits \cite{nist-ecc-reqs}.
 
 \subsection{But what actually is an elliptic curve?}
 With regards to Cryptography elliptic curves tend to come in one of two forms:
@@ -234,12 +233,12 @@ With regards to Cryptography elliptic curves tend to come in one of two forms:
     \node at (8,-5) {Montgomery Form};
   \end{tikzpicture}
 
-  \caption{Elliptic curves over $\RR$, Adapted from TikZ for Cryptographers\cite{tikz-crypto}}
+  \caption{Elliptic curves over $\RR$, Adapted from TikZ for Cryptographers \cite{tikz-crypto}}
 \end{figure}
 
 Weierstra\ss{} form is special as it is the general case for all elliptic curves, meaning all elliptic curves can be expressed as a Weierstra\ss{} curve.
 This property means that it is commonly used for expressing various curves.
-Montgomery form isn't quite as flexible, however it is favourable because it leads to significantly faster multiplication and addition operations via Montgomery's ladder\cite{montgom-ladder}.
+Montgomery form isn't quite as flexible, however it is favourable because it leads to significantly faster multiplication and addition operations via Montgomery's ladder \cite{montgom-ladder}.
 
 \subsection{How do we do Cryptography with curves?}
 To perform Cryptography with elliptic curves we need to define an "\gls{abgroup}" to work in.
@@ -294,12 +293,11 @@ It is also called the point at infinity as it can be considered to be the single
     \end{scope}
 
   \end{tikzpicture}
-  \caption{Elliptic Curve Group Operations, reproduced from TikZ for Cryptographers\cite{tikz-crypto}}
+  \caption{Elliptic Curve Group Operations, reproduced from TikZ for Cryptographers \cite{tikz-crypto}}
   \label{fig:point-add-rules}
 \end{figure}
 
-However it's not quite that simple for us. We cannot use $\RR$ as computers only have finite resources we need a finite set to work in. Instead we define our operations over a \gls{ff}, we will use the \gls{ff} of the integers mod a prime, denoted $\ZZ_p$ for some prime $p$. Lets take a look at what our finite fields look like in a small finite field - $\ZZ_{89}$.
-\begin{figure}[H]
+However it's not quite that simple for us. We cannot use $\RR$ as computers only have finite resources we need a finite set to work in. Instead we define our operations over a \gls{ff}, we will use the \gls{ff} of the integers mod a prime, denoted $\ZZ_p$ for some prime $p$. Lets take a look at what our finite fields look like in a small finite field - $\ZZ_{89}$. \begin{figure}[H]
   \centering
 
   \begin{tikzpicture}[thick,>=latex]
@@ -307,7 +305,7 @@ However it's not quite that simple for us. We cannot use $\RR$ as computers only
     % sage: E = EllipticCurve(Integers(89), [-2,1])
     % sage: points = {tuple(p)[:2] for p in E.points()}
     % sage: print(points)
-    \begin{scope}[scale=.060]
+    \begin{scope}[scale=.055]
       \draw[|<->|,gray] (0,0) -- (0,89) node[above] {$y \in \mathbb{Z}_{89}$};
       \draw[->|,gray] (0,0) -- (89,0) node[right] {$x \in \mathbb{Z}_{89}$};
       % weirdness to make the line actually split the plane
@@ -324,7 +322,7 @@ However it's not quite that simple for us. We cannot use $\RR$ as computers only
     % >>> # yes this is suspect as fuck but it all works because modular arithmetic 🙃
     % >>> points = {(x,y) for x in range(89) for y in range(89) if f(x,y)}
     % >>> print(points)
-    \begin{scope}[xshift=8cm,scale=.060]
+    \begin{scope}[xshift=7.5cm,scale=.055]
       \draw[|<->|,gray] (0,0) -- (0,89) node[above] {$y \in \mathbb{Z}_{89}$};
       \draw[->|,gray] (0,0) -- (89,0) node[right] {$x \in \mathbb{Z}_{89}$};
       % weirdness to make the line actually split the plane
@@ -337,7 +335,7 @@ However it's not quite that simple for us. We cannot use $\RR$ as computers only
     \end{scope}
   \end{tikzpicture}
 
-  \caption{Elliptic curves over $\ZZ_{89}$, Adapted from TikZ for Cryptographers\cite{tikz-crypto}}
+  \caption{Elliptic curves over $\ZZ_{89}$, Adapted from TikZ for Cryptographers \cite{tikz-crypto}}
   \label{fig:ellip-curve-ff}
 \end{figure}
 
@@ -352,19 +350,19 @@ There are many attacks against various aspects of Elliptic Curves, in general th
   \begin{item}
     Attacks against the \gls{ecdlp} security of the curve:
     \begin{itemize}
-      \item{The rho method\cite{pollard-rho}}
-      \item{Transfer Security\cite{multiplicative-transfer-attack,additive-transfer-attack}}
-      \item{CM Field Discriminants\cite{safecurves}}
-      \item{Curve Rigidity\cite{curve-rigidity}}
+      \item{The rho method \cite{pollard-rho}}
+      \item{Transfer Security \cite{multiplicative-transfer-attack,additive-transfer-attack}}
+      \item{CM Field Discriminants \cite{safecurves}}
+      \item{Curve Rigidity \cite{curve-rigidity}}
     \end{itemize}
   \end{item}
   \begin{item}
     Attacks against the concrete implementation of \gls{ecc}:
     \begin{itemize}
-      \item{Ladders required for safe and fast point-scalar multiplication\cite{safecurves}}
-      \item{Twist Security\cite{small-subgroup-attack,invalid-curve-attack}}
-      \item{Completeness\cite{completeness-attack}}
-      \item{Indistinguishability\cite{elligator2}}
+      \item{Ladders required for safe and fast point-scalar multiplication \cite{safecurves}}
+      \item{Twist Security \cite{small-subgroup-attack,invalid-curve-attack}}
+      \item{Completeness \cite{completeness-attack}}
+      \item{Indistinguishability \cite{elligator2}}
     \end{itemize}
   \end{item}
 \end{itemize}
@@ -374,12 +372,43 @@ However choosing the right curve is a good step in the right direction and can m
 
 \section{Modern PAKEs}
 Recently many novel \glspl{pake} algorithms have been published, this is partly due to a request from the \gls{ietf} for the \gls{irtf} \gls{cfrg} to carry out a selection process to choose a \gls{pake} for usage in \gls{ietf} protocols.
-That process concluded in 2020 with \gls{cpace} and \gls{opaque} being chosen as the recommended \gls{bpake} and \gls{apake} respectively\cite{cfrg-pake-selection-results}.
+That process concluded in 2020 with \gls{cpace} and \gls{opaque} being chosen as the recommended \gls{bpake} and \gls{apake} respectively \cite{cfrg-pake-selection-results}.
 
 Some time has passed since this process and we now have some new \glspl{pake} with various interesting properties that are worth taking a look at.
 
-\subsection
+\subsection{CHIP+CRISP}
+Introduced in \citeyear{chip+crisp} by \citeauthor{chip+crisp}, CHIP and CRISP are two protocol compilers which instanciate what the authors call an \gls{ipake} \cite{chip+crisp}.
+\glspl{ipake} are designed to mitigate the threat of compromising the local storage of a device.
+While in the case of \glspl{apake} this is considered for the server side, \glspl{bpake} often require both parties to have knowledge of the plaintext password.
+Examples of this include SPAKE-2 \cite{spake} and WPA3's DragonFly/SAE \cite{sae}, both of which require the server and client to have knowledge of the plaintext password.
+CHIP+CRISP solves this problem by binding the password to an arbitrary bit-string called the identity, this can be anything, e.g. "server", "router", "jonathandata0".
+CHIP and CRISP are both protocol compilers, this means that they aren't themselves protocols but they sit on top of another protocol in order to give that sub-protocol the aforementioned properties, by protecting the underlying data they exchange.
 
-\section{AuCPace}
+\subsection{KHAPE}
+\gls{khape} \cite{khape} is an \gls{apake} from the designers of \gls{opaque}, introduced in \citeyear{khape} it is a variant of \gls{opaque} which doesn't rely on the use of an \gls{oprf} to get \gls{apake} security.
+Instead the \gls{oprf} is used to add precomputation resistance, this is also known as a "strong" \gls{pake}.
+The advantage of this is that should the \gls{oprf} be compromised the protocol remains secure, and only loses the "strong" part of it's security.
+Similarly to CHIP+CRISP, \gls{khape} is not itself a protocol but a compiler from any \gls{ake} to an \gls{apake}.
+In the paper they detail the concrete implementation KHAPE-HMQV, which extends the HMQV Authenticated \gls{dh} Protocol from an \gls{ake} to a \gls{apake}.
+
+\subsection{AuCPace}
+Although \gls{aucpace} \cite{aucpace} didn't quite make the cut for \gls{ietf} standardisation it is still a very interesting \gls{pake} and well worth a look.
+Designed specifically for use in \gls{iiot} applications, \gls{aucpace} is an \gls{apake} protocol intended for use in situations where traditional \gls{pki} simply isn't available.
+The protocol is modelled around a powerful \gls{hmi} client device and a weak server device, as this setup is common in \gls{iiot} applications, e.g. one PC being used to configure many sensors/actuators.
+Efficiency is at the core of this protocol, it is taken into consideration at every level, from the high-level protocol design to the low-level arithmetic.
+A unique bonus of this protocol as well is it takes into account the real-world issue of patents and aims to provide a practical protocol which is free from patents so as to promote the widest possible adoption of the protocol.
+
+\clearpage
+\section{Choosing a PAKE to implement}
+There were a number of factors I considered when choosing which \gls{pake} to implement:
+\begin{itemize}
+  \item{How widely applicable is the protocol?}
+  \item{How many existing implementations are there?}
+  \item{How good are existing solutions?}
+\end{itemize}
+
+\section{AuCPace in detail}
+
 \section{Who are RustCrypto?}
+
 

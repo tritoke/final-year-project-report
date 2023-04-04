@@ -3,16 +3,14 @@
       title = {AuCPace: Efficient verifier-based PAKE protocol tailored for the IIoT},
       howpublished = {Cryptology ePrint Archive, Paper 2018/286},
       year = {2018},
-      note = {\url{https://eprint.iacr.org/2018/286}},
       url = {https://eprint.iacr.org/2018/286}
 }
 
-@misc{chip,
+@misc{chip+crisp,
       author = {Cas Cremers and Moni Naor and Shahar Paz and Eyal Ronen},
       title = {CHIP and CRISP:  Protecting All Parties Against Compromise through Identity-Binding PAKEs},
       howpublished = {Cryptology ePrint Archive, Paper 2020/529},
       year = {2020},
-      note = {\url{https://eprint.iacr.org/2020/529}},
       url = {https://eprint.iacr.org/2020/529}
 }
 
@@ -21,7 +19,6 @@
       title = {KHAPE: Asymmetric PAKE from Key-Hiding Key Exchange},
       howpublished = {Cryptology ePrint Archive, Paper 2021/873},
       year = {2021},
-      note = {\url{https://eprint.iacr.org/2021/873}},
       url = {https://eprint.iacr.org/2021/873}
 }
 
@@ -30,7 +27,6 @@
       title = {Decaf: Eliminating cofactors through point compression},
       howpublished = {Cryptology ePrint Archive, Paper 2015/673},
       year = {2015},
-      note = {\url{https://eprint.iacr.org/2015/673}},
       url = {https://eprint.iacr.org/2015/673}
 }
 
@@ -39,7 +35,6 @@
       title = {OPAQUE: An Asymmetric PAKE Protocol Secure Against Pre-Computation Attacks},
       howpublished = {Cryptology ePrint Archive, Paper 2018/163},
       year = {2018},
-      note = {\url{https://eprint.iacr.org/2018/163}},
       url = {https://eprint.iacr.org/2018/163}
 }
 
@@ -48,158 +43,144 @@
       title = {Montgomery curves and the Montgomery ladder},
       howpublished = {Cryptology ePrint Archive, Paper 2017/293},
       year = {2017},
-      note = {\url{https://eprint.iacr.org/2017/293}},
       url = {https://eprint.iacr.org/2017/293}
 }
 
 @misc{eke,
-      title     = "Encrypted key exchange: Password-based protocols secure against
-                   dictionary attacks",
-      author    = "Bellovin, Steven Michael and Merritt, Michael",
-      abstract  = "Classic cryptographic protocols based on user-chosen keys allow
-                   an attacker to mount password-guessing attacks. A combination of
-                   asymmetric (public-key) and symmetric (secret-key) cryptography
-                   that allow two parties sharing a common password to exchange
-                   confidential and authenticated information over an insecure
-                   network is introduced. In particular, a protocol relying on the
-                   counter-intuitive motion of using a secret key to encrypt a
-                   public key is presented. Such protocols are secure against
-                   active attacks, and have the property that the password is
-                   protected against offline dictionary attacks.",
-      publisher = "Columbia University",
-      month     =  may,
-      year      =  1992
+      title = {Encrypted key exchange: Password-based protocols secure against dictionary attacks},
+      author = {Bellovin, Steven Michael and Merritt, Michael},
+      publisher = {Columbia University},
+      month = {5},
+      year = {1992}
 }
 
 @InProceedings{spake,
-      author="Abdalla, Michel and Pointcheval, David",
-      editor="Menezes, Alfred",
-      title="Simple Password-Based Encrypted Key Exchange Protocols",
-      booktitle="Topics in Cryptology -- CT-RSA 2005",
-      year="2005",
-      publisher="Springer Berlin Heidelberg",
-      address="Berlin, Heidelberg",
-      pages="191--208",
-      abstract="Password-based encrypted key exchange are protocols that are designed to provide pair of users communicating over an unreliable channel with a secure session key even when the secret key or password shared between two users is drawn from a small set of values. In this paper, we present two simple password-based encrypted key exchange protocols based on that of Bellovin and Merritt. While one protocol is more suitable to scenarios in which the password is shared across several servers, the other enjoys better security properties. Both protocols are as efficient, if not better, as any of the existing encrypted key exchange protocols in the literature, and yet they only require a single random oracle instance. The proof of security for both protocols is in the random oracle model and based on hardness of the computational Diffie-Hellman problem. However, some of the techniques that we use are quite different from the usual ones and make use of new variants of the Diffie-Hellman problem, which are of independent interest. We also provide concrete relations between the new variants and the standard Diffie-Hellman problem.",
-      isbn="978-3-540-30574-3"
+      author = "Abdalla, Michel and Pointcheval, David",
+      editor = "Menezes, Alfred",
+      title = "Simple Password-Based Encrypted Key Exchange Protocols",
+      booktitle = "Topics in Cryptology -- CT-RSA 2005",
+      year = "2005",
+      publisher = "Springer Berlin Heidelberg",
+      address = "Berlin, Heidelberg",
+      pages = "191--208",
+      isbn = "978-3-540-30574-3"
 }
 
 @InProceedings{ecc-first-use-miller,
-      author="Miller, Victor S.",
-      editor="Williams, Hugh C.",
-      title="Use of Elliptic Curves in Cryptography",
-      booktitle="Advances in Cryptology --- CRYPTO '85 Proceedings",
-      year="1986",
-      publisher="Springer Berlin Heidelberg",
-      address="Berlin, Heidelberg",
-      pages="417--426",
-      abstract="We discuss the use of elliptic curves in cryptography. In particular, we propose an analogue of the Diffie-Hellmann key exchange protocol which appears to be immune from attacks of the style of Western, Miller, and Adleman. With the current bounds for infeasible attack, it appears to be about 20{\%} faster than the Diffie-Hellmann scheme over GF(p). As computational power grows, this disparity should get rapidly bigger.",
-      isbn="978-3-540-39799-1"
+      author = "Miller, Victor S.",
+      editor = "Williams, Hugh C.",
+      title = "Use of Elliptic Curves in Cryptography",
+      booktitle = "Advances in Cryptology --- CRYPTO '85 Proceedings",
+      year = "1986",
+      publisher = "Springer Berlin Heidelberg",
+      address = "Berlin, Heidelberg",
+      pages = "417--426",
+      isbn = "978-3-540-39799-1"
 }
 
 @article{ecc-first-use-koblitz,
-      title={Elliptic curve cryptosystems},
-      author={Koblitz, Neal},
-      journal={Mathematics of computation},
-      volume={48},
-      number={177},
-      pages={203--209},
-      year={1987}
+      title = {Elliptic curve cryptosystems},
+      author = {Koblitz, Neal},
+      journal = {Mathematics of computation},
+      volume = {48},
+      number = {177},
+      pages = {203--209},
+      year = {1987}
 }
 
 @article{state-of-ecc,
-      title={The state of elliptic curve cryptography},
-      author={Koblitz, Neal and Menezes, Alfred and Vanstone, Scott},
-      journal={Designs, codes and cryptography},
-      volume={19},
-      pages={173--193},
-      year={2000},
-      publisher={Springer}
+      title = {The state of elliptic curve cryptography},
+      author = {Koblitz, Neal and Menezes, Alfred and Vanstone, Scott},
+      journal = {Designs, codes and cryptography},
+      volume = {19},
+      pages = {173--193},
+      year = {2000},
+      publisher = {Springer}
 }
 
 @misc{pake-blog,
-      url={https://blog.cryptographyengineering.com/2018/10/19/lets-talk-about-pake/},
-      note={Accessed 3rd April, 2023},
-      title={Let's talk about PAKE},
-      author={Green, Matthew},
-      year={2018},
-      month={10}
+      url = {https://blog.cryptographyengineering.com/2018/10/19/lets-talk-about-pake/},
+      note = {Accessed 3rd April, 2023},
+      title = {Let's talk about PAKE},
+      author = {Green, Matthew},
+      year = {2018},
+      month = {10}
 }
 
 @misc{srp-blog,
-      url={https://blog.cryptographyengineering.com/should-you-use-srp/},
-      note={Accessed 3rd April, 2023},
-      title={Should you use SRP?},
-      author={Green, Matthew},
-      year={2018},
+      url = {https://blog.cryptographyengineering.com/should-you-use-srp/},
+      note = {Accessed 3rd April, 2023},
+      title = {Should you use SRP?},
+      author = {Green, Matthew},
+      year = {2018},
 }
 
 @misc{apple-keychain-srp,
-      url={https://support.apple.com/en-gb/guide/security/sec3e341e75d/web},
-      note={Accessed 3rd April, 2023},
-      title={Escrow security for iCloud Keychain},
-      author={Apple Platform Security},
-      year={2021},
-      month={5},
+      url = {https://support.apple.com/en-gb/guide/security/sec3e341e75d/web},
+      note = {Accessed 3rd April, 2023},
+      title = {Escrow security for iCloud Keychain},
+      author = {Apple Platform Security},
+      year = {2021},
+      month = {5},
 }
 
 @techreport{srp,
-      author={Wu, Tom},
-      title={The SRP Authentication and Key Exchange System},
-      howpublished={Internet Requests for Comments},
-      type={RFC},
-      number=2945,
-      year={2000},
-      month={9},
-      publisher={RFC Editor},
-      institution={RFC Editor},
-      url={https://www.rfc-editor.org/rfc/rfc2945.txt},
+      author = {Wu, Tom},
+      title = {The SRP Authentication and Key Exchange System},
+      howpublished = {Internet Requests for Comments},
+      type = {RFC},
+      number = 2945,
+      year = {2000},
+      month = {9},
+      publisher = {RFC Editor},
+      institution = {RFC Editor},
+      url = {https://www.rfc-editor.org/rfc/rfc2945.txt},
 }
 
 @techreport{tls-srp,
-      author={T. Wu and D. Taylor and N. Mavrogiannopoulos and T. Perrin},
-      title={Using the Secure Remote Password (SRP) Protocol for TLS Authentication},
-      howpublished={Internet Requests for Comments},
-      type={RFC},
-      number=5054,
-      year={2007},
-      month={11},
-      publisher={RFC Editor},
-      institution={RFC Editor},
-      url={https://www.rfc-editor.org/rfc/rfc5054.txt},
+      author = {T. Wu and D. Taylor and N. Mavrogiannopoulos and T. Perrin},
+      title = {Using the Secure Remote Password (SRP) Protocol for TLS Authentication},
+      howpublished = {Internet Requests for Comments},
+      type = {RFC},
+      number = 5054,
+      year = {2007},
+      month = {11},
+      publisher = {RFC Editor},
+      institution = {RFC Editor},
+      url = {https://www.rfc-editor.org/rfc/rfc5054.txt},
 }
 
 @techreport{eap,
-      author={John Vollbrecht and James D. Carlson and Larry Blunk and Dr. Bernard D. Aboba and Henrik Levkowetz},
-      title={Extensible Authentication Protocol (EAP)},
-      howpublished={Internet Requests for Comments},
-      type={rfc},
-      number=3748,
-      year={2004},
-      month={6},
-      publisher={RFC Editor},
-      institution={RFC Editor},
-      url={https://www.rfc-editor.org/rfc/rfc3748.txt},
+      author = {John Vollbrecht and James D. Carlson and Larry Blunk and Dr. Bernard D. Aboba and Henrik Levkowetz},
+      title = {Extensible Authentication Protocol (EAP)},
+      howpublished = {Internet Requests for Comments},
+      type = {rfc},
+      number = 3748,
+      year = {2004},
+      month = {6},
+      publisher = {RFC Editor},
+      institution = {RFC Editor},
+      url = {https://www.rfc-editor.org/rfc/rfc3748.txt},
 }
 
 @techreport{eap-eke,
-      author={Y. Sheffer and G. Zorn and H. Tschofenig and S. Fluhrer},
-      title={An EAP Authentication Method Based on the Encrypted Key Exchange (EKE) Protocol},
-      howpublished={Internet Requests for Comments},
-      type={rfc},
-      number=6124,
-      year={2011},
-      month={2},
-      publisher={RFC Editor},
-      institution={RFC Editor},
-      url={https://www.rfc-editor.org/rfc/rfc6124.txt},
+      author = {Y. Sheffer and G. Zorn and H. Tschofenig and S. Fluhrer},
+      title = {An EAP Authentication Method Based on the Encrypted Key Exchange (EKE) Protocol},
+      howpublished = {Internet Requests for Comments},
+      type = {rfc},
+      number = 6124,
+      year = {2011},
+      month = {2},
+      publisher = {RFC Editor},
+      institution = {RFC Editor},
+      url = {https://www.rfc-editor.org/rfc/rfc6124.txt},
 }
 
 @techreport{nist-ecc-reqs,
       author = {National Institute of Standards and Technology},
       title = {Recommendation for Key Management: Part 1 – General},
       institution = {U.S. Department of Commerce},
-      address= {Washington, D.C.},
+      address = {Washington, D.C.},
       number = {Federal Information Processing Standards Publications (FIPS PUBS) 140-2, Change Notice 2 December 03, 2002},
       DOI = {10.6028/10.6028/NIST.SP.800-57pt1r5},
       year = {2020},
@@ -208,93 +189,101 @@
 @misc{tikz-crypto,
       author = {J\'er\'emy Jean},
       title = {{TikZ for Cryptographers}},
-      howpublished = {
-        \url{https://www.iacr.org/authors/tikz/}
-      },
+      howpublished = {\url{https://www.iacr.org/authors/tikz/}},
       year = {2016},
 }
 
 @inproceedings{elligator2,
-      title={Elligator: elliptic-curve points indistinguishable from uniform random strings},
-      author={Bernstein, Daniel J and Hamburg, Mike and Krasnova, Anna and Lange, Tanja},
-      booktitle={Proceedings of the 2013 ACM SIGSAC conference on Computer \& communications security},
-      pages={967--980},
-      year={2013}
+      title = {Elligator: elliptic-curve points indistinguishable from uniform random strings},
+      author = {Bernstein, Daniel J and Hamburg, Mike and Krasnova, Anna and Lange, Tanja},
+      booktitle = {Proceedings of the 2013 ACM SIGSAC conference on Computer \& communications security},
+      pages = {967--980},
+      year = {2013}
 }
 
 @inproceedings{completeness-attack,
-      title={Exceptional procedure attack on elliptic curve cryptosystems},
-      author={Izu, Tetsuya and Takagi, Tsuyoshi},
-      booktitle={Public Key Cryptography—PKC 2003: 6th International Workshop on Practice and Theory in Public Key Cryptography Miami, FL, USA, January 6--8, 2003 Proceedings 6},
-      pages={224--239},
-      year={2002},
-      organization={Springer}
+      title = {Exceptional procedure attack on elliptic curve cryptosystems},
+      author = {Izu, Tetsuya and Takagi, Tsuyoshi},
+      booktitle = {Public Key Cryptography—PKC 2003: 6th International Workshop on Practice and Theory in Public Key Cryptography Miami, FL, USA, January 6--8, 2003 Proceedings 6},
+      pages = {224--239},
+      year = {2002},
+      organization = {Springer}
 }
 
 @inproceedings{small-subgroup-attack,
-      title={A key recovery attack on discrete log-based schemes using a prime order subgroup},
-      author={Lim, Chae Hoon and Lee, Pil Joong},
-      booktitle={Advances in Cryptology—CRYPTO'97: 17th Annual International Cryptology Conference Santa Barbara, California, USA August 17--21, 1997 Proceedings 17},
-      pages={249--263},
-      year={1997},
-      organization={Springer}
+      title = {A key recovery attack on discrete log-based schemes using a prime order subgroup},
+      author = {Lim, Chae Hoon and Lee, Pil Joong},
+      booktitle = {Advances in Cryptology--CRYPTO'97: 17th Annual International Cryptology Conference Santa Barbara, California, USA August 17--21, 1997 Proceedings 17},
+      pages = {249--263},
+      year = {1997},
+      organization = {Springer}
 }
 
 @inproceedings{invalid-curve-attack,
-      title={Differential fault attacks on elliptic curve cryptosystems},
-      author={Biehl, Ingrid and Meyer, Bernd and M{\"u}ller, Volker},
-      booktitle={Advances in Cryptology—CRYPTO 2000: 20th Annual International Cryptology Conference Santa Barbara, California, USA, August 20--24, 2000 Proceedings 20},
-      pages={131--146},
-      year={2000},
-      organization={Springer}
+      title = {Differential fault attacks on elliptic curve cryptosystems},
+      author = {Biehl, Ingrid and Meyer, Bernd and M{\"u}ller, Volker},
+      booktitle = {Advances in Cryptology—CRYPTO 2000: 20th Annual International Cryptology Conference Santa Barbara, California, USA, August 20--24, 2000 Proceedings 20},
+      pages = {131--146},
+      year = {2000},
+      organization = {Springer}
 }
 
 @misc{safecurves,
-      title={SafeCurves: choosing safe curves for elliptic-curve cryptography.},
-      author={Daniel J. Bernstein and Tanja Lange.},
-      url={https://safecurves.cr.yp.to},
-      note={Accessed 3rd April 2023}
+      title = {SafeCurves: choosing safe curves for elliptic-curve cryptography.},
+      author = {Daniel J. Bernstein and Tanja Lange.},
+      url = {https://safecurves.cr.yp.to},
+      note = {Accessed 3rd April 2023}
 }
 
 @inproceedings{curve-rigidity,
-      title={Security dangers of the NIST curves},
-      author={Bernstein, Daniel J and Lange, Tanja},
-      booktitle={Invited talk, International State of the Art Cryptography Workshop, Athens, Greece},
-      year={2013}
+      title = {Security dangers of the NIST curves},
+      author = {Bernstein, Daniel J and Lange, Tanja},
+      booktitle = {Invited talk, International State of the Art Cryptography Workshop, Athens, Greece},
+      year = {2013}
 }
 
 @inproceedings{multiplicative-transfer-attack,
-      title={Reducing elliptic curve logarithms to logarithms in a finite field},
-      author={Menezes, Alfred and Vanstone, Scott and Okamoto, Tatsuaki},
-      booktitle={Proceedings of the twenty-third annual ACM symposium on Theory of computing},
-      pages={80--89},
-      year={1991}
+      title = {Reducing elliptic curve logarithms to logarithms in a finite field},
+      author = {Menezes, Alfred and Vanstone, Scott and Okamoto, Tatsuaki},
+      booktitle = {Proceedings of the twenty-third annual ACM symposium on Theory of computing},
+      pages = {80--89},
+      year = {1991}
 }
 
 @article{additive-transfer-attack,
-      title={Evaluation of discrete logarithms in a group of $\rho$-torsion points of an elliptic curve in characteristic $\rho$},
-      author={Semaev, Igor},
-      journal={Mathematics of computation},
-      volume={67},
-      number={221},
-      pages={353--356},
-      year={1998}
+      title = {Evaluation of discrete logarithms in a group of $\rho$-torsion points of an elliptic curve in characteristic $\rho$},
+      author = {Semaev, Igor},
+      journal = {Mathematics of computation},
+      volume = {67},
+      number = {221},
+      pages = {353--356},
+      year = {1998}
 }
 
 @article{pollard-rho,
-      title={Monte Carlo methods for index computation ($\mod p$)},
-      author={Pollard, John M},
-      journal={Mathematics of computation},
-      volume={32},
-      number={143},
-      pages={918--924},
-      year={1978}
+      title = {Monte Carlo methods for index computation ($\mod p$)},
+      author = {Pollard, John M},
+      journal = {Mathematics of computation},
+      volume = {32},
+      number = {143},
+      pages = {918--924},
+      year = {1978}
 }
 
 @misc{cfrg-pake-selection-results,
-      title={Results of the PAKE selection process},
-      author={\gls{cfrg} Chairs},
-      url={https://datatracker.ietf.org/meeting/interim-2020-cfrg-01/materials/slides-interim-2020-cfrg-01-sessa-results-of-the-pake-selection-process-00},
-      month={4},
-      year={2020},
+      title = {Results of the PAKE selection process},
+      author = {CFRG Chairs},
+      url = {https://datatracker.ietf.org/meeting/interim-2020-cfrg-01/materials/slides-interim-2020-cfrg-01-sessa-results-of-the-pake-selection-process-00},
+      month = {4},
+      year = {2020}
 }
+
+@inproceedings{sae,
+      title = {Simultaneous authentication of equals: A secure, password-based key exchange for mesh networks},
+      author = {Harkins, Dan},
+      booktitle = {2008 Second International Conference on Sensor Technologies and Applications (sensorcomm 2008)},
+      pages = {839--844},
+      year = {2008},
+      organization = {IEEE}
+}
+

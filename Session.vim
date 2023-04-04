@@ -13,11 +13,12 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +0 report.tex
-badd +0 refs.bib
-badd +0 merci.tex
-badd +0 chapter1.tex
-badd +0 glossary.tex
+badd +1 report.tex
+badd +1 refs.bib
+badd +1 merci.tex
+badd +1 chapter1.tex
+badd +1 glossary.tex
+badd +3 abstract.tex
 argglobal
 %argdel
 $argadd report.tex
@@ -38,12 +39,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 34 - ((33 * winheight(0) + 38) / 76)
+let s:l = 168 - ((26 * winheight(0) + 28) / 56)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 34
-normal! 0
+keepjumps 168
+normal! 04|
 tabnext
 edit chapter1.tex
 argglobal
@@ -58,12 +59,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 301 - ((34 * winheight(0) + 38) / 76)
+let s:l = 394 - ((27 * winheight(0) + 28) / 56)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 301
-normal! 0102|
+keepjumps 394
+normal! 0
 tabnext
 edit glossary.tex
 argglobal
@@ -78,12 +79,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 19 - ((18 * winheight(0) + 38) / 76)
+let s:l = 118 - ((53 * winheight(0) + 28) / 56)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 19
-normal! 03|
+keepjumps 118
+normal! 040|
 tabnext
 edit refs.bib
 argglobal
@@ -98,12 +99,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 196 - ((51 * winheight(0) + 38) / 76)
+let s:l = 289 - ((53 * winheight(0) + 28) / 56)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 196
-normal! 029|
+keepjumps 289
+normal! 0
 tabnext 2
 set stal=1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
