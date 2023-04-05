@@ -1,7 +1,7 @@
 \documentclass[12pt, a4paper]{third-rep}
 
 % colours
-\usepackage{xcolor}
+\usepackage[table]{xcolor}
 \definecolor{mydarkblue}{rgb}{0,0.08,0.45}
 \definecolor{mintbg}{rgb}{0.95,0.95,0.95}
 \definecolor{listingframe}{rgb}{1,0.31,0}
@@ -16,7 +16,6 @@
   listing file={#3},
   listing only,
   listing engine=minted,
-  listing options={basicstyle=\footnotesize\listingsfont},
   minted language=python,
   minted style=colorful,
   colback=mintbg,
@@ -31,6 +30,7 @@
 \graphicspath{ {assets/} }
 
 % minted replaces listings
+% \usepackage[cachedir=\detokenize{latex.out/minted}]{minted}
 \usepackage{minted}
 \usepackage{dingbat}
 \setminted[python]{
@@ -53,6 +53,14 @@
     citecolor=mydarkblue,
     filecolor=mydarkblue,
     urlcolor=mydarkblue,
+}
+
+% provides the ability it strikethrough things
+\usepackage{cancel}
+\newcommand\hcancel[2][red]{
+  \setbox0=\hbox{$#2$}\rlap{
+    \raisebox{.45\ht0}{\textcolor{#1}{\rule{\wd0}{1pt}}}
+  }#2
 }
 
 % used for nesting figures
@@ -93,17 +101,20 @@
 
 % title stuff
 \usepackage{titlesec}
-\newcommand{\PreContentTitleFormat}{\titleformat{\chapter}[display]{\scshape\Large}
-{\Large\filleft\MakeUppercase{\chaptertitlename} \Huge\thechapter}
-{1ex}
-{}
+\newcommand{\PreContentTitleFormat}{
+  \titleformat{\chapter}[display]{\scshape\Large}
+  {\Large\filleft\MakeUppercase{\chaptertitlename} \Huge\thechapter}
+  {1ex}
+  {}
 [\vspace{1ex}\titlerule]}
 
-\newcommand{\ContentTitleFormat}{\titleformat{\chapter}[display]{\scshape\huge}
-{\Large\filleft\MakeUppercase{\chaptertitlename} \Huge\thechapter}
-{1ex}
-{\titlerule\vspace{1ex}\filright}
-[\vspace{1ex}\titlerule]}
+\newcommand{\ContentTitleFormat}{
+  \titleformat{\chapter}[display]{\scshape\huge}
+  {\Large\filleft\MakeUppercase{\chaptertitlename} \Huge\thechapter}
+  {1ex}
+  {\titlerule\vspace{1ex}\filright}
+  [\vspace{1ex}\titlerule]
+}
 
 % glossary stuff
 \usepackage[toc]{glossaries}
@@ -160,15 +171,20 @@
 
 % crypgraphy stuff
 \usepackage[operators, sets]{cryptocode}
+\newcommand{\mathAdded}[1]{\textcolor{green!60!gray}{\mathbf{#1}}}
+\newcommand{\textAdded}[1]{\textcolor{green!60!gray}{\textbf{#1}}}
 
 % cleverly decides how to reference a given ref
 % must be loaded after hyperref and amsmath
 \usepackage{cleveref}
-% fix cleverref for cryptocode package
-% \pcfixcleverref
 
 % only work on a chapter at a time to improve compile times
 % \includeonly{chapter1,appendix1,appendix2}
+
+% specify how the document should handle hyphenation at page borders
+\tolerance=1
+\emergencystretch=\maxdimen
+\hbadness=10000
 
 \title{Exploring Password-Authenticated Key-Exchange Algorithms}
 \author{Sam Leonard}
@@ -180,6 +196,7 @@
 \thanksfile{merci.tex}
 
 \begin{document}
+\PreContentTitleFormat
 
 \dotitleandabstract
 
@@ -187,6 +204,7 @@
 \tableofcontents
 
 %% These include the actual text
+\ContentTitleFormat
 \include{chapter1}
 \include{chapter2}
 \include{chapter3}

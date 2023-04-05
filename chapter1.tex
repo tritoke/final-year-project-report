@@ -1,34 +1,101 @@
 \chapter{Context}
 \section{Background on PAKEs}
+\subsection{What problem do PAKEs solve?}
+In the modern day when you login to a website a \gls{tls} encrypted channel is established, over which your password is sent in plaintext.
+The server then computes some hash of your password, sometimes with a salt or some other additional data.
+This hash is then compared with whatever is stored in the server's database for your account, and access is granted based on whether the hash matched.
+
+This approach is fundamentally flawed, allowing the plaintext password to leave your device gives attackers many more opportunities at which they can steal your password.
+Be that from compromising the \gls{tls} channel via a downgrade attack or by malware on the server intercepting your password as the server processes it.
+
+\glspl{pake} solve this problem in a fundamentally different way, and they have many benefits because of this.
+Namely with \glspl{pake} your password never leaves your device, it is used to calculate a secret key which is shared with the server.
+Another property of how \glspl{pake} are constructed is that you and the server are both "authenticated" with each other once you acquire the shared key.
+This is in contrast with the approach of \gls{tls} + certificates, where only the server is authenticated.
+
+% Horizontal version
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \node[alice,minimum size=1.5cm] at (0,0) {Alice - Client};
+    \node[bob,mirrored,minimum size=1.5cm] at (5,0) {Bob - Server};
+    \draw[->] (1,0.5) -- (4,0.5) node[midway, above] {password};
+    \draw[->] (4,-0.5) -- (1,0-0.5) node[midway, above] {auth \checkmark};
+
+    \node[alice,minimum size=1.5cm] at (9,0) {Alice - Client};
+    \node[bob,mirrored,minimum size=1.5cm] at (14,0) {Bob - Server};
+    \node at (10.3,0.8) {password};
+    \draw[->] (10, 0.5) -- (10,-0.5) node[midway, right, xshift=0.1cm, yshift=0.1cm, scale=0.05] {\includegraphics{wand.png}};
+    \node[scale=0.02] at (10.3,-0.7) {\includegraphics{key.png}};
+    \node at (12.8,0.8) {verifier};
+    \draw[->] (13, 0.5) -- (13,-0.5) node[midway, left, xshift=-0.1cm, yshift=0.1cm, scale=0.05] {\includegraphics{wand.png}};
+    \node[scale=0.02] at (12.5,-0.7) {\includegraphics{key.png}};
+    \draw[<->] (10.8,-0.7) -- (12,-0.7) node[midway, below] {auth \checkmark};
+
+    \draw (7,1.3) -- (7,-2.3);
+    \draw (2.5,-2) node {Traditional};
+    \draw (11.5,-2) node {PAKE};
+  \end{tikzpicture}
+
+  \caption{An illustration of the difference traditional password based authnetication and \glspl{pake}}
+  \label{fig:tls-vs-pake}
+\end{figure}
+
+\clearpage
 \subsection{What is a PAKE?}
 \glspl{pake} are interactive, two party cryptographic protocols where each party shares knowledge of a password (a low entropy secret) and seeks to obtain a strong shared key e.g. for use later with a symmetric cipher. Critically an eavesdropper who can listen in two all messages of the key negotiation cannot learn enough information to bruteforce the password. Another way of phrasing this is that brute force attacks on the key must be "\glslink{ocrypto}{online}".
 
-\medskip
 There are two main types of \gls{pake} algorithm - \glspl{apake} and \glspl{bpake}.
 \begin{itemize}
   \item \glspl{bpake} are \glspl{pake} where both parties share knowledge of the same secret password.
   \item \glspl{apake} are \glspl{pake} where one party has the password and the other has a "\gls{veri}" which is computed via a one-way function from the secret password.
 \end{itemize}
 
+% Vertical version
 \begin{figure}[H]
   \centering
   \begin{tikzpicture}
-    \node[alice,minimum size=1.5cm] at (0,0) {Alice};
-    \node[scale=0.03] at (1,0.5) {\includegraphics{key.png}};
-    \node[bob,mirrored,minimum size=1.5cm] at (5,0) {Bob};
-    \node[scale=0.03] at (4,0.5) {\includegraphics{key.png}};
-    \node[alice,minimum size=1.5cm] at (7,0) {Alice};
-    \node[scale=0.03] at (8,0.5) {\includegraphics{key.png}};
-    \node[bob,mirrored,minimum size=1.5cm] at (12,0) {Bob};
-    \node[scale=0.03] at (11,0.5) {\includegraphics{shuffled_key.png}};
-    \draw (6,1.3) -- (6,-2.3);
-    \draw (2.5,-2) node {Balanced PAKE};
-    \draw (9.5,-2) node {Augmented PAKE};
+    \node[alice,minimum size=3cm] at (0,0) {Alice - Client};
+    \node[bob,mirrored,minimum size=3cm] at (10,0) {Bob - Server};
+    \node[scale=0.05] at (2,1) {\includegraphics{key.png}};
+    \node[scale=0.05] at (8,1) {\includegraphics{key.png}};
+
+    \node[alice,minimum size=3cm] at (0,-7) {Alice - Client};
+    \node[bob,mirrored,minimum size=3cm] at (10,-7) {Bob - Server};
+    \node[scale=0.05] at (2,-6) {\includegraphics{key.png}};
+    \node[scale=0.05] at (8,-6) {\includegraphics{shuffled_key.png}};
+
+    \draw (-2,-3.5) -- (12,-3.5);
+    \draw (5,2) node {Balanced PAKE};
+    \draw (5,-5) node {Augmented PAKE};
   \end{tikzpicture}
 
-  \caption{An illustration of the difference between \glspl{apake} and \glspl{bpake}}
-  \label{fig:pake_compare}
+  \caption{An illustration of the difference between \glspl{pake} and tranditional password-based authentication}
+  \label{fig:pake-compare}
 \end{figure}
+
+% % Horizontal version
+% \begin{figure}[H]
+%   \centering
+%   \begin{tikzpicture}
+%     \node[alice,minimum size=1.5cm] at (0,0) {Alice};
+%     \node[scale=0.03] at (1,0.5) {\includegraphics{key.png}};
+%     \node[bob,mirrored,minimum size=1.5cm] at (5,0) {Bob};
+%     \node[scale=0.03] at (4,0.5) {\includegraphics{key.png}};
+% 
+%     \node[alice,minimum size=1.5cm] at (7,0) {Alice};
+%     \node[scale=0.03] at (8,0.5) {\includegraphics{key.png}};
+%     \node[bob,mirrored,minimum size=1.5cm] at (12,0) {Bob};
+%     \node[scale=0.03] at (11,0.5) {\includegraphics{shuffled_key.png}};
+% 
+%     \draw (6,1.3) -- (6,-2.3);
+%     \draw (2.5,-2) node {Balanced PAKE};
+%     \draw (9.5,-2) node {Augmented PAKE};
+%   \end{tikzpicture}
+% 
+%   \caption{An illustration of the difference between \glspl{apake} and \glspl{bpake}}
+%   \label{fig:pake-compare}
+% \end{figure}
 
 \clearpage
 
@@ -42,7 +109,7 @@ The \gls{rsa} variant of \gls{eke} has this issue - the \gls{rsa} parameter $e$ 
 For \gls{rsa} all valid values of $e$ are odd, so this would prevent it being used.
 This is solved by adding $1$ to $e$ with a $50\%$ chance.
 \Cref{fig:eke-rsa} shows this protocol in full. While many of the initial variants on \gls{eke} have been shown to flawed/vulnerable, later variants have made it into real world use, such as in \gls{eap} \cite{eap} where it is available as \gls{eap}-\gls{eke} \cite{eap-eke}.
-In \cref{chap:appendix-eke} you can find a Python implementation of this scheme
+In \cref{chap:appendix-eke} you can find a Python implementation of this scheme.
 
 \subsubsection{An Aside on Notation}
 \begin{itemize}
@@ -92,6 +159,7 @@ They are very similar so we will just explore \glslink{spake}{SPAKE2} as we are 
 \end{enumerate}
 
 \begin{center}
+  \rowcolors{2}{mintbg}{}
   \captionof{table}{\gls{spake} shared parameters}
   \begin{tabular}{ ccp{0.6\linewidth} }
     \toprule
@@ -134,6 +202,7 @@ Finally we will look at \gls{srp} an \gls{apake} first published in 1998, unlike
 However it is quite weird for what it does and there is no security proof for it \cite{srp-blog}. An implementation of the protocol in Python can be found in \cref{chap:appendix-srp}.
 
 \begin{center}
+  \rowcolors{2}{mintbg}{}
   \captionof{table}{\gls{srp} parameters}
   \begin{tabular}{ c c p{0.7\linewidth} }
     \toprule
@@ -204,7 +273,7 @@ With regards to Cryptography elliptic curves tend to come in one of two forms:
     \node at (0,-4) {$y^2 = x^3 - 2 x - 1$ over $\mathbb{R}$};
     \node at (0,-5) {Short Weierstra\ss{} Form};
 
-    \begin{scope}[shift={(8,0)}]
+    \begin{scope}[xshift=8cm]
       \draw[<->,gray] (-3,0) -- (3,0) node[right] {$x \in \mathbb{R}$};
       \draw[<->,gray] (0,-3) -- (0,3) node[above] {$y \in \mathbb{R}$};
       \draw[thick, name path=curve, every plot/.style={smooth}] plot[id=montgomery-curve-1, raw gnuplot] function {
@@ -404,6 +473,8 @@ I will talk more about RustCrypto and who they are in \cref{sec:whom-rustcrypto}
 For now I will omit considerations about open source contribution.
 
 \begin{center}
+  \rowcolors{2}{mintbg}{}
+  \small
   \captionof{table}{Modern \gls{pake} Protocol Comparison}
   \begin{tabular}{ lllll }
     \toprule
@@ -416,64 +487,228 @@ For now I will omit considerations about open source contribution.
   \end{tabular}
 \end{center}
 
-As \gls{aucpace} is the only \gls{pake} in the list where there is a completely inadequate current solution.
-\gls{aucpace} also targets a rapidly growing area, the combined risk of this and the insecure nature of hard coding the key means that \gls{aucpace} is uniquely positioned to make a large difference to the security of the \gls{iiot} landscape.
+\gls{aucpace} is the only \gls{pake} in the list where there is a completely inadequate current solution.
+\gls{aucpace} also targets a rapidly growing area, the combined risk of these factors means that \gls{aucpace} is uniquely positioned to make a large difference to the security of the \gls{iiot} landscape.
 It is for these reasons that I have chosen to create an implementation of \gls{aucpace} and to contribute it back to the open source community via RustCrypto.
 
 \section{AuCPace in detail}
 Now that we have chosen to implemented \gls{aucpace} it is worth going over the protocol itself to understand better what implementing it will entail.
+\Cref{fig:aucpace-store-pwd,fig:aucpace-protocol} contain protocol diagrams reproduced from \cite{aucpace}.
+There are four phases to the protocol some of which can be made optional or can be adjusted based on the sub-variant of the protocol in use.
+
+\begin{enumerate}
+  \item{
+    \gls{ssid} Agreement
+    \begin{itemize}
+      \item{server and client each generate a \gls{nonce} and send it to the other party}
+      \item{each receives the other's \gls{nonce} and calculates the \gls{ssid}}
+    \end{itemize}
+  }
+  \item{
+    \gls{aucpace} Augmentation Layer
+    \begin{itemize}
+      \item{the server generates a new ephemeral \gls{dh} key}
+      \item{the server receieves the client's username, looks up the verifier and salt.}
+      \item{the server then sends across the group $\mathcal{J}$, the public key $X$, the salt and the parameters for the PBKDF - $\sigma$}
+      \item{both then compute the \gls{prs}, the client aborts here if the server's public key $X$ is invalid}
+    \end{itemize}
+  }
+  \item{
+    \gls{cpace} substep
+    \begin{itemize}
+      \item{both compute $g'$ and $G$ from the hash of $ssid||PRS||CI$}
+      \item{both generate an ephemeral private key $y$ and the compute the public key $Y = G^{y\ c_{\mathcal{J}}}$}
+      \item{public keys are then exchanged}
+      \item{the shared point $K$ is then computed}
+      \item{if either public key is invalid both parties abort here}
+      \item{$sk1$ is then computed as the hash of the \gls{ssid} and $K$}
+    \end{itemize}
+  }
+  \item{
+    Explicit mutual authentication
+    \begin{itemize}
+      \item{both compute authenticators $T_a, T_b$}
+      \item{each party sends a different}
+      \item{if either authenticator is invalid the protocol is aborted}
+      \item{finally the shared key $sk$ is computed}
+    \end{itemize}
+  }
+\end{enumerate}
+
+There are three different configurations which can be adjusted to make tradeoffs between security, speed and storage:
+\begin{itemize}
+  \item{full vs partial augmentation}
+  \item{implicit authentication vs explicit mutual authentication}
+  \item{with pre-computation attack resistance ("strong \gls{aucpace}") vs without (\gls{aucpace})}
+\end{itemize}
+
+\begin{figure}[H]
+  \pseudocodeblock[head=Store password operation for AuCPace,codesize=\footnotesize]{
+    \textbf{Server} \< \< \textbf{Client} \\
+    \< \< \text{salt} \sample \bin^{l} \\
+    \< \< w = \textsf{PBKDF}_{\sigma}(pw, \text{username, salt}) \\
+    \< \< W = B^{w\ c_{\mathcal{J}}} \\
+    \< \sendmessageleft*{\text{username, salt}, \\ \text{uad}, W, \sigma} \< \\
+    \text{Upon successful verification, record} \< \< \\
+    \text{(username, salt, uad, $W, \sigma$)} \< \< \\
+    \text{in the password file.} \< \< \\
+  }
+
+  \caption{\gls{aucpace} protocol for password configuration.}
+  \label{fig:aucpace-store-pwd}
+\end{figure}
 
 \begin{figure}[H]
   \pseudocodeblock[head=AuCPace,codesize=\footnotesize]{
     \textbf{Server} \< \< \textbf{Client} \\
-    \
     \< \< \pclb[-1.5\baselineskip]
     \pcintertext[center]{Agree on $ssid$} \\[-1.5\baselineskip][\hline]
-    \
     s \sample \bin^{k_1} \< \< s \sample \bin^{k_1} \\
     \< \sendmessageright*{s} \< \\
     \< \sendmessageleft*{t} \< \\
-    ssid = \text{H}_0(s||t) \< \< ssid = \text{H}_0(s||t) \\[][\hline]
-    \
+    ssid = \textsf{H}_0(s||t) \< \< ssid = \textsf{H}_0(s||t) \\[][\hline]
     \< \< \pclb[-0.5\baselineskip]
     \pcintertext[center]{AuCPace Augmentation Layer} \\[-1.5\baselineskip][\hline]
-    \
     x \sample \{1 \dots m_{\mathcal{J}}\} \< \< \\
     X = B^{c_{\mathcal{J}}} \< \< \\
     \< \sendmessageleft*{\text{username}} \< \\
     W,\text{salt} = \text{lookup$W$(user)} \< \< \\
     \< \sendmessageright*{\mathcal{J},X,\text{salt},\sigma} \< \\
-    \< \< w = \text{PBKDF}_{\sigma}(pw, \text{user, salt}) \\
+    \< \< w = \textsf{PBKDF}_{\sigma}(pw, \text{user, salt}) \\
     \text{if lookup failed}\ PRS \sample \bin^{k_2} \< \< \text{abort if $X$ invalid} \\
     \text{else}\ PRS = W^{x\ c_\mathcal{J}} \< \< PRS = X^{w\ c_{\mathcal{J}}} \\[][\hline]
-    \
     \< \< \pclb[-0.5\baselineskip]
     \pcintertext[center]{CPace substep} \\[-1.5\baselineskip][\hline]
-    \
     g' = \text{H}_1(ssid||PRS||CI) \< \< g' = \text{H}_1(ssid||PRS||CI) \\
-    G = \text{Map2Point}(g') \< \< G = \text{Map2Point}(g') \\
+    G = \textsf{Map2Point}(g') \< \< G = \textsf{Map2Point}(g') \\
     y_a \sample \{ 1 \dots m_{\mathcal{J}} \} \< \< y_b \sample \{ 1 \dots m_{\mathcal{J}} \} \\
     Y_a = G^{y_a\ c_{\mathcal{J}}} \< \< Y_b = G^{y_b\ c_{\mathcal{J}}} \\
     \< \sendmessageright*{Y_a} \< \\
     \< \sendmessageleft*{Y_b} \< \\
     K = Y_b^{y_a\ c_{\mathcal{J}}} \< \< K = Y_a^{y_b\ c_{\mathcal{J}}} \\
     \text{abort if $Y_b$ invalid} \< \< \text{abort if $Y_b$ invalid} \\
-    sk_1 = \text{H}_2(ssid||K) \< \< K = sk_1 = \text{H}_2(ssid||K) \\[][\hline]
-    \
+    sk_1 = \textsf{H}_2(ssid||K) \< \< sk_1 = \textsf{H}_2(ssid||K) \\[][\hline]
     \< \< \pclb[-0.5\baselineskip]
     \pcintertext[center]{Explicit mutual authentication} \\[-1.5\baselineskip][\hline]
-    \
-    T_a = \text{H}_3(ssid||sk_1) \< \< T_a = \text{H}_3(ssid||sk_1) \\
-    T_b = \text{H}_4(ssid||sk_1) \< \< T_b = \text{H}_4(ssid||sk_1) \\
+    T_a = \textsf{H}_3(ssid||sk_1) \< \< T_a = \textsf{H}_3(ssid||sk_1) \\
+    T_b = \textsf{H}_4(ssid||sk_1) \< \< T_b = \textsf{H}_4(ssid||sk_1) \\
     \< \sendmessageleft*{T_b} \< \\
     \< \sendmessageright*{T_a} \< \\
     \text{verify}\ T_b \< \< \text{verify}\ T_a \\
-    sk = \text{H}_5(ssid||sk_1) \< \< sk = \text{H}_5(ssid||sk_1) \\[][\hline]
+    sk = \textsf{H}_5(ssid||sk_1) \< \< sk = \textsf{H}_5(ssid||sk_1) \\[][\hline]
   }
 
   \caption{\gls{aucpace} Protocol}
   \label{fig:aucpace-protocol}
 \end{figure}
+
+All of these options lead to 8 different sub-protocols.
+What's special about these sub-protocols is how little they change the overall protocol.
+Below are protocol diagrams illustrating what changes with each configuration change.
+
+\begin{figure}[H]
+  \pseudocodeblock[head=Store password operation for AuCPace,codesize=\footnotesize,width=\linewidth]{
+    \textbf{Server} \< \< \textbf{Client} \\
+    \< \< \text{salt} \sample \bin^{l} \\
+    \< \< w = \textsf{PBKDF}_{\sigma}(pw, \text{username, salt}) \\
+    \< \< W = B^{w\ c_{\mathcal{J}}} \\
+    \< \sendmessageleft*{\text{username, salt}, \\ \text{uad}, W, \sigma} \< \\
+    \mathAdded{x \sample \{ 1 \dots m_{\mathcal{J}}\}} \< \< \\
+    \mathAdded{X = B^{x\ c_{\mathcal{J}}}} \< \< \\
+    \text{Upon successful verification, record} \< \< \\
+    \text{(username, salt, uad, $W, \sigma\mathAdded{, x, X}$)} \< \< \\
+    \text{in the password file.} \< \< \\[][\hline]
+  }
+
+  \pseudocodeblock[head=AuCPace Augmentation Layer,codesize=\footnotesize,width=\linewidth]{
+    \textbf{Server} \< \< \textbf{Client} \\
+    \hcancel{x \sample \{1 \dots m_{\mathcal{J}}\}} \< \< \\
+    \hcancel{X = B^{c_{\mathcal{J}}}} \< \< \\
+    \< \sendmessageleft*{\text{username}} \< \\
+    \mathAdded{x,X,}W,\text{salt} = \text{lookup$W$(user)} \< \< \\
+    \< \sendmessageright*{\mathcal{J},X,\text{salt},\sigma} \< \\
+    \< \< w = \textsf{PBKDF}_{\sigma}(pw, \text{user, salt}) \\
+    \text{if lookup failed}\ PRS \sample \bin^{k_2} \< \< \text{abort if $X$ invalid} \\
+    \text{else}\ PRS = W^{x\ c_\mathcal{J}} \< \< PRS = X^{w\ c_{\mathcal{J}}} \\[][\hline]
+  }
+
+  \caption{Differences in Partial Augmentation}
+  \label{fig:partial-aug-diffs}
+\end{figure}
+
+\begin{figure}[H]
+  \pseudocodeblock[head=Store password operation for strong AuCPace,codesize=\footnotesize,width=\linewidth]{
+    \textbf{Server} \< \< \textbf{Client} \\
+    \< \< \hcancel{\text{salt} \sample \bin^{l}} \\
+    \< \< \mathAdded{\text{q} \sample \bin^{l}} \\
+    \< \< \mathAdded{Z = \textsf{Map2Point}(\textsf{H}_1(\text{username}||pw))} \\
+    \< \< \mathAdded{\text{salt} = Z^{q\ c_{\mathcal{J}}}} \\
+    \< \< w = \textsf{PBKDF}_{\sigma}(pw, \text{user, salt}) \\
+    \< \< W = B^{w\ c_{\mathcal{J}}} \\
+    \< \sendmessageleft*{\text{username,} \textAdded{q}\hcancel{salt}, \\ \text{uad}, W, \sigma} \< \\
+    \text{Upon successful verification, record} \< \< \\
+    \text{(username, \textAdded{q}\hcancel{salt}, uad, $W, \sigma$)} \< \< \\
+    \text{in the password file.} \< \< \\[][\hline]
+  }
+
+  \pseudocodeblock[head=strong AuCPace Augmentation Layer,codesize=\footnotesize,width=\linewidth]{
+    \textbf{Server} \< \< \textbf{Client} \\
+    x \sample \{1 \dots m_{\mathcal{J}}\} \< \< \mathAdded{r \sample \{ 1 \dots m_{\mathcal{J}}\}} \\
+    X = B^{c_{\mathcal{J}}} \< \< \mathAdded{Z = \textsf{Map2Point}(\textsf{H}_1(\text{username}||pw))} \\
+    \< \< \mathAdded{U = Z^{r\ c_{\mathcal{J}}}} \\
+    \< \sendmessageleft*{\text{username}\mathAdded{,U}} \< \\
+    W,\textAdded{q}\hcancel{\text{salt}} = \text{lookup$W$(user)} \< \< \\
+    \mathAdded{UQ = U^{q\ c_{\mathcal{J}}}}\< \< \\
+    \textAdded{abort if UQ invalid}\< \< \\
+    \< \sendmessageright*{\mathcal{J},X,\mathAdded{UQ}\hcancel{\text{salt}},\sigma} \< \\
+    \< \< \mathAdded{\text{salt} = UQ^{\frac{1}{r\ (c_{\mathcal{J}})^2} c_{\mathcal{J}}}} \\
+    \< \< \textAdded{abort if salt invalid} \\
+    \< \< w = \textsf{PBKDF}_{\sigma}(pw, \text{user, salt}) \\
+    \text{if lookup failed}\ PRS \sample \bin^{k_2} \< \< \text{abort if $X$ invalid} \\
+    \text{else}\ PRS = W^{x\ c_\mathcal{J}} \< \< PRS = X^{w\ c_{\mathcal{J}}} \\[][\hline]
+  }
+
+  \caption{Differences in Strong AuCPace}
+  \label{fig:strong-aucpace-diffs}
+\end{figure}
+
+\begin{figure}[H]
+  \pseudocodeblock[head=implicit auth CPace substep,codesize=\footnotesize,width=\linewidth]{
+    \textbf{Server} \< \< \textbf{Client} \\
+    g' = \text{H}_1(ssid||PRS||CI) \< \< g' = \text{H}_1(ssid||PRS||CI) \\
+    G = \textsf{Map2Point}(g') \< \< G = \textsf{Map2Point}(g') \\
+    y_a \sample \{ 1 \dots m_{\mathcal{J}} \} \< \< y_b \sample \{ 1 \dots m_{\mathcal{J}} \} \\
+    Y_a = G^{y_a\ c_{\mathcal{J}}} \< \< Y_b = G^{y_b\ c_{\mathcal{J}}} \\
+    \< \sendmessageright*{Y_a} \< \\
+    \< \sendmessageleft*{Y_b} \< \\
+    K = Y_b^{y_a\ c_{\mathcal{J}}} \< \< K = Y_a^{y_b\ c_{\mathcal{J}}} \\
+    \text{abort if $Y_b$ invalid} \< \< \text{abort if $Y_b$ invalid} \\
+    sk_1 = \textsf{H}_2(ssid||K) \< \< sk_1 = \textsf{H}_2(ssid||K) \\
+    \mathAdded{sk = \textsf{H}_5(ssid||sk_1)} \< \< \mathAdded{sk = \textsf{H}_5(ssid||sk_1)} \\[][\hline]
+  }
+
+  \caption{Differences in Implicit Authentication}
+  \label{fig:implicit-auth-diffs}
+\end{figure}
+
+\begin{center}
+  \small
+  \captionof{table}{Configuration tradeoffs}
+  \begin{tabular}{ p{0.15\linewidth}p{0.38\linewidth}p{0.38\linewidth} }
+    \toprule
+    Configuration & Advantage & Disadvantage \\
+    \midrule
+    partial \newline augmentation & removes an expensive exponentiation operation for the server,
+                                    halving the computational complexity for the server
+      & an attacker can impersonate the client by compromising a server \\
+    \rowcolor{mintbg}
+    strong \newline \gls{aucpace} & pre-computation attack resistance
+      & increases the computational requirements for both the client and server \\
+    implicit \newline authentication & saves a round of messages and 2 hash computations.
+      & the protocol downgrades to weak perfect forward secrecy \cite{hmqv} \\
+    \bottomrule
+  \end{tabular}
+\end{center}
 
 \section{Who are RustCrypto?}
 \label{sec:whom-rustcrypto}
