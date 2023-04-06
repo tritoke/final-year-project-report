@@ -5,6 +5,8 @@
 \definecolor{mydarkblue}{rgb}{0,0.08,0.45}
 \definecolor{mintbg}{rgb}{0.95,0.95,0.95}
 \definecolor{listingframe}{rgb}{1,0.31,0}
+\definecolor{rust}{rgb}{0.871,0.647,0.517}
+\definecolor{c}{rgb}{0.33,0.33,0.33}
 
 % tcolorbox my beloved
 \usepackage{tcolorbox}
@@ -25,17 +27,40 @@
   #1
 }
 
+\newtcbinputlisting[auto counter]{\rustcode}[3][]{
+  enhanced jigsaw,breakable,
+  boxrule=0.2mm,top=1mm,bottom=1mm,left=1mm,right=1mm,
+  before=\par\smallskip,after=\par\smallskip,
+  listing file={#3},
+  listing only,
+  listing engine=minted,
+  minted language=rust,
+  minted style=colorful,
+  colback=mintbg,
+  colframe=listingframe,
+  fonttitle=\bfseries,
+  title={Listing \thetcbcounter: #2},
+  #1
+}
+
 % graphics
 \usepackage{graphicx}
 \graphicspath{ {assets/} }
 
-% minted replaces listings
-% \usepackage[cachedir=\detokenize{latex.out/minted}]{minted}
-\usepackage{minted}
+% dingbats has funny symbols
 \usepackage{dingbat}
+
+% minted replaces listings
+\usepackage{minted}
 \setminted[python]{
     breaklines,
     breakanywhere,
+    autogobble,
+}
+\setminted[rust]{
+    breaklines,
+    breakanywhere,
+    breakautoindent=false,
     autogobble,
 }
 
@@ -126,6 +151,9 @@
 \usepackage{tikz}
 \usepackage{tikzpeople}
 
+% used for nested box diagrams
+\usetikzlibrary{positioning,fit,backgrounds}
+
 % plotting things
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
@@ -180,6 +208,7 @@
 
 % only work on a chapter at a time to improve compile times
 % \includeonly{chapter1,appendix1,appendix2}
+\includeonly{chapter2} %,appendix3}
 
 % specify how the document should handle hyphenation at page borders
 \tolerance=1
@@ -220,5 +249,6 @@
 \appendix
 \include{appendix1}
 \include{appendix2}
+\include{appendix3}
 
 \end{document}

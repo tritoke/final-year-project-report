@@ -1,5 +1,18 @@
 \chapter{Design}
 
 \section{Why Rust?}
+\label{sec:why-rust}
+
+\gls{aucpace} explicitly targets \gls{iiot} in it's design.
+Rust is rapidly becoming a popular choice for \gls{iot} and embedded software applications.
+This is due to it's focus on memory safety, developer experience and it's strong embedded ecosystem.
+Libraries like Embassy and RTIC allow the user to program high level logic and use powerful abstractions to interact with the hardware through Rust objects, while still compiling down to small efficient binaries.
+Embassy is especially impressive as they have implemented a async executor so that multitasking in embedded applications can be performed with the same async/await framework that programmers are familiar with.
+A short Embassy examples is shown in listing \ref{embassy-example}.
+Tools such as \texttt{probe-rs} allow developers to maintain the same workflow they would when working on a normal rust binary, by implementing a \texttt{cargo} runner which flashes the binary to the embedded device then using \gls{rtt} to receive debug messages from the device.
+Those debug messages can be setup automatically using libraries such as \texttt{defmt\_rtt} which use \gls{rtt} to send a compressed representation of the debug message to be formatted later on using a technique called deferred formatting, allowing for debug messages to take up a fraction of the size of the original message.
+
+\rustcode[label=embassy-example]{Embassy async/await example}{assets/embassy_example.rs}
+
 \section{Developer Focussed Design}
 

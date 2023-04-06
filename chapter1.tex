@@ -563,10 +563,12 @@ There are three different configurations which can be adjusted to make tradeoffs
     \textbf{Server} \< \< \textbf{Client} \\
     \< \< \pclb[-1.5\baselineskip]
     \pcintertext[center]{Agree on $ssid$} \\[-1.5\baselineskip][\hline]
-    s \sample \bin^{k_1} \< \< s \sample \bin^{k_1} \\
+    %
+    s \sample \bin^{k_1} \< \< t \sample \bin^{k_1} \\
     \< \sendmessageright*{s} \< \\
     \< \sendmessageleft*{t} \< \\
     ssid = \textsf{H}_0(s||t) \< \< ssid = \textsf{H}_0(s||t) \\[][\hline]
+    %
     \< \< \pclb[-0.5\baselineskip]
     \pcintertext[center]{AuCPace Augmentation Layer} \\[-1.5\baselineskip][\hline]
     x \sample \{1 \dots m_{\mathcal{J}}\} \< \< \\
@@ -577,6 +579,7 @@ There are three different configurations which can be adjusted to make tradeoffs
     \< \< w = \textsf{PBKDF}_{\sigma}(pw, \text{user, salt}) \\
     \text{if lookup failed}\ PRS \sample \bin^{k_2} \< \< \text{abort if $X$ invalid} \\
     \text{else}\ PRS = W^{x\ c_\mathcal{J}} \< \< PRS = X^{w\ c_{\mathcal{J}}} \\[][\hline]
+    %
     \< \< \pclb[-0.5\baselineskip]
     \pcintertext[center]{CPace substep} \\[-1.5\baselineskip][\hline]
     g' = \text{H}_1(ssid||PRS||CI) \< \< g' = \text{H}_1(ssid||PRS||CI) \\
@@ -588,6 +591,7 @@ There are three different configurations which can be adjusted to make tradeoffs
     K = Y_b^{y_a\ c_{\mathcal{J}}} \< \< K = Y_a^{y_b\ c_{\mathcal{J}}} \\
     \text{abort if $Y_b$ invalid} \< \< \text{abort if $Y_b$ invalid} \\
     sk_1 = \textsf{H}_2(ssid||K) \< \< sk_1 = \textsf{H}_2(ssid||K) \\[][\hline]
+    %
     \< \< \pclb[-0.5\baselineskip]
     \pcintertext[center]{Explicit mutual authentication} \\[-1.5\baselineskip][\hline]
     T_a = \textsf{H}_3(ssid||sk_1) \< \< T_a = \textsf{H}_3(ssid||sk_1) \\
@@ -604,7 +608,7 @@ There are three different configurations which can be adjusted to make tradeoffs
 
 All of these options lead to 8 different sub-protocols.
 What's special about these sub-protocols is how little they change the overall protocol.
-Below are protocol diagrams illustrating what changes with each configuration change.
+Below are protocol diagrams illustrating what changes with each configuration change, and a table showing the high level tradeoffs that are made by picking each protocol variant.
 
 \begin{figure}[H]
   \pseudocodeblock[head=Store password operation for AuCPace,codesize=\footnotesize,width=\linewidth]{
@@ -710,7 +714,77 @@ Below are protocol diagrams illustrating what changes with each configuration ch
   \end{tabular}
 \end{center}
 
+\clearpage
 \section{Who are RustCrypto?}
 \label{sec:whom-rustcrypto}
 
+RustCrypto is a GitHub Organisation / online community who are dedicated to implementing fast and secure Cryptography in pure rust.
+Pure rust in this context means that all of the code is in rust and there are no \gls{ffi} bindings to other (normally C) libraries which implement the functionality (see \cref{fig:pure-vs-wrapper}).
+RustCrypto have implemented many Cryptographic primitives and also have an existing repository for \gls{pake} algorithms.
+Using RustCrypto's libraries provides a good foundation for building any protocol as well as opening up opportunities to open source the implementation back to them.
+A number of major companies also use RustCrypto's code to secure their applications, e.g. 1Password who use RustCrypto for their Password Manager.
+The decision to use Rust will be discussed further in \cref{sec:why-rust}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{rust_crypto_github.png}
+  \caption{RustCrypto's Github Organisation page}
+  \label{fig:rc-github}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+
+  \begin{tikzpicture}
+    % rug text items
+    \node(Int) at (3, 10)  {\texttt{Integer}};
+    \node(Rat) at (3, 9)   {\texttt{Rational}};
+    \node(Flt) at (5.25, 10.04)  {\texttt{Float}}; % fuck knows, tikz hates me
+
+    % rug boxes
+    \node[inner sep=5pt, rounded corners, draw, fit=(Int) (Rat)] (gmp-items) {};
+    \node[inner sep=5pt, rounded corners, draw, fit=(Flt)] (mpfr-items) {};
+    \node[above right] at (gmp-items.north west) (rug-label) [] {\texttt{rug}};
+    \node[above right] at (mpfr-items.north west) {\texttt{rug}};
+    \node[inner sep=5pt, rounded corners, draw, fit=(gmp-items) (mpfr-items) (rug-label)] (rug) {};
+    \node[above right, yshift=0.1cm] at (rug.north west) (rust-label) [] {\texttt{rust}};
+
+    % num text items
+    \node(BInt) at (9, 10)  {\texttt{BigInt}};
+    \node(BRat) at (9, 9)   {\texttt{BigRational}};
+    \node(BFlt) at (12, 10) {\texttt{BigFloat}};
+
+    % num boxes
+    \node[inner sep=5pt, rounded corners, draw, fit=(BInt) (BRat)] (num-items) {};
+    \node[inner sep=5pt, rounded corners, draw, fit=(BFlt)] (astro-items) {};
+    \node[above right] at (num-items.north west) (num-label) [] {\texttt{num}};
+    \node[above] at (astro-items.north) (astro-label) [] {\texttt{astro-float}};
+    \node[inner sep=5pt, rounded corners, draw,
+      fit=(num-items) (astro-items) (num-label) (astro-label)] (num) {};
+
+    \begin{scope}[on background layer]
+      \node[inner sep=5pt, rounded corners, draw, fill=rust, fit=(rug) (num) (rust-label)] (rust) {};
+    \end{scope}
+
+    % C libraries
+    \node(GMP) at (3, 6) {\texttt{GNU GMP}};
+    \node(MPFR) at (5.25, 6) {\texttt{GNU MPFR}};
+
+    \node[inner sep=3pt, rounded corners, draw, fit=(GMP)] (gmp-box) {};
+    \node[inner sep=3pt, rounded corners, draw, fit=(MPFR)] (mpfr-box) {};
+
+    \node[above right] at (gmp-box.north west) (c-label) [] {\texttt{C}};
+
+    \begin{scope}[on background layer]
+      \node[inner sep=5pt, rounded corners, draw, fill=c!70, fit=(gmp-box) (mpfr-box) (c-label)] (c-box) {};
+    \end{scope}
+
+    \draw[dashed] (1.7,7.6) -- (6.7,7.6) node[right] {FFI Boundary};
+    \draw[<->,thick,>=latex] (gmp-items.south) -- (gmp-box.north);
+    \draw[<->,thick,>=latex] (mpfr-items.south) -- (mpfr-box.north);
+  \end{tikzpicture}
+
+  \caption{Pure Rust library (\texttt{num+astro-float}) vs Rust wrapper library (\texttt{rug})}
+  \label{fig:pure-vs-wrapper}
+\end{figure}
 

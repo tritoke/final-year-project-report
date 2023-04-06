@@ -16,9 +16,10 @@ endif
 badd +1 report.tex
 badd +1 refs.bib
 badd +1 merci.tex
-badd +1 chapter1.tex
+badd +394 chapter1.tex
 badd +1 glossary.tex
 badd +3 abstract.tex
+badd +0 chapter2.tex
 argglobal
 %argdel
 $argadd report.tex
@@ -44,9 +45,9 @@ if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 168
-normal! 04|
+normal! 05|
 tabnext
-edit chapter1.tex
+edit chapter2.tex
 argglobal
 balt report.tex
 setlocal fdm=manual
@@ -59,11 +60,11 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 394 - ((27 * winheight(0) + 28) / 56)
+let s:l = 15 - ((14 * winheight(0) + 28) / 56)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 394
+keepjumps 15
 normal! 0
 tabnext
 edit glossary.tex
@@ -84,7 +85,7 @@ if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 118
-normal! 040|
+normal! 038|
 tabnext
 edit refs.bib
 argglobal
