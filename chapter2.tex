@@ -11,8 +11,16 @@ Embassy is especially impressive as they have implemented a async executor so th
 A short Embassy examples is shown in listing \ref{embassy-example}.
 Tools such as \texttt{probe-rs} allow developers to maintain the same workflow they would when working on a normal rust binary, by implementing a \texttt{cargo} runner which flashes the binary to the embedded device then using \gls{rtt} to receive debug messages from the device.
 Those debug messages can be setup automatically using libraries such as \texttt{defmt\_rtt} which use \gls{rtt} to send a compressed representation of the debug message to be formatted later on using a technique called deferred formatting, allowing for debug messages to take up a fraction of the size of the original message.
+Together this makes rust a compelling choice for designing writting embedded code.
 
 \rustcode[label=embassy-example]{Embassy async/await example}{assets/embassy_example.rs}
+
+Rust is also very well suited for implementing cryptographic software.
+It's lifetimes system and compile time safety guarantees make it ideal for building security focused software.
+As well as this many algorithms, formats and primitives are implemented, and freely available as crates for anyone to use.
+Rust's trait system also lends itself well to this, it is possible to use implement a trait representing an elliptic curve and then an algorithm can be written to be agnostic about the curve that it is using for instance.
+This allows library writers to easily write generic code to give user's of the libraries as much flexibility and choice around how they implement
+
 
 \section{Developer Focussed Design}
 
