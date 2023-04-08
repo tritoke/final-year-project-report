@@ -37,7 +37,7 @@ This is in contrast with the approach of \gls{tls} + certificates, where only th
     \draw (11.5,-2) node {PAKE};
   \end{tikzpicture}
 
-  \caption{An illustration of the difference traditional password based authnetication and \glspl{pake}}
+  \caption{An illustration of the difference traditional password based authentication and \glspl{pake}}
   \label{fig:tls-vs-pake}
 \end{figure}
 
@@ -70,7 +70,7 @@ There are two main types of \gls{pake} algorithm - \glspl{apake} and \glspl{bpak
     \draw (5,-5) node {Augmented PAKE};
   \end{tikzpicture}
 
-  \caption{An illustration of the difference between \glspl{pake} and tranditional password-based authentication}
+  \caption{An illustration of the difference between \glspl{pake} and traditional password-based authentication}
   \label{fig:pake-compare}
 \end{figure}
 
@@ -166,7 +166,7 @@ They are very similar so we will just explore \glslink{spake}{SPAKE2} as we are 
     Shared Parameter & Secret & Explanation \\
     \midrule
     $pw$ & yes & the shared password encoded as an element of $\ZZ_p$ \\
-    $\GG$ & no & the mathematical group in which we will perform all opertions \\ 
+    $\GG$ & no & the mathematical group in which we will perform all operations \\ 
     $g$ & no & the generator of $\GG$ \\
     $p$ & no & the \gls{safeprime} which defines the finite field for all operations in $\GG$ \\
     $M$ & no & an element in $\GG$ associated with user $A$ \\
@@ -437,7 +437,7 @@ That process concluded in 2020 with \gls{cpace} and \gls{opaque} being chosen as
 Some time has passed since this process and we now have some new \glspl{pake} with various interesting properties that are worth taking a look at.
 
 \subsection{CHIP+CRISP}
-Introduced in \citeyear{chip+crisp} by \citeauthor{chip+crisp}, CHIP and CRISP are two protocol compilers which instanciate what the authors call an \gls{ipake} \cite{chip+crisp}.
+Introduced in \citeyear{chip+crisp} by \citeauthor{chip+crisp}, CHIP and CRISP are two protocol compilers which instantiate what the authors call an \gls{ipake} \cite{chip+crisp}.
 \glspl{ipake} are designed to mitigate the threat of compromising the local storage of a device.
 While in the case of \glspl{apake} this is considered for the server side, \glspl{bpake} often require both parties to have knowledge of the plaintext password.
 Examples of this include SPAKE-2 \cite{spake} and WPA3's DragonFly/SAE \cite{sae}, both of which require the server and client to have knowledge of the plaintext password.
@@ -463,12 +463,13 @@ A unique bonus of this protocol as well is it takes into account the real-world 
 There were a number of factors to consider when choosing which \gls{pake} to implement:
 \begin{itemize}
   \item{How widely applicable is the protocol?}
+  \item{Are there patents covering the protocol?}
   \item{How many existing implementations are there?}
   \item{How good are existing solutions (solutions that aren't the given protocol)?}
   \item{Is there potential to contribute an implementation back to an open source project?}
 \end{itemize}
 
-After a conversation with the RustCrypto core team on Zulip, it was agreed that an implementation of any of these protocols would be readibly accepted into their collection of \glspl{pake} -- \url{https://github.com/RustCrypto/PAKEs}.
+After a conversation with the RustCrypto core team on Zulip, it was agreed that an implementation of any of these protocols would be readily accepted into their collection of \glspl{pake} -- \url{https://github.com/RustCrypto/PAKEs}.
 I will talk more about RustCrypto and who they are in \cref{sec:whom-rustcrypto}.
 For now I will omit considerations about open source contribution.
 
@@ -476,19 +477,20 @@ For now I will omit considerations about open source contribution.
   \rowcolors{2}{mintbg}{}
   \small
   \captionof{table}{Modern \gls{pake} Protocol Comparison}
-  \begin{tabular}{ lllll }
+  \begin{tabular}{ llp{2.8cm}ll }
     \toprule
-    Protocol & Applicability & Implementations & Existing Solutions \\
+    Protocol & Applicability & Implementations & Existing Solutions & Patented \\
     \midrule
-    CHIP+CRISP & WiFi & C++ reference impl & \gls{psk} \\
-    \gls{khape} & Replacing \gls{pki} & Educational Rust impl & \gls{opaque} \\
-    \gls{aucpace} & \gls{iiot} & C reference impl + Go impl & hard coding the key \\
+    CHIP+CRISP & WiFi & C++ reference impl & \gls{psk} & Yes (IB-KA)\\
+    \gls{khape} & Replacing \gls{pki} & Educational Rust impl & \gls{opaque} & Yes (HMQV)\\
+    \gls{aucpace} & \gls{iiot} & C reference impl + Go impl & hard coding the key & No\\
     \bottomrule
   \end{tabular}
 \end{center}
 
 \gls{aucpace} is the only \gls{pake} in the list where there is a completely inadequate current solution.
 \gls{aucpace} also targets a rapidly growing area, the combined risk of these factors means that \gls{aucpace} is uniquely positioned to make a large difference to the security of the \gls{iiot} landscape.
+Additionally it is the only one which is not under patent of any kind.
 It is for these reasons that I have chosen to create an implementation of \gls{aucpace} and to contribute it back to the open source community via RustCrypto.
 
 \section{AuCPace in detail}
@@ -508,7 +510,7 @@ There are four phases to the protocol some of which can be made optional or can 
     \gls{aucpace} Augmentation Layer
     \begin{itemize}
       \item{the server generates a new ephemeral \gls{dh} key}
-      \item{the server receieves the client's username, looks up the verifier and salt.}
+      \item{the server receives the client's username, looks up the verifier and salt.}
       \item{the server then sends across the group $\mathcal{J}$, the public key $X$, the salt and the parameters for the PBKDF - $\sigma$}
       \item{both then compute the \gls{prs}, the client aborts here if the server's public key $X$ is invalid}
     \end{itemize}
