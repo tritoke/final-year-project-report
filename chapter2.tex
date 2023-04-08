@@ -130,7 +130,7 @@ Instead of picking a \gls{pbkdf} up front, the \texttt{PasswordHasher} trait fro
 Allowing users of the library to pick from either Argon2, Scrypt or PBKDF2 at their discrection, or to implement their own algorithm and supply an implementation of \texttt{PasswordHasher} for it.
 
 \subsubsection{Choosing the Curve and \textsf{Map2Point} operation}
-Although the \texttt{elliptic-curves} repo implements many different elliptic curves, it doesn't implement Curve25519\footnote{there is currently a push to have it included in the crate, though it is still early on and the implementation is not fit for use}, and the \texttt{hash2curve} \gls{api} for \gls{nist} P-256 uses the \gls{osswu} map ycite{osswu-map}, which is known to be less efficient than the Elligator2 map defined for Montomery curves.
+Although the \texttt{elliptic-curves} repo implements many different elliptic curves, it doesn't implement Curve25519\footnote{there is currently a push to have it included in the crate, though it is still early on and the implementation is not fit for use}, and the \texttt{hash2curve} \gls{api} for \gls{nist} P-256 uses the \gls{osswu} map \cite{osswu-map}, which is known to be less efficient than the Elligator2 map defined for Montomery curves \cite{elligator2}.
 There have also been questions about whether the coefficients used in \gls{nist}'s suite of curves have been deliberately tampered with \cite{curve-rigidity}.
 
 Another issue to consider when picking a curve and group is the problem of cofactor handling.
@@ -143,12 +143,49 @@ The \texttt{curve25519-dalek} crate implements Ristretto255 as well as the Ristr
 The hash function is another parameter that is easy to be generic over, thanks to the \texttt{digest} crate.
 This allows users to pick from the plethora of hashes implemented by \texttt{RustCrypto/hashes}, enabling them to choose whichever hash function is best suited for their application.
 
-\section{Initial Proof of Concept design}
-Creating a \gls{poc} design before implementing the full library functionality, makes it easy to prototype quickly and to understand how the different components will interact with each other.
-It also informs later design decisions 
+\section{Initial designs for the structure of the library}
+Rust is very flexible in regards to how you wish to structure a library, there are many patterns that are known to work well in Rust and as such have become Rust idioms.
+Rust is fairly unique among programming languages as it offers very little in the way of inheritance, unlike classes in Java or C++, Rust's structs cannot inherit from each other.
+Instead if you want to implement some functionality on top of another type you must in some way store a value of that type.
+As such wrapper structs are common in Rust, the most common use of these would be the iterator adapters.
+The \texttt{Iterator} trait from the standard library has many methods for providing common operations which are agnostic to what is being iterated over, e.g. \texttt{Iterator::filter}, \texttt{Iterator::map} and \texttt{Iterator::rev}.
+Each of these methods returns a specialised struct which contains the initial iterator, specifically \texttt{std::iter::Filter}, \texttt{std::iter::Map} and \texttt{std::iter::Rev} for the aforementioned methods.
+These structs are all \textit{owning}, the concept of Ownership is central to Rust, it forms the basis for how the borrow checker works and is the main mechanism by which Rust can guarantee memory safety.
+In general owned types are always easier to work with than borrowed ones, you don't have to keep track of lifetimes and in general life is easier.
+The main use-case for references is for when you have some value that you either cannot copy, (e.g. a Mutex), or really don't want to copy (e.g. 10Gb worth of data).
 
-\section{Improving the initial design}
+This preference for Owned values leads to one slightly messy but easy to implement pattern whereby one struct is used to implement all of the functionality and all of the state is bundled in this one struct.
+While easy to implement this approach does have some drawbacks, some of the state might only be needed for one operation then it is worthless, however having everything in one struct means that the space is still allocated whether you need it or not.
+Being aware of this is especially pertinent as the amount of state required gets larger.
 
-% \section{Developer Focussed Design}
+\subsection{There are other PAKEs implemented in Rust, how are they designed?}
+RustCrypto have implemented two \glspl{pake} - \gls{srp} and \glslink{spake}{SPAKE2}.
+\glslink{spake}{SPAKE2} is the simpler of the two protocols so lets analyse it first.
+
+\subsubsection{Exploring RustCrypto's SPAKE2 implementation}
+A diagram of the \glslink{spake}{SPAKE2} protocol can be found in \cref{fig:spake2}.
+The core of the implementation is the following struct:
+\rustcode{SPAKE2 Struct}{assets/spake2.rs}
+
+It contains an owned copy of every piece of data needed to run the entire protocol, although there are quite a few members here, \glslink{spake}{SPAKE2} effectively requires it as the final key $SK_B$ is calculated as $H(A, B, X^*, Y^*, Kb)$, in addition this is a very simple protocol at only one message each way.
+This means that there isn't as much overhead for keeping lots of data around.
+
+The \gls{api} exposed by the struct is also very simple, there are number of \texttt{start\_} methods which begin the protocol and generate initial values from the \gls{csprng}, all of these methods return a tuple \texttt{(<state>, <message>)}.
+The message can then be sent to the other party and when the response is received there is a single \texttt{finish} method which takes in this resposne and produces a \texttt{Result<Vec<u8>>}\footnote{Rust's Result type is used to return a value or an error, the type system forces handling this value and the code will panic if a value is expected and an error occurs. It is very similar to Haskell's Maybe type}, this contains the shared key if everything went well and an error otherwise.
+
+In summary it is implemented as one large struct with many helper methods for all the different ways to start the protocol.
+
+\subsubsection{Exploring RustCrypto's SRP implementation}
+A diagram of the \gls{srp} protocol can be found in \cref{fig:srp}.
+
+As \gls{srp} is an \gls{apake} it is implemented with a separate \texttt{Client} and \texttt{Server} struct as seen below.
+
+\rustcode{SRP Server Struct}{assets/srp_server.rs}
+\rustcode{SRP Client Struct}{assets/srp_client.rs}
+
+However it is plain to see these structs hold the same values, the only difference is the methods available on each.
+This is a completely different approach to the \glslink{spake}{SPAKE2} library.
+In this design how the state is stored is left entirely up to the library consumer, with these structs simply implementing all of the methods for the computation at each step.
+
 
 
