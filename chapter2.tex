@@ -1,4 +1,5 @@
 \chapter{Design}
+\label{chap:design}
 
 \section{Why Rust?}
 \label{sec:why-rust}
@@ -6,8 +7,8 @@
 \gls{aucpace} explicitly targets \gls{iiot} in it's design.
 Rust is rapidly becoming a popular choice for \gls{iot} and embedded software applications.
 This is due to it's focus on memory safety, developer experience and it's strong embedded ecosystem.
-Libraries like Embassy and RTIC allow the user to program high level logic and use powerful abstractions to interact with the hardware through Rust objects, while still compiling down to small efficient binaries.
-Embassy is especially impressive as they have implemented a async executor so that multitasking in embedded applications can be performed with the same async/await framework that programmers are familiar with.
+Libraries like Embassy and RTIC allow the user to program high level logic and use powerful abstractions to interact with the hardware through Rust objects, while still compiling down to small and efficient binaries.
+Embassy is especially impressive as they have implemented an async executor so that multitasking in embedded applications can be performed with the same async/await framework that programmers are familiar with.
 A short Embassy examples is shown in listing \ref{embassy-example}.
 Tools such as \texttt{probe-rs} allow developers to maintain the same workflow they would when working on a normal rust binary, by implementing a \texttt{cargo} runner which flashes the binary to the embedded device then using \gls{rtt} to receive debug messages from the device.
 Those debug messages can be setup automatically using libraries such as \texttt{defmt\_rtt} which use \gls{rtt} to send a compressed representation of the debug message to be formatted later on using a technique called deferred formatting, allowing for debug messages to take up a fraction of the size of the original message.
@@ -126,11 +127,11 @@ Where possible the implementation should match the reference implementation.
 These choices are what the designers have determined as secure presets so the are good choices should a suitable crate exist.
 
 \subsubsection{Choosing the PBKDF}
-Instead of picking a \gls{pbkdf} up front, the \texttt{PasswordHasher} trait from \href{https://github.com/RustCrypto/traits/tree/master/password-hash}{password-hash} allows us to be generic over the \gls{pbkdf} when implmenting the library.
-Allowing users of the library to pick from either Argon2, Scrypt or PBKDF2 at their discrection, or to implement their own algorithm and supply an implementation of \texttt{PasswordHasher} for it.
+Instead of picking a \gls{pbkdf} up front, the \texttt{PasswordHasher} trait from \href{https://github.com/RustCrypto/traits/tree/master/password-hash}{password-hash} allows us to be generic over the \gls{pbkdf} when implementing the library.
+Allowing users of the library to pick from either Argon2, Scrypt or PBKDF2 at their discretion, or to implement their own algorithm and supply an implementation of \texttt{PasswordHasher} for it.
 
 \subsubsection{Choosing the Curve and \textsf{Map2Point} operation}
-Although the \texttt{elliptic-curves} repo implements many different elliptic curves, it doesn't implement Curve25519\footnote{there is currently a push to have it included in the crate, though it is still early on and the implementation is not fit for use}, and the \texttt{hash2curve} \gls{api} for \gls{nist} P-256 uses the \gls{osswu} map \cite{osswu-map}, which is known to be less efficient than the Elligator2 map defined for Montomery curves \cite{elligator2}.
+Although the \texttt{elliptic-curves} repo implements many different elliptic curves, it doesn't implement Curve25519\footnote{there is currently a push to have it included in the crate, though it is still early on and the implementation is not fit for use}, and the \texttt{hash2curve} \gls{api} for \gls{nist} P-256 uses the \gls{osswu} map \cite{osswu-map}, which is known to be less efficient than the Elligator2 map defined for Montgomery curves \cite{elligator2}.
 There have also been questions about whether the coefficients used in \gls{nist}'s suite of curves have been deliberately tampered with \cite{curve-rigidity}.
 
 Another issue to consider when picking a curve and group is the problem of cofactor handling.
@@ -171,7 +172,7 @@ It contains an owned copy of every piece of data needed to run the entire protoc
 This means that there isn't as much overhead for keeping lots of data around.
 
 The \gls{api} exposed by the struct is also very simple, there are number of \texttt{start\_} methods which begin the protocol and generate initial values from the \gls{csprng}, all of these methods return a tuple \texttt{(<state>, <message>)}.
-The message can then be sent to the other party and when the response is received there is a single \texttt{finish} method which takes in this resposne and produces a \texttt{Result<Vec<u8>>}\footnote{Rust's Result type is used to return a value or an error, the type system forces handling this value and the code will panic if a value is expected and an error occurs. It is very similar to Haskell's Maybe type}, this contains the shared key if everything went well and an error otherwise.
+The message can then be sent to the other party and when the response is received there is a single \texttt{finish} method which takes in this response and produces a \texttt{Result<Vec<u8>>}\footnote{Rust's Result type is used to return a value or an error, the type system forces handling this value and the code will panic if a value is expected and an error occurs. It is very similar to Haskell's Maybe type.}, this contains the shared key if everything went well and an error otherwise.
 
 In summary it is implemented as one large struct with many helper methods for all the different ways to start the protocol.
 
@@ -186,6 +187,15 @@ As \gls{srp} is an \gls{apake} it is implemented with a separate \texttt{Client}
 However it is plain to see these structs hold the same values, the only difference is the methods available on each.
 This is a completely different approach to the \glslink{spake}{SPAKE2} library.
 In this design how the state is stored is left entirely up to the library consumer, with these structs simply implementing all of the methods for the computation at each step.
+This does expose a very flexible API and store the absolute minimum amount of data, however it doesn't do anything to protect from accidental misuse by the programmer.
 
+\subsection{Initial Design Plan}
+To support contributing the implementation back to RustCrypto, the library will be implemented as a fork of \url{https://github.com/RustCrypto/PAKEs},
+where the \gls{aucpace} implementation will be added as a new crate in the Cargo workspace.
 
+As a prototype for the library functionality a design in the style of RustCrypto's \gls{srp} implementation was created to explore how the computations required by \gls{aucpace} look in rust and how the different libraries interact together.
+
+After this prototype version several attempts were made at a more user-friendly / intuitive, eventually settling on a design where the User "moves" between various structs by passing messages between the server and client.
+Each move returns either just the next state, or a tuple of a message and the next state, it is then the user's job to manage just the communication of messages between the client and server.
+This approach reduces the cognitive overhead of the developer and allows them to just focus on the core of a protocol - passing messages.
 
