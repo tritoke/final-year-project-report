@@ -15,6 +15,11 @@ The implementation of the \gls{aucpace} protocol in Rust is the core deliverable
 Performance of the library will be compared against those for other \gls{pake} protocols.
 The metrics of execution time and code size will be used.
 
+\section{Challenges}
+Working with elliptic curve cryptography proved to be particularly challenging.
+A lack of understanding of one particular area proved fatal when a catastrophic bug was found in the codebase late in the project.
+\Cref{chap:testing} talks about remediating this bug and ensuring it cannot happen again.
+
 \section{Structure}
 The report will follow the following structure:
 \begin{itemize}

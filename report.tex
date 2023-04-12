@@ -23,7 +23,7 @@
   colback=mintbg,
   colframe=listingframe,
   fonttitle=\bfseries,
-  title={Listing \thetcbcounter: #2},
+  title={Python Listing \thetcbcounter: #2},
   #1
 }
 
@@ -39,7 +39,23 @@
   colback=mintbg,
   colframe=listingframe,
   fonttitle=\bfseries,
-  title={Listing \thetcbcounter: #2},
+  title={Rust Listing \thetcbcounter: #2},
+  #1
+}
+
+\newtcbinputlisting[auto counter]{\codediff}[3][]{
+  enhanced jigsaw,breakable,
+  boxrule=0.2mm,top=1mm,bottom=1mm,left=1mm,right=1mm,
+  before=\par\smallskip,after=\par\smallskip,
+  listing file={#3},
+  listing only,
+  listing engine=minted,
+  minted language=diff,
+  minted style=colorful,
+  colback=mintbg,
+  colframe=listingframe,
+  fonttitle=\bfseries,
+  title={Diff \thetcbcounter: #2},
   #1
 }
 
@@ -58,6 +74,12 @@
     autogobble,
 }
 \setminted[rust]{
+    breaklines,
+    breakanywhere,
+    breakautoindent=false,
+    autogobble,
+}
+\setminted[diff]{
     breaklines,
     breakanywhere,
     breakautoindent=false,
@@ -115,14 +137,14 @@
 %% more ways of modifying headers (texdoc fancyhdr will show you the
 %% docs) 
 
-% \usepackage{fancyhdr}
-% \setlength{\headheight}{14.5pt} % silence warnings
-% \pagestyle{fancy}
-% \lhead{}  % left head
-% \chead{Draft: \today} % centre head
-% \lfoot{}
-% \cfoot{\thepage}
-% \rfoot{}
+\usepackage{fancyhdr}
+\setlength{\headheight}{14.5pt} % silence warnings
+\pagestyle{fancy}
+\lhead{}  % left head
+\chead{Draft: \today} % centre head
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
 
 % title stuff
 \usepackage{titlesec}

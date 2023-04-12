@@ -1,5 +1,105 @@
 \chapter{Testing}
 \label{chap:testing}
 
-\section{Creating Test Vectors}
+\section{Testing for correctness of functionality}
+As the library is built on other crates, the only tests which can be performed are those on individual components of the protocol, and 
+
+\section{The Ultimate Test}
+As with any piece of software the ultimate test is to get the entire thing running / working on real hardware.
+
+\subsection{Choosing the Microcontroller / Platform}
+Because \gls{aucpace} is intended for use in the \gls{iiot}, it was decided that an \gls{stm} based \gls{mcu} would be a good fit.
+\gls{stm} \glspl{mcu} are very prevelant in industry, have many dev boards supporting a wide variety of different chips, and they also have excellent rust support.
+Following this decision the NUCLEO-F401RE dev board was selected.
+It is a small \gls{mcu} with a modest 512K of flash memory.
+While certainly not the least powerful platform around it should be representative of a majority of \gls{iot} systems.
+
+\subsection{Choosing an Embedded Rust Platform}
+Initially the \gls{rtic} framework was selected as example code for interacting over serial was easy to find online.
+However getting \gls{rtic} to work on the actual board proved challenging as low level details such as clocks and timers confused things considerably.
+
+After a few attempts with \gls{rtic}, efforts were switched to using the Embassy project.
+This proved to greatly alleviate the strain of working in the embedded software world.
+Embassy performs all low level setup for you and allows the programmer to work with async/await constructs instead of timers etc.
+There was still some considerable strife in getting the serial connection to work consistently.
+After a lengthy conversation with \texttt{sjm\#0205} on the Rust discord server, we came to the conclusion that the board's low quality crystal oscillators were causing the serial connection to get out of sync.
+It took some experimentation but eventually sending 16 bytes every 100ms proved to be the most reliable way of communicating with the board.
+After establishing a reliable serial connection work could now begin on implementing \gls{aucpace}.
+
+\subsection{Implementing the AuCPace protocol}
+The server side of \texttt{examples/key\_agreement.rs} was initially adapted to fit the code structure of the embedded app.
+However this immediately brought around a problem with the \gls{aucpace} implementation, it was refusing to compile.
+As it happened this was a quirk of how rust works that I wasn't aware of.
+Care was taken to develop the library using the \verb|#[no_std]| attribute, this tells the compiler that this code isn't allowed to use the Rust standard library.
+Even the \texttt{examples/key\_agreement\_no\_std.rs} example program wasn't enough to weed this out.
+Because the standard library is still available when linking on x86, the \verb|#[no_std]| example still compiles, despite containing code from the standard library.
+When it was adapted for the microcontroller, it was targeting \texttt{thumbv7em-none-eabihf}, the standard library is simply not available for this target as it doesn't have an operating system.
+The malignant crate turned out to be \texttt{serde-arrays} which, although not containing any code that should require the standard library, it was not marked as \verb|#[no_std]| and thus fails to compile as it implicitly links to the standard library.
+The solution was very simple thankfully, just weeks prior to attmpting this embedded example, a new crate was released \texttt{serde-byte-arrays}, this solved my problem better than \texttt{serde-arrays}, was marked \verb|#[no_std]| and was more efficient at the same time!
+
+\section{Breaking everything}
+By happenstance I was reading NCC Group's recent review of Whatsapp's \texttt{opaque-ke} crate \cite{whatsapp-are-dumb-too, whatsapp-are-dumb-too-report}.
+While reading the report the following finding caught my eye:
+\begin{figure}[H]
+  \centering
+
+  \includegraphics[width=\linewidth]{high_finding.png}
+  \caption{High severity finding from \cite{whatsapp-are-dumb-too-report}.}
+  \label{fig:high-severity-finding}
+\end{figure}
+
+In Whatsapp's implementation of OPAQUE \cite{opaque}, they used the \texttt{RistrettoPoint} type from \texttt{curve25519-dalek}, and while deserialising this type they didn't have any checks to see if this point was the identity point.
+\Citeauthor{whatsapp-are-dumb-too-report} point out that this leads all subsequent point operations to "zero out" and thus cause the shared key to have a known value.
+Unsure of whether this would also break my \gls{aucpace} implementation I modified \texttt{key\_agreement.rs} to have the client act as a malicious adversary and to send this identity point.
+
+\rustcode{Malicious AuCPace Client}{assets/neutral_point_send.rs}
+
+\begin{figure}[H]
+  \centering
+
+  \includegraphics[width=\linewidth]{malicious_aucpace.png}
+  \caption{Malicious AuCPace Client}
+  \label{fig:break-everything}
+\end{figure}
+
+To my dismay it worked.
+I immediately imformed RustCrypto of the problem and started working on a fix.
+
+\subsection{Identifying the extent of the damage}
+So what could a malicious attacker do with this bug?
+
+\begin{itemize}
+  \item{Impersonate any user, even a user who has never registered, even when no user has ever registered.}
+  \item{Impersonate any server, to any user, regardless of whether they've registered with the server.}
+\end{itemize}
+
+Safe to say this is about as bad as it gets.
+
+\subsection{Fixing the problem}
+Thankfully the fix for this issue is incredibly simple.
+The \gls{aucpace} protocol specifies points at which to abort the protocol should an invalid point is encountered.
+Thus everywhere \gls{aucpace} says to abort if the point is invalid, we put in a check for the identity point.
+
+\codediff[minted options={firstline=575, lastline=589}]{Patch for checking the identity element.}{assets/fix.diff}
+
+It is clear to see that this is a very simple patch the main issue is ensuring it is caught everywhere.
+
+\subsection{Why was this not caught earlier?}
+There are several reasons why this wasn't caught earlier:
+\begin{enumerate}
+  \item{My lack of familiarity with \gls{ecc} -- this was my first time ever using \gls{ecc} and it was simply not something I knew to look out for.}
+  \item{My decisiion to implement based on the paper not the \gls{ietf} document -- the paper mentions only to abort if a point is invalid. However there are two ways a point can be invalid, it can be off the curve, and it can be the identity point. \texttt{curve25519-dalek} makes the former unrepresentable using Rust's type system, hence my belief that this check was unnecessary. However the \gls{ietf} draft of \gls{aucpace} mentions explicitly to check for the identity element \cite{ietf-aucpace}.}
+  \item{This is quite a subtle bug -- it is hard to spot when you are unfamiliar with \gls{ecc}, case and point Whatsapp made this mistake as well, and so did the the core developers of Java. Java's CVE-2022-21449 "Psychic Signatures" \cite{java-psychic-signatures}, had the same bug in their implementation of \gls{ecdsa}. Introduced in commit \texttt{3c12c4b0f35} Dec 2018 fixed in \texttt{e2f8ce9c3ff} Jan 2022, all in it took 3 years for this same bug to get found and patched in Java.}
+\end{enumerate}
+
+\subsection{How to prevent this bug from ever happening again}
+Two changes have been implemented to prevent this bug from ever happening again:
+\begin{enumerate}
+  \item{Every method that handles a RistrettoPoint from the network checks it to make sure it is not the identity point.}
+  \item{There are now tests for every method of both the Client and Server to ensure that providing an invalid point returns an \texttt{IllegalPointError}.}
+\end{enumerate}
+
+There is a better way to fix this however, RustCrypto's \texttt{elliptic-curve} module solves this problem using the power of Rust's type system.
+They have a \texttt{NonIdentity} type which is guaranteed to never be the identity element.
+When Curve25519 is introduced to \texttt{elliptic-curve} the library will be refactored to move over to this type.
 

@@ -171,7 +171,7 @@ The core of the implementation is the following struct:
 It contains an owned copy of every piece of data needed to run the entire protocol, although there are quite a few members here, \glslink{spake}{SPAKE2} effectively requires it as the final key $SK_B$ is calculated as $H(A, B, X^*, Y^*, Kb)$, in addition this is a very simple protocol at only one message each way.
 This means that there isn't as much overhead for keeping lots of data around.
 
-The \gls{api} exposed by the struct is also very simple, there are number of \texttt{start\_} methods which begin the protocol and generate initial values from the \gls{csprng}, all of these methods return a tuple \texttt{(<state>, <message>)}.
+The \gls{api} exposed by the struct is also very simple, there are number of \texttt{start\_*} methods which begin the protocol and generate initial values from the \gls{csprng}, all of these methods return a tuple \texttt{(<state>, <message>)}.
 The message can then be sent to the other party and when the response is received there is a single \texttt{finish} method which takes in this response and produces a \texttt{Result<Vec<u8>>}\footnote{Rust's Result type is used to return a value or an error, the type system forces handling this value and the code will panic if a value is expected and an error occurs. It is very similar to Haskell's Maybe type.}, this contains the shared key if everything went well and an error otherwise.
 
 In summary it is implemented as one large struct with many helper methods for all the different ways to start the protocol.
