@@ -1,0 +1,8 @@
+[profile.release]
+debug = 2
+
+[profile.server]
+inherits = "release"
+opt-level = "s"
+lto = true
+codegen-units = 1

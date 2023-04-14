@@ -1,9 +1,4 @@
-\chapter{Embedded Rust application implementing AuCPace}
-\label{chap:appendix-aucpace-embedded}
+\chapter{Example implementation of the Database trait}
+\label{chap:appendix-database-example}
 
-The client code uses my Rust library to implement the client side of \gls{aucpace}.
-The server code uses my Rust library to implement the server side of \gls{aucpace} for an Nucleo-64 (STM32F401RE) \gls{mcu}.
-
-\rustcode[minted options={firstline=88,lastline=262}]{Client Negotiate}{aucpace_embedded/client/src/main.rs}
-\rustcode[minted options={firstline=95,lastline=352}]{Server Negotiate}{aucpace_embedded/server/src/main.rs}
-
+\rustcode[label=database-trait-example]{Example Database Implementation}{assets/db_example.rs}

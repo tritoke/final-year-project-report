@@ -18,11 +18,11 @@ This is in contrast with the approach of \gls{tls} + certificates, where only th
 % Horizontal version
 \begin{figure}[H]
   \centering
-  \begin{tikzpicture}
+  \begin{tikzpicture}[thick,>=latex]
     \node[alice,minimum size=1.5cm] at (0,0) {Alice - Client};
     \node[bob,mirrored,minimum size=1.5cm] at (5,0) {Bob - Server};
     \draw[->] (1,0.5) -- (4,0.5) node[midway, above] {password};
-    \draw[->] (4,-0.5) -- (1,0-0.5) node[midway, above] {auth \checkmark};
+    \draw[->] (4,-0.5) -- (1,0-0.5) node[midway, above] {auth \cmark};
 
     \node[alice,minimum size=1.5cm] at (9,0) {Alice - Client};
     \node[bob,mirrored,minimum size=1.5cm] at (14,0) {Bob - Server};
@@ -32,7 +32,7 @@ This is in contrast with the approach of \gls{tls} + certificates, where only th
     \node at (12.8,0.8) {verifier};
     \draw[->] (13, 0.5) -- (13,-0.5) node[midway, left, xshift=-0.1cm, yshift=0.1cm, scale=0.05] {\includegraphics{wand.png}};
     \node[scale=0.02] at (12.5,-0.7) {\includegraphics{key.png}};
-    \draw[<->] (10.8,-0.7) -- (12,-0.7) node[midway, below] {auth \checkmark};
+    \draw[<->] (10.8,-0.7) -- (12,-0.7) node[midway, below] {auth \cmark};
 
     \draw (7,1.3) -- (7,-2.3);
     \draw (2.5,-2) node {Traditional};
@@ -104,7 +104,7 @@ With quantum computing advancing ever faster, classical cryptography systems suc
 During the \gls{cfrg}'s recent \gls{pake} standardisation efforts a new property of \glspl{pake} emerged called "quantum annoying".
 In their paper \citetitle{quantum-annoying}, \citeauthor{quantum-annoying} define the "quantum annoying" property of \glspl{pake} as a scheme where a quantum computer can compromise a scheme but that solving one discrete logarithm problem only gives one guess at the password.
 This makes \glspl{pake} incredibly attractive as stopgap solution giving researchers a few more vital years to research and test post-quantum cryptography.
-The need for these years of research was made painfully clear by \citeauthor{break-sidh} when they recently broke the \gls{sidh} post-quantum cryptography scheme.
+The need for these years of research was made painfully clear by \citeauthor{break-sidh} when they recently broke the \gls{sidh} post-quantum cryptography scheme \cite{break-sidh}.
 
 \clearpage
 
@@ -168,9 +168,9 @@ They are very similar so we will just explore \glslink{spake}{SPAKE2} as we are 
 \end{enumerate}
 
 \begin{center}
-  \rowcolors{2}{mintbg}{}
+  \rowcolors{0}{}{mintbg}
   \captionof{table}{\gls{spake} shared parameters}
-  \begin{tabular}{ ccp{0.6\linewidth} }
+  \begin{tabularx}{\linewidth}{ ccX }
     \toprule
     Shared Parameter & Secret & Explanation \\
     \midrule
@@ -182,7 +182,7 @@ They are very similar so we will just explore \glslink{spake}{SPAKE2} as we are 
     $N$ & no & an element in $\GG$ associated with user $B$ \\
     $H$ & no & a secure hash function \\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{center}
 
 \begin{figure}[H]
@@ -211,9 +211,9 @@ Finally we will look at \gls{srp} an \gls{apake} first published in 1998, unlike
 However it is quite weird for what it does and there is no security proof for it \cite{srp-blog}. An implementation of the protocol in Python can be found in \cref{chap:appendix-srp}.
 
 \begin{center}
-  \rowcolors{2}{mintbg}{}
+  rowcolors{0}{}{mintbg}
   \captionof{table}{\gls{srp} parameters}
-  \begin{tabular}{ c c p{0.7\linewidth} }
+  \begin{tabularx}{\linewidth}{ ccX }
     \toprule
     Parameter & Secret & Explanation \\
     \midrule
@@ -224,7 +224,7 @@ However it is quite weird for what it does and there is no security proof for it
     $p$ & no & the \gls{safeprime} which defines the finite field for all operations in $\GG$ \\
     $H$ & no & a secure hash function \\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{center}
 
 \begin{figure}[H]
@@ -484,7 +484,7 @@ Considerations about open source contribution will be omitted for this reason.
 For now I will omit considerations about open source contribution.
 
 \begin{center}
-  \rowcolors{2}{mintbg}{}
+  \rowcolors{0}{}{mintbg}
   \small
   \captionof{table}{Modern \gls{pake} Protocol Comparison}
   \begin{tabular}{ llp{2.8cm}ll }
@@ -520,7 +520,7 @@ There are four phases to the protocol some of which can be made optional or can 
     \gls{aucpace} Augmentation Layer
     \begin{itemize}
       \item{the server generates a new ephemeral \gls{dh} key}
-      \item{the server receives the client's username, looks up the verifier and salt.}
+      \item{the server receives the client's username, looks up the \gls{veri} and salt.}
       \item{the server then sends across the group $\mathcal{J}$, the public key $X$, the salt and the parameters for the PBKDF - $\sigma$}
       \item{both then compute the \gls{prs}, the client aborts here if the server's public key $X$ is invalid}
     \end{itemize}
@@ -709,21 +709,21 @@ Below are protocol diagrams illustrating what changes with each configuration ch
 
 \begin{center}
   \small
+  \rowcolors{0}{}{mintbg}
   \captionof{table}{Configuration tradeoffs}
-  \begin{tabular}{ p{0.15\linewidth}p{0.38\linewidth}p{0.38\linewidth} }
+  \begin{tabularx}{\linewidth}{ p{0.14\linewidth}XX }
     \toprule
     Configuration & Advantage & Disadvantage \\
     \midrule
     partial \newline augmentation & removes an expensive exponentiation operation for the server,
                                     halving the computational complexity for the server
       & an attacker can impersonate the client by compromising a server \\
-    \rowcolor{mintbg}
     strong \newline \gls{aucpace} & pre-computation attack resistance
       & increases the computational requirements for both the client and server \\
     implicit \newline authentication & saves a round of messages and 2 hash computations.
       & the protocol downgrades to weak perfect forward secrecy \cite{hmqv} \\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{center}
 
 \clearpage

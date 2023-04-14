@@ -37,10 +37,10 @@ As such it is worthwhile to look at the parameters are and thus what primitives 
 \Cref{tab:aucpace-params,tab:aucpace-selected-params} are partially reproduced from \cite{aucpace} just in significantly fewer words.
 
 \begin{center}
-  \rowcolors{2}{mintbg}{}
+  \rowcolors{0}{}{mintbg}
   \captionof{table}{\gls{aucpace} Parameters}
   \label{tab:aucpace-params}
-  \begin{tabular}{ cp{0.8\linewidth} }
+  \begin{tabularx}{\linewidth}{ cX }
     \toprule
     parameter & explanation \\
     \midrule
@@ -50,14 +50,14 @@ As such it is worthwhile to look at the parameters are and thus what primitives 
     \textsf{Map2Point} & A function mapping a string $s$ to a point from a cryptographically large subgroup $\mathcal{J}_m$ of $\mathcal{C}$. The inverse map $\textsf{Map2Point}^{-1}$ is also required.\\
     $\textsf{H}_0 \dots \textsf{H}_5$ & A set of 6 distinct hash functions.\\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{center}
 
 \begin{center}
-  \rowcolors{2}{mintbg}{}
+  \rowcolors{0}{}{mintbg}
   \captionof{table}{Selected parameters of the reference implementation -- AuCPace25519}
   \label{tab:aucpace-selected-params}
-  \begin{tabular}{ cp{0.8\linewidth} }
+  \begin{tabularx}{\linewidth}{ cX }
     \toprule
     parameter & explanation \\
     \midrule
@@ -67,7 +67,7 @@ As such it is worthwhile to look at the parameters are and thus what primitives 
     \textsf{Map2Point} & The Elligator2 map introduced by \citeauthor{elligator2} in \cite{elligator2}.\\
     $\textsf{H}_0 \dots \textsf{H}_5$ & The \glslink{sha}{SHA512} hash function where the index is prepended as a little-endian four-byte word.\\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{center}
 
 So in summary we need the following primitives:

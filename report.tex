@@ -59,12 +59,33 @@
   #1
 }
 
+\newtcbinputlisting[auto counter]{\tomlcode}[3][]{
+  enhanced jigsaw,breakable,
+  boxrule=0.2mm,top=1mm,bottom=1mm,left=1mm,right=1mm,
+  before=\par\smallskip,after=\par\smallskip,
+  listing file={#3},
+  listing only,
+  listing engine=minted,
+  minted language=toml,
+  minted style=colorful,
+  colback=mintbg,
+  colframe=listingframe,
+  fonttitle=\bfseries,
+  title={Toml Listing \thetcbcounter: #2},
+  #1
+}
+
 % graphics
 \usepackage{graphicx}
 \graphicspath{ {assets/} }
 
-% dingbats has funny symbols
-\usepackage{dingbat}
+% pifont has dingbats and funny symbols
+\usepackage{pifont}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+
+% tabularx makes tables better
+\usepackage{tabularx}
 
 % minted replaces listings
 \usepackage{minted}
@@ -73,12 +94,14 @@
     breakanywhere,
     autogobble,
 }
+
 \setminted[rust]{
     breaklines,
     breakanywhere,
     breakautoindent=false,
     autogobble,
 }
+
 \setminted[diff]{
     breaklines,
     breakanywhere,
@@ -140,8 +163,8 @@
 \usepackage{fancyhdr}
 \setlength{\headheight}{14.5pt} % silence warnings
 \pagestyle{fancy}
-\lhead{}  % left head
-\chead{Draft: \today} % centre head
+\lhead{Draft: \today}  % left head
+\chead{} % centre head
 \lfoot{}
 \cfoot{\thepage}
 \rfoot{}
@@ -152,8 +175,9 @@
   \titleformat{\chapter}[display]{\scshape\Large}
   {\Large\filleft\MakeUppercase{\chaptertitlename} \Huge\thechapter}
   {1ex}
-  {}
-[\vspace{1ex}\titlerule]}
+  {\titlerule\vspace{1ex}\filright}
+  [\vspace{1ex}\titlerule]
+}
 
 \newcommand{\ContentTitleFormat}{
   \titleformat{\chapter}[display]{\scshape\huge}
@@ -162,6 +186,12 @@
   {\titlerule\vspace{1ex}\filright}
   [\vspace{1ex}\titlerule]
 }
+
+% make everything title case
+% \usepackage{sectsty}
+% \usepackage{titlecaps}
+% \sectionfont{\titlecap}
+% \subsectionfont{\titlecap}
 
 % glossary stuff
 \usepackage[toc]{glossaries}
@@ -272,5 +302,6 @@
 \include{appendix1}
 \include{appendix2}
 \include{appendix3}
+\include{appendix4}
 
 \end{document}

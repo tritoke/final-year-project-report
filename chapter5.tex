@@ -2,7 +2,53 @@
 \label{chap:testing}
 
 \section{Testing for correctness of functionality}
-As the library is built on other crates, the only tests which can be performed are those on individual components of the protocol, and 
+As the library is built on other crates, the only tests which can be performed are those on individual components of the protocol, and full run-throughs of the entire protocol.
+
+\subsection{Testing individual components}
+Traditionally in cryptographic software, test-vectors have been used to test for the correct functionality of various componenets.
+However due to the use of Ristretto255, instead of raw Curve25519, there are no test-vectors available.
+Once the implementation was feature complete, I emailed Bj\"orn Haase to discuss test vector creation\footnote{Bj\"orn is the creator of AuCPace}.
+He was interested in the project and mentioned they were interesteed in a second implementation of \gls{aucpace} at Endress+Hauser.
+However he did not have the time to create test vectors and by this point in the project I was too busy to do so as well.
+So while test vectors have not yet been created, it is likely they will be in the near future.
+
+\subsection{Integration testing}
+To perform integration testing, the tests were split into four categories based on which of the two major features they required\footnote{This work was completed after the code freeze, so is only available on the github.}.
+
+\begin{center}
+  \rowcolors{0}{}{mintbg}
+  \captionof{table}{Integration Tests Split}
+  \label{tab:aucpace-int-tests}
+  \begin{tabularx}{\linewidth}{ ccX }
+    \toprule
+    \texttt{strong\_aucpace} & \texttt{partial\_aug} & test \\
+    \midrule
+    \xmark & \xmark & \texttt{test\_key\_agreement.rs} \\
+    \xmark & \cmark & \texttt{test\_key\_agreement\_partial\_aug.rs} \\
+    \cmark & \xmark & \texttt{test\_key\_agreement\_strong.rs} \\
+    \cmark & \cmark & \texttt{test\_key\_agreement\_strong\_partial\_aug.rs} \\
+    \bottomrule
+  \end{tabularx}
+\end{center}
+
+Inside of each test file there are two main scaffolding functions: \texttt{init} and \texttt{test\_core}, the former Perfoms the initial setup of the client, server and database, and the latter performs all the functionality which is common to every test.
+From there there are four tests in each file, each testing the following:
+
+\begin{center}
+  \rowcolors{0}{}{mintbg}
+  \captionof{table}{Per-file Test Splits}
+  \label{tab:aucpace-int-tests-file}
+  \begin{tabularx}{\linewidth}{ ccX }
+    \toprule
+    \texttt{static SSID} & \texttt{implicit auth} & test \\
+    \midrule
+    \xmark & \xmark & \texttt{test\_key\_agreement} \\
+    \xmark & \cmark & \texttt{test\_key\_agreement\_implicit\_auth} \\
+    \cmark & \xmark & \texttt{test\_key\_agreement\_prestablished\_ssid} \\
+    \cmark & \cmark & \texttt{test\_key\_agreement\_prestablished\_ssid\_implicit} \newline \texttt{\_auth} \\
+    \bottomrule
+  \end{tabularx}
+\end{center}
 
 \section{The Ultimate Test}
 As with any piece of software the ultimate test is to get the entire thing running / working on real hardware.
@@ -14,16 +60,24 @@ Following this decision the NUCLEO-F401RE dev board was selected.
 It is a small \gls{mcu} with a modest 512K of flash memory.
 While certainly not the least powerful platform around it should be representative of a majority of \gls{iot} systems.
 
+\begin{figure}[H]
+  \centering
+
+  \includegraphics[angle=90,width=0.8\linewidth]{assets/stm32-f410re.jpg}
+  \caption{NUCLEO-F401RE Dev Board}
+  \label{fig:nucleo-f401re}
+\end{figure}
+
 \subsection{Choosing an Embedded Rust Platform}
 Initially the \gls{rtic} framework was selected as example code for interacting over serial was easy to find online.
 However getting \gls{rtic} to work on the actual board proved challenging as low level details such as clocks and timers confused things considerably.
 
-After a few attempts with \gls{rtic}, efforts were switched to using the Embassy project.
+After a few attempts\footnote{several days of work} with \gls{rtic}, efforts were switched to using the Embassy project.
 This proved to greatly alleviate the strain of working in the embedded software world.
 Embassy performs all low level setup for you and allows the programmer to work with async/await constructs instead of timers etc.
 There was still some considerable strife in getting the serial connection to work consistently.
 After a lengthy conversation with \texttt{sjm\#0205} on the Rust discord server, we came to the conclusion that the board's low quality crystal oscillators were causing the serial connection to get out of sync.
-It took some experimentation but eventually sending 16 bytes every 100ms proved to be the most reliable way of communicating with the board.
+Reducing the baud rate to 28800 resulted in a much more reliable connection, this is due to clock accuracy being less important at lower baud rates as there is a bigger margin for error in when lines go high/low\footnote{This solution was found after code freeze so is only available on the github}.
 After establishing a reliable serial connection work could now begin on implementing \gls{aucpace}.
 
 \subsection{Implementing the AuCPace protocol}
@@ -36,6 +90,128 @@ Because the standard library is still available when linking on x86, the \verb|#
 When it was adapted for the microcontroller, it was targeting \texttt{thumbv7em-none-eabihf}, the standard library is simply not available for this target as it doesn't have an operating system.
 The malignant crate turned out to be \texttt{serde-arrays} which, although not containing any code that should require the standard library, it was not marked as \verb|#[no_std]| and thus fails to compile as it implicitly links to the standard library.
 The solution was very simple thankfully, just weeks prior to attmpting this embedded example, a new crate was released \texttt{serde-byte-arrays}, this solved my problem better than \texttt{serde-arrays}, was marked \verb|#[no_std]| and was more efficient at the same time!
+Once these two primitives were reliable, it was quite straightforward to implement the protocol in full.
+
+% mention hitting NLL problem case 3?
+
+\subsection{benchmarking}
+Benchmarking was performed by switching feature flags on and off on both the client and server.
+An additional element of the compiler flags was added because Rust's compiler allows you to make tradeoffs between code-size and speed quite easily.
+The easiest method for doing this is by creating a profile for the Rust compiler to use, there are two profiles normally available -- \texttt{debug} and \texttt{release}; \texttt{debug} is intended to be used during development and is tuned for fast compile times and extensive debug info. \texttt{release} is tuned for speed and removes all debug info normally.
+In listing \ref{server-profile} the debug information is re-enabled for \texttt{release} mode, this means that the Rust compiler includes \gls{dwarf} debug in the compiled binary.
+A \texttt{server} profile is also listed, this profile inheirits from \texttt{release} meaning that initially it is the same as \texttt{release}, \texttt{opt-level} is then set to \texttt{"s"}, this makes the compiler instead optimise for code size instead of speed.
+The two remaining options -- \texttt{lto} and \texttt{codegen-units} are less significant and are just there to improve the information available to the compiler to allow it to generate more efficient code.
+
+The "Compute time" was based on the compute time calculated by the server as it ran through the protocol as can be seen in \cref{fig:aucpace-embedded-server}.
+These are based on just one measurement of the time, this is due to the use of constant time algorithms wherever possible, when the number of ticks was measured directly, the variance was on the order of 5 ticks, which is just 0.005ms ($5\mu$s), this variance is not big enough to effect the results.
+
+\Cref{tab:aucpace-embedded-benchmarks-server,tab:aucpace-embedded-benchmarks-server-static,tab:aucpace-embedded-benchmarks-release,tab:aucpace-embedded-benchmarks-release-static}
+
+\tomlcode[label=server-profile]{Server Compiler Profile}{assets/server.toml}
+
+\begin{figure}[H]
+  \centering
+
+  \includegraphics[width=\linewidth]{aucpace_embedded_client.png}
+  \caption{AuCPace Embedded Client Output}
+  \label{fig:aucpace-embedded-client}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+
+  \includegraphics[width=\linewidth]{aucpace_embedded_server.png}
+  \caption{AuCPace Embedded Server Output}
+  \label{fig:aucpace-embedded-server}
+\end{figure}
+
+\begin{center}
+  \rowcolors{0}{}{mintbg}
+  \captionof{table}{Code size and Compute time by feature flag with \texttt{profile=server}}
+  \label{tab:aucpace-embedded-benchmarks-server}
+  \begin{tabular}{ ccccc }
+    \toprule
+    \texttt{strong} & \texttt{implicit} & \texttt{partial} & code size (Kib) & Compute time (ms) \\
+    \midrule
+    \xmark & \xmark & \xmark & 82 & 169 \\
+    \xmark & \xmark & \cmark & 83 & 139 \\
+    \xmark & \cmark & \xmark & 83 & 135 \\
+    \xmark & \cmark & \cmark & 83 & 103 \\
+    \cmark & \xmark & \xmark & 88 & 171 \\
+    \cmark & \xmark & \cmark & 88 & 138 \\
+    \cmark & \cmark & \xmark & 87 & 134 \\
+    \cmark & \cmark & \cmark & 88 & 103 \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\begin{center}
+  \rowcolors{0}{}{mintbg}
+  \captionof{table}{Code size and Compute time by feature flag with \texttt{profile=server} and a static SSID}
+  \label{tab:aucpace-embedded-benchmarks-server-static}
+  \begin{tabular}{ ccccc }
+    \toprule
+    \texttt{strong} & \texttt{implicit} & \texttt{partial} & code size (Kib) & Compute time (ms) \\
+    \midrule
+    \xmark & \xmark & \xmark & 81 & 169 \\
+    \xmark & \xmark & \cmark & 82 & 139 \\
+    \xmark & \cmark & \xmark & 82 & 134 \\
+    \xmark & \cmark & \cmark & 82 & 103 \\
+    \cmark & \xmark & \xmark & 86 & 171 \\
+    \cmark & \xmark & \cmark & 87 & 139 \\
+    \cmark & \cmark & \xmark & 87 & 135 \\
+    \cmark & \cmark & \cmark & 87 & 102 \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\begin{center}
+  \rowcolors{0}{}{mintbg}
+  \captionof{table}{Code size and Compute time by feature flag with \texttt{profile=release}}
+  \label{tab:aucpace-embedded-benchmarks-release}
+  \begin{tabular}{ ccccc }
+    \toprule
+    \texttt{strong} & \texttt{implicit} & \texttt{partial} & code size (Kib) & Compute time (ms) \\
+    \midrule
+    \xmark & \xmark & \xmark & 131 & 148 \\
+    \xmark & \xmark & \cmark & 136 & 121 \\
+    \xmark & \cmark & \xmark & 131 & 117 \\
+    \xmark & \cmark & \cmark & 137 & 89 \\
+    \cmark & \xmark & \xmark & 138 & 148 \\
+    \cmark & \xmark & \cmark & 141 & 118 \\
+    \cmark & \cmark & \xmark & 138 & 117 \\
+    \cmark & \cmark & \cmark & 141 & 89 \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\begin{center}
+  \rowcolors{0}{}{mintbg}
+  \captionof{table}{Code size and Compute time by feature flag with \texttt{profile=release} and a static SSID}
+  \label{tab:aucpace-embedded-benchmarks-release-static}
+  \begin{tabular}{ ccccc }
+    \toprule
+    \texttt{strong} & \texttt{implicit} & \texttt{partial} & code size (Kib) & Compute time (ms) \\
+    \midrule
+    \xmark & \xmark & \xmark & 130 & 145 \\
+    \xmark & \xmark & \cmark & 135 & 119 \\
+    \xmark & \cmark & \xmark & 131 & 115 \\
+    \xmark & \cmark & \cmark & 136 & 88 \\
+    \cmark & \xmark & \xmark & 137 & 146 \\
+    \cmark & \xmark & \cmark & 140 & 120 \\
+    \cmark & \cmark & \xmark & 137 & 117 \\
+    \cmark & \cmark & \cmark & 141 & 89 \\
+    \bottomrule
+  \end{tabular}
+\end{center}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics{assets/feature_effects.eps}
+  \caption{Plot of the effect of different feature flags and compiler modes}
+\end{figure}
+
+\clearpage
 
 \section{Breaking everything}
 By happenstance I was reading NCC Group's recent review of Whatsapp's \texttt{opaque-ke} crate \cite{whatsapp-are-dumb-too, whatsapp-are-dumb-too-report}.
