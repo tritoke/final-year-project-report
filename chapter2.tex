@@ -2,30 +2,30 @@
 \label{chap:context}
 
 \section{Background on PAKEs}
-\subsection{What problem do PAKEs solve?}
+\subsection{What Problem Do PAKEs Solve?}
 In the modern day when you login to a website a \gls{tls} encrypted channel is established, over which your password is sent in plaintext.
-The server then computes some hash of your password, sometimes with a salt or some other additional data.
+The server then computes the hash of your password, sometimes with a salt or some other additional data.
 This hash is then compared with whatever is stored in the server's database for your account, and access is granted based on whether the hash matched.
 
 This approach is fundamentally flawed, allowing the plaintext password to leave your device gives attackers many more opportunities at which they can steal your password.
-Be that from compromising the \gls{tls} channel via a downgrade attack or by malware on the server intercepting your password as the server processes it.
+Be that from compromising the \gls{tls} channel via a \gls{downgrade-attack} or by malware on the server intercepting your password as the server processes it.
 
 \glspl{pake} solve this problem in a fundamentally different way, and they have many benefits because of this.
 Namely with \glspl{pake} your password never leaves your device, it is used to calculate a secret key which is shared with the server.
-Another property of how \glspl{pake} are constructed is that you and the server are both "authenticated" with each other once you acquire the shared key.
-This is in contrast with the approach of \gls{tls} + certificates, where only the server is authenticated.
+Another property of how \glspl{pake} are constructed is that you and the server are both \enquote{authenticated} with each other once you acquire the shared key.
+This is in contrast with the approach of \gls{tls} and certificates, where only the server is authenticated.
 
 % Horizontal version
 \begin{figure}[H]
   \centering
   \begin{tikzpicture}[thick,>=latex]
-    \node[alice,minimum size=1.5cm] at (0,0) {Alice - Client};
-    \node[bob,mirrored,minimum size=1.5cm] at (5,0) {Bob - Server};
+    \node[alice,minimum size=1.5cm] at (0,0) {Alice -- Client};
+    \node[bob,mirrored,minimum size=1.5cm] at (5,0) {Bob -- Server};
     \draw[->] (1,0.5) -- (4,0.5) node[midway, above] {password};
     \draw[->] (4,-0.5) -- (1,0-0.5) node[midway, above] {auth \cmark};
 
-    \node[alice,minimum size=1.5cm] at (9,0) {Alice - Client};
-    \node[bob,mirrored,minimum size=1.5cm] at (14,0) {Bob - Server};
+    \node[alice,minimum size=1.5cm] at (9,0) {Alice -- Client};
+    \node[bob,mirrored,minimum size=1.5cm] at (14,0) {Bob -- Server};
     \node at (10.3,0.8) {password};
     \draw[->] (10, 0.5) -- (10,-0.5) node[midway, right, xshift=0.1cm, yshift=0.1cm, scale=0.05] {\includegraphics{wand.png}};
     \node[scale=0.02] at (10.3,-0.7) {\includegraphics{key.png}};
@@ -44,26 +44,26 @@ This is in contrast with the approach of \gls{tls} + certificates, where only th
 \end{figure}
 
 \clearpage
-\subsection{What is a PAKE?}
-\glspl{pake} are interactive, two party cryptographic protocols where each party shares knowledge of a password (a low entropy secret) and seeks to obtain a strong shared key e.g. for use later with a symmetric cipher. Critically an eavesdropper who can listen in two all messages of the key negotiation cannot learn enough information to bruteforce the password. Another way of phrasing this is that brute force attacks on the key must be "\glslink{ocrypto}{online}".
+\subsection{What Is a PAKE?}
+\glspl{pake} are interactive, two party cryptographic protocols where each party shares knowledge of a password (a low entropy secret) and seeks to obtain a strong shared key e.g. for use later with a symmetric cipher. Critically an eavesdropper who can listen to all messages of the key negotiation cannot learn enough information to bruteforce the password. Another way of phrasing this is that brute force attacks on the key must be \enquote{\glslink{ocrypto}{online}}.
 
-There are two main types of \gls{pake} algorithm - \glspl{apake} and \glspl{bpake}.
+There are two main types of \gls{pake} algorithm -- \glspl{apake} and \glspl{bpake}.
 \begin{itemize}
   \item \glspl{bpake} are \glspl{pake} where both parties share knowledge of the same secret password.
-  \item \glspl{apake} are \glspl{pake} where one party has the password and the other has a "\gls{veri}" which is computed via a one-way function from the secret password.
+  \item \glspl{apake} are \glspl{pake} where one party has the password and the other has a \enquote{\gls{veri}} which is computed via a one-way function from the secret password.
 \end{itemize}
 
 % Vertical version
 % \begin{figure}[H]
 %   \centering
 %   \begin{tikzpicture}
-%     \node[alice,minimum size=3cm] at (0,0) {Alice - Client};
-%     \node[bob,mirrored,minimum size=3cm] at (10,0) {Bob - Server};
+%     \node[alice,minimum size=3cm] at (0,0) {Alice -- Client};
+%     \node[bob,mirrored,minimum size=3cm] at (10,0) {Bob -- Server};
 %     \node[scale=0.05] at (2,1) {\includegraphics{key.png}};
 %     \node[scale=0.05] at (8,1) {\includegraphics{key.png}};
 % 
-%     \node[alice,minimum size=3cm] at (0,-7) {Alice - Client};
-%     \node[bob,mirrored,minimum size=3cm] at (10,-7) {Bob - Server};
+%     \node[alice,minimum size=3cm] at (0,-7) {Alice -- Client};
+%     \node[bob,mirrored,minimum size=3cm] at (10,-7) {Bob -- Server};
 %     \node[scale=0.05] at (2,-6) {\includegraphics{key.png}};
 %     \node[scale=0.05] at (8,-6) {\includegraphics{shuffled_key.png}};
 % 
@@ -99,22 +99,22 @@ There are two main types of \gls{pake} algorithm - \glspl{apake} and \glspl{bpak
   \label{fig:pake-compare}
 \end{figure}
 
-\subsection{How can PAKEs thwart the effectiveness of quantum computers}
-With quantum computing advancing ever faster, classical cryptography systems such as those based on the hardness of the factoring problem (\gls{rsa}), or the discrete-logarithm problem (\gls{dh}, \gls{ecdh}) are increasingly coming into question as quantum computers can solve these problems.
-During the \gls{cfrg}'s recent \gls{pake} standardisation efforts a new property of \glspl{pake} emerged called "quantum annoying".
-In their paper \citetitle{quantum-annoying}, \citeauthor{quantum-annoying} define the "quantum annoying" property of \glspl{pake} as a scheme where a quantum computer can compromise a scheme but that solving one discrete logarithm problem only gives one guess at the password.
+\subsection{How Can PAKEs Thwart the Effectiveness of Quantum Computers?}
+With quantum computing advancing ever faster, classical cryptography systems such as those based on the hardness of the factoring problem\footnote{Finding $p,$ given $N = p * q$ where $p$ and $q$ are large prime numbers.} (\gls{rsa}), or the discrete-logarithm problem\footnote{Finding $a$ given $g^a mod p$ for large $a$ and prime $p$} (\gls{dh}, \gls{ecdh}) are increasingly coming into question as quantum computers can solve these problems efficiently.
+During the \gls{cfrg}'s recent \gls{pake} standardisation efforts a new property of \glspl{pake} emerged called \enquote{quantum annoying}.
+In their paper \citetitle{quantum-annoying} \cite{quantum-annoying}, \citeauthor{quantum-annoying} define the \enquote{quantum annoying} property of \glspl{pake} as a scheme where a quantum computer can compromise a scheme, but that solving one discrete logarithm problem only gives one guess at the password.
 This makes \glspl{pake} incredibly attractive as stopgap solution giving researchers a few more vital years to research and test post-quantum cryptography.
-The need for these years of research was made painfully clear by \citeauthor{break-sidh} when they recently broke the \gls{sidh} post-quantum cryptography scheme \cite{break-sidh}.
+The need for these years of research was made painfully clear by \textcite{break-sidh} when they recently broke the \gls{sidh} post-quantum cryptography scheme.
 
 \clearpage
 
-\subsection{A brief history of PAKE algorithms}
+\subsection{A Brief History of PAKE Algorithms}
 The first \gls{pake} algorithm was Bellovin and Merritt's \gls{eke} scheme \cite{eke}.
 It works using a mix of \gls{symcrypto} and \gls{asymcrypto} to perform a key exchange.
 This comes with many challenges and subtle mistakes that are easy to make;
 primarily for the security of the system whatever is encrypted by the shared secret key(P) must be indistinguishable from random data.
 Otherwise an attacker can determine whether their guess at a trial decryption is valid.
-The \gls{rsa} variant of \gls{eke} has this issue - the \gls{rsa} parameter $e$ is what is encrypted and sent in the first message.
+The \gls{rsa} variant of \gls{eke} has this issue -- the \gls{rsa} parameter $e$ is what is encrypted and sent in the first message.
 For \gls{rsa} all valid values of $e$ are odd, so this would prevent it being used.
 This is solved by adding $1$ to $e$ with a $50\%$ chance.
 \Cref{fig:eke-rsa} shows this protocol in full. While many of the initial variants on \gls{eke} have been shown to flawed/vulnerable, later variants have made it into real world use, such as in \gls{eap} \cite{eap} where it is available as \gls{eap}-\gls{eke} \cite{eap-eke}.
@@ -122,8 +122,8 @@ In \cref{chap:appendix-eke} you can find a Python implementation of this scheme.
 
 \subsubsection{An Aside on Notation}
 \begin{itemize}
-  \item $\shortleftarrow$: Assignment - $x \shortleftarrow \ 5$ means x is assigned a value of 5.
-  \item $\cryptoSample$: Sampling from a given set - $x \cryptoSample \ \mathbb{R}$ means to choose $x$ at random from the set of real numbers.
+  \item $\shortleftarrow$: Assignment -- $x \shortleftarrow \ 5$ means x is assigned a value of 5.
+  \item $\cryptoSample$: Sampling from a given set -- $x \cryptoSample \ \mathbb{R}$ means to choose $x$ at random from the set of real numbers.
 \end{itemize}
 
 \begin{center}
@@ -156,7 +156,7 @@ In \cref{chap:appendix-eke} you can find a Python implementation of this scheme.
 \clearpage
 
 \subsubsection{SPAKE}
-\glslink{spake}{SPAKE1} and \glslink{spake}{SPAKE2} are \glspl{bpake}' which were introduced slightly later on by Michel Abdalla and David Pointcheval \cite{spake} as variations on \gls{eke}.
+\glslink{spake}{SPAKE1} and \glslink{spake}{SPAKE2} are \glspl{bpake} which were introduced slightly later on by \citeauthor{spake} \cite{spake} as variations on \gls{eke}.
 They are very similar so we will just explore \glslink{spake}{SPAKE2} as we are more interested in \glslink{ocrypto}{online} algorithms.
 \gls{spake} differs from EKE in the following ways:
 
@@ -248,13 +248,13 @@ However it is quite weird for what it does and there is no security proof for it
 \clearpage
 
 \section{Elliptic Curve Cryptography}
-Many modern Cryptograhpic protocols make use of a mathematical object known as an elliptic curve.
-First proposed in 1985 independently by Neal Koblitz \cite{ecc-first-use-koblitz} and Victor S. Miller \cite{ecc-first-use-miller}.
+Many modern cryptographic protocols make use of a mathematical object known as an elliptic curve.
+First proposed for use in cryptography in 1985 independently by Neal Koblitz \cite{ecc-first-use-koblitz} and Victor S. Miller \cite{ecc-first-use-miller}.
 Elliptic curves are attractive to cryptographers as they maintain a very high level of strength at smaller key sizes, this allows for protocols to consume less bandwidth, less memory and execute faster \cite{state-of-ecc}.
-To illustrate just how great the size savings are - \gls{nist} suggests that an elliptic curve key of just 256 bits provides the same level of security as an \gls{rsa} key of 3072 bits \cite{nist-ecc-reqs}.
+To illustrate just how great the size savings are -- \gls{nist} suggests that an elliptic curve key of just 256 bits provides the same level of security as an \gls{rsa} key of 3072 bits \cite{nist-ecc-reqs}.
 
-\subsection{But what actually is an elliptic curve?}
-With regards to Cryptography elliptic curves tend to come in one of two forms:
+\subsection{But What Actually Is an Elliptic Curve?}
+With regards to cryptography elliptic curves tend to come in one of two forms:
 \begin{itemize}
   \item Short Weierstra\ss{} Form: $y^2 = x^3 + ax + b$
   \item Montgomery Form: $by^2 = x^3 + ax^2 + x$
@@ -309,16 +309,16 @@ Weierstra\ss{} form is special as it is the general case for all elliptic curves
 This property means that it is commonly used for expressing various curves.
 Montgomery form isn't quite as flexible, however it is favourable because it leads to significantly faster multiplication and addition operations via Montgomery's ladder \cite{montgom-ladder}.
 
-\subsection{How do we do Cryptography with curves?}
-To perform Cryptography with elliptic curves we need to define an "\gls{abgroup}" to work in.
+\subsection{How Do We Do Cryptography With Curves?}
+To perform cryptography with elliptic curves we need to define an \enquote{\gls{abgroup}} to work in.
 An \gls{abgroup} is a group whose group operation is also commutative, for example the addition operator over the integers: ($+$, $\ZZ$) is an \gls{abgroup}.
-\glspl{abgroup} form the basis of many modern Cryptographic algorithms, a \gls{dh} key exchange can be performed in any \gls{abgroup} for instance.
+\glspl{abgroup} form the basis of many modern cryptographic algorithms, a \gls{dh} key exchange can be performed in any \gls{abgroup} for instance.
 
-Our \gls{abgroup} is built on the idea of "adding" points on the curve.
+Our \gls{abgroup} is built on the idea of \enquote{adding} points on the curve.
 To add two points, we find the line which passes through our two points and we continue along that line until we hit our curve again.
 We then reflect this point in the $x$-axis to get our result.
 What if we want to add our point to itself? Now there isn't a unique line through one point, however we are making the rules so in this case we will take the tangent to the curve at that point and then we can treat it the same as before.
-What if our line doesn't intersect with the curve? In this case we define a new point called the "neutral element" - $\mathcal{O}$.
+What if our line doesn't intersect with the curve? In this case we define a new point called the \enquote{neutral element} -- $\mathcal{O}$.
 It is also called the point at infinity as it can be considered to be the single point at the end of every vertical line at infinity.
 \Cref{fig:point-add-rules} illustrates all of these rules and edge cases.
 
@@ -366,7 +366,7 @@ It is also called the point at infinity as it can be considered to be the single
   \label{fig:point-add-rules}
 \end{figure}
 
-However it's not quite that simple for us. We cannot use $\RR$ as computers only have finite resources we need a finite set to work in. Instead we define our operations over a \gls{ff}, we will use the \gls{ff} of the integers mod a prime, denoted $\ZZ_p$ for some prime $p$. Lets take a look at what our finite fields look like in a small finite field - $\ZZ_{89}$. \begin{figure}[H]
+However it's not quite that simple for us. We cannot use $\RR$ as computers only have finite resources we need a finite set to work in. Instead we define our operations over a \gls{ff}, we will use the \gls{ff} of the integers mod a prime, denoted $\ZZ_p$ for some prime $p$. Lets take a look at what our finite fields look like in a small finite field -- $\ZZ_{89}$. \begin{figure}[H]
   \centering
 
   \begin{tikzpicture}[thick,>=latex]
@@ -400,7 +400,7 @@ However it's not quite that simple for us. We cannot use $\RR$ as computers only
         (70, 55), (24, 42), (81, 39), (45, 19), (73, 35), (76, 52), (28, 21), (66, 78), (29, 4), (26, 14), (23, 61), (55, 13), (56, 67), (79, 44), (65, 54), (11, 16), (35, 74), (84, 6), (0, 0), (47, 84), (11, 73), (9, 85), (70, 34), (18, 14), (72, 79), (87, 13), (39, 76), (66, 11), (75, 78), (7, 53), (26, 75), (8, 45), (63, 88), (54, 85), (81, 50), (58, 30), (80, 39), (72, 10), (65, 35), (28, 68), (63, 1), (18, 75), (53, 72), (76, 37), (31, 69), (23, 28), (61, 12), (75, 11), (21, 40), (21, 49), (48, 14), (71, 16), (45, 70), (84, 83), (43, 54), (71, 73), (39, 13), (5, 45), (8, 44), (29, 85), (55, 76), (7, 36), (78, 87), (20, 39), (10, 16), (73, 54), (38, 8), (54, 4), (80, 50), (38, 81), (40, 78), (58, 59), (31, 20), (53, 17), (60, 65), (79, 45), (27, 71), (56, 22), (10, 73), (20, 50), (48, 75), (87, 76), (24, 47), (9, 4), (27, 18), (60, 24), (46, 80), (43, 35), (78, 2), (47, 5), (61, 77), (46, 9), (35, 15), (5, 44), (40, 11)
       } {\node at \point {$\bullet$};}
       \node at (44,100) {Montgomery Form};
-      \node at (44,-10) {$2y^2 = x^3 - 3x^2 - x$ over $\mathbb{Z}_{89}$};
+      \node at (44,-10) {$2y^2 = x^3 - 3x^2 c x$ over $\mathbb{Z}_{89}$};
     \end{scope}
   \end{tikzpicture}
 
@@ -408,12 +408,14 @@ However it's not quite that simple for us. We cannot use $\RR$ as computers only
   \label{fig:ellip-curve-ff}
 \end{figure}
 
+\clearpage
+
 This now looks very different to when we were looking at them in $\RR$, however it shows very clearly what the elements of our set look like.
 They are points in the 2d coordinate plane with a symmetry around $p/2$.
 This might not feel intuitive but it is actually exactly what we should expect to happen, in our finite field when we negate our point's y coordinate, instead of flipping it around the y-axis, our points get wrapped around $y=p$.
 Hence our new point is the same distance from $y=p$ as our first point was with $y=0$, this is where our symmetry arises.
 
-\subsection{Where can Elliptic Curve Cryptography go wrong?}
+\subsection{Where Can Elliptic Curve Cryptography Go Wrong?}
 There are many attacks against various aspects of Elliptic Curves, in general they fall into the following categories:
 \begin{itemize}
   \begin{item}
@@ -445,18 +447,20 @@ That process concluded in 2020 with \gls{cpace} and \gls{opaque} being chosen as
 
 Some time has passed since this process and we now have some new \glspl{pake} with various interesting properties that are worth taking a look at.
 
+\clearpage
+
 \subsection{CHIP+CRISP}
 Introduced in \citeyear{chip+crisp} by \citeauthor{chip+crisp}, CHIP and CRISP are two protocol compilers which instantiate what the authors call an \gls{ipake} \cite{chip+crisp}.
 \glspl{ipake} are designed to mitigate the threat of compromising the local storage of a device.
 While in the case of \glspl{apake} this is considered for the server side, \glspl{bpake} often require both parties to have knowledge of the plaintext password.
 Examples of this include SPAKE-2 \cite{spake} and WPA3's DragonFly/SAE \cite{sae}, both of which require the server and client to have knowledge of the plaintext password.
-CHIP+CRISP solves this problem by binding the password to an arbitrary bit-string called the identity, this can be anything, e.g. "server", "router", "jonathandata0".
+CHIP+CRISP solves this problem by binding the password to an arbitrary bit-string called the identity, this can be anything, e.g. \enquote{server}, \enquote{router}, \enquote{jonathandata0}.
 CHIP and CRISP are both protocol compilers, this means that they aren't themselves protocols but they sit on top of another protocol in order to give that sub-protocol the aforementioned properties, by protecting the underlying data they exchange.
 
 \subsection{KHAPE}
 \gls{khape} \cite{khape} is an \gls{apake} from the designers of \gls{opaque}, introduced in \citeyear{khape} it is a variant of \gls{opaque} which doesn't rely on the use of an \gls{oprf} to get \gls{apake} security.
-Instead the \gls{oprf} is used to add precomputation resistance, this is also known as a "strong" \gls{pake}.
-The advantage of this is that should the \gls{oprf} be compromised the protocol remains secure, and only loses the "strong" part of it's security.
+Instead the \gls{oprf} is used to add precomputation resistance, this is also known as a \enquote{strong} \gls{pake}.
+The advantage of this is that should the \gls{oprf} be compromised the protocol remains secure, and only loses the \enquote{strong} part of it's security.
 Similarly to CHIP+CRISP, \gls{khape} is not itself a protocol but a compiler from any \gls{ake} to an \gls{apake}.
 In the paper they detail the concrete implementation KHAPE-HMQV, which extends the HMQV Authenticated \gls{dh} Protocol from an \gls{ake} to a \gls{apake}.
 
@@ -468,7 +472,7 @@ Efficiency is at the core of this protocol, it is taken into consideration at ev
 A unique bonus of this protocol as well is it takes into account the real-world issue of patents and aims to provide a practical protocol which is free from patents so as to promote the widest possible adoption of the protocol.
 
 \clearpage
-\section{Choosing a PAKE to implement}
+\section{Choosing a PAKE To Implement}
 There were a number of factors to consider when choosing which \gls{pake} to implement:
 \begin{itemize}
   \item{How widely applicable is the protocol?}
@@ -503,7 +507,7 @@ For now I will omit considerations about open source contribution.
 Additionally it is the only one which is not under patent of any kind.
 It is for these reasons that I have chosen to create an implementation of \gls{aucpace} and to contribute it back to the open source community via RustCrypto.
 
-\section{AuCPace in detail}
+\section{AuCPace in Detail}
 Now that we have chosen to implemented \gls{aucpace} it is worth going over the protocol itself to understand better what implementing it will entail.
 \Cref{fig:aucpace-store-pwd,fig:aucpace-protocol} contain protocol diagrams reproduced from \cite{aucpace}.
 There are four phases to the protocol some of which can be made optional or can be adjusted based on the sub-variant of the protocol in use.
@@ -521,7 +525,7 @@ There are four phases to the protocol some of which can be made optional or can 
     \begin{itemize}
       \item{the server generates a new ephemeral \gls{dh} key}
       \item{the server receives the client's username, looks up the \gls{veri} and salt.}
-      \item{the server then sends across the group $\mathcal{J}$, the public key $X$, the salt and the parameters for the PBKDF - $\sigma$}
+      \item{the server then sends across the group $\mathcal{J}$, the public key $X$, the salt and the parameters for the PBKDF -- $\sigma$}
       \item{both then compute the \gls{prs}, the client aborts here if the server's public key $X$ is invalid}
     \end{itemize}
   }
@@ -551,7 +555,7 @@ There are three different configurations which can be adjusted to make tradeoffs
 \begin{itemize}
   \item{full vs partial augmentation}
   \item{implicit authentication vs explicit mutual authentication}
-  \item{with pre-computation attack resistance ("strong \gls{aucpace}") vs without (\gls{aucpace})}
+  \item{with pre-computation attack resistance (\enquote{strong \gls{aucpace}}) vs without (\gls{aucpace})}
 \end{itemize}
 
 \begin{figure}[H]
@@ -727,12 +731,12 @@ Below are protocol diagrams illustrating what changes with each configuration ch
 \end{center}
 
 \clearpage
-\section{Who are RustCrypto?}
+\section{Who Are RustCrypto?}
 \label{sec:whom-rustcrypto}
 
-RustCrypto is a GitHub Organisation / online community who are dedicated to implementing fast and secure Cryptography in pure rust.
+RustCrypto is a GitHub Organisation / online community who are dedicated to implementing fast and secure cryptography in pure rust.
 Pure rust in this context means that all of the code is in rust and there are no \gls{ffi} bindings to other (normally C) libraries which implement the functionality (see \cref{fig:pure-vs-wrapper}).
-RustCrypto have implemented many Cryptographic primitives and also have an existing repository for \gls{pake} algorithms.
+RustCrypto have implemented many cryptographic primitives and also have an existing repository for \gls{pake} algorithms.
 Using RustCrypto's libraries provides a good foundation for building any protocol as well as opening up opportunities to open source the implementation back to them.
 A number of major companies also use RustCrypto's code to secure their applications, e.g. 1Password who use RustCrypto for their Password Manager.
 The decision to use Rust will be discussed further in \cref{sec:why-rust}.

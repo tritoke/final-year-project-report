@@ -14,14 +14,16 @@ else
   set shortmess=aoO
 endif
 badd +1 report.tex
-badd +0 chapter1.tex
-badd +0 chapter2.tex
-badd +0 chapter3.tex
-badd +0 chapter4.tex
-badd +0 chapter5.tex
-badd +0 chapter6.tex
-badd +0 glossary.tex
-badd +0 refs.bib
+badd +1 chapter1.tex
+badd +1 chapter2.tex
+badd +1 chapter3.tex
+badd +1 chapter4.tex
+badd +1 chapter5.tex
+badd +1 chapter6.tex
+badd +1 glossary.tex
+badd +1 refs.bib
+badd +1 merci.tex
+badd +1 acronyms.tex
 argglobal
 %argdel
 $argadd report.tex
@@ -55,11 +57,11 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 168 - ((37 * winheight(0) + 38) / 76)
+let s:l = 189 - ((31 * winheight(0) + 39) / 78)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 168
+keepjumps 189
 normal! 0
 tabnext
 edit chapter1.tex
@@ -76,12 +78,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 4 - ((3 * winheight(0) + 38) / 76)
+let s:l = 10 - ((9 * winheight(0) + 39) / 78)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 4
-normal! 0
+keepjumps 10
+normal! 038|
 tabnext
 edit chapter2.tex
 argglobal
@@ -97,12 +99,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 15 - ((14 * winheight(0) + 38) / 76)
+let s:l = 109 - ((43 * winheight(0) + 38) / 76)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 15
-normal! 0
+keepjumps 109
+normal! 04|
 tabnext
 edit chapter3.tex
 argglobal
@@ -118,12 +120,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 4 - ((3 * winheight(0) + 38) / 76)
+let s:l = 179 - ((34 * winheight(0) + 39) / 78)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 4
-normal! 0
+keepjumps 179
+normal! 06|
 tabnext
 edit chapter4.tex
 argglobal
@@ -139,12 +141,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 215 - ((75 * winheight(0) + 38) / 76)
+let s:l = 188 - ((31 * winheight(0) + 39) / 78)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 215
-normal! 02|
+keepjumps 188
+normal! 09|
 tabnext
 edit chapter5.tex
 argglobal
@@ -160,12 +162,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 212 - ((66 * winheight(0) + 38) / 76)
+let s:l = 297 - ((66 * winheight(0) + 39) / 78)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 212
-normal! 041|
+keepjumps 297
+normal! 09|
 tabnext
 edit chapter6.tex
 argglobal
@@ -181,12 +183,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 25 - ((24 * winheight(0) + 38) / 76)
+let s:l = 46 - ((45 * winheight(0) + 39) / 78)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 25
-normal! 0
+keepjumps 46
+normal! 06|
 tabnext
 edit glossary.tex
 argglobal
@@ -202,12 +204,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 118 - ((38 * winheight(0) + 38) / 76)
+let s:l = 1 - ((0 * winheight(0) + 39) / 78)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 118
-normal! 0
+keepjumps 1
+normal! 02|
 tabnext
 edit refs.bib
 argglobal
@@ -223,13 +225,13 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 289 - ((37 * winheight(0) + 38) / 76)
+let s:l = 290 - ((38 * winheight(0) + 39) / 78)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 289
-normal! 0
-tabnext 6
+keepjumps 290
+normal! 02|
+tabnext 3
 set stal=1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
@@ -243,7 +245,6 @@ if filereadable(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
 set hlsearch
-nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :

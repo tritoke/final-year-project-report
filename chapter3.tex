@@ -20,18 +20,18 @@ Together this makes rust a compelling choice for writing embedded code.
 
 Rust is also very well suited for implementing cryptographic software.
 It's lifetimes system and compile time safety guarantees make it ideal for building security focused software.
-Rust was recently added to \gls{nist}'s list of "Safer Languages" which it recommends for writing safety focused programs in \cite{nist-safer-languages}.
+Rust was recently added to \gls{nist}'s list of \enquote{Safer Languages} which it recommends for writing safety focused programs in \cite{nist-safer-languages}.
 
 As well as this many algorithms, formats and primitives are implemented, and freely available as crates for anyone to use.
 Rust's trait system also lends itself well to this, it is possible to use implement a trait representing an elliptic curve and then an algorithm can be written to be agnostic about the curve that it is using for instance.
 This allows library writers to easily write generic code to give user's of the libraries as much flexibility and choice around how they implement their program.
 This is especially important for systems which might need to interact with legacy systems or that need to provide a certain level of security for \gls{fips} standards like \gls{fips}-140-2 \cite{fips-140-2}.
 
-\section{Planning the library}
+\section{Planning the Library}
 Before implementing \gls{aucpace} it was necessary to plan ahead what libraries to use.
 Without planning it would be easy to end up in a situation where different libraries aren't compatible with each other, or have become superseded by another library as this information is not readily available on \href{https://crates.io/}{crates.io} (crates.io is the package repository for all public rust packages).
 
-\subsection{What primitives do we need to implement AuCPace?}
+\subsection{What Primitives Do We Need To Implement AuCPace?}
 \gls{aucpace} has many parameters which can be changed to drastically change how the protocol works, this is by design to allow customisability for each user's needs, however it can be quite confusing to navigate.
 As such it is worthwhile to look at the parameters are and thus what primitives we will need.
 \Cref{tab:aucpace-params,tab:aucpace-selected-params} are partially reproduced from \cite{aucpace} just in significantly fewer words.
@@ -87,42 +87,42 @@ For the required primitives the following Rust crates were identified as potenti
   \item{
     The \gls{pbkdf}:
     \begin{itemize}
-      \item{\href{https://github.com/RustCrypto/password-hashes/tree/master/argon2}{\texttt{argon2}} - RustCrypto's Argon2 implementation}
-      \item{\href{https://github.com/RustCrypto/password-hashes/tree/master/pbkdf2}{\texttt{pbkdf2}} - RustCrypto's PBKDF2 implementation}
-      \item{\href{https://github.com/RustCrypto/password-hashes/tree/master/scrypt}{\texttt{scrypt}} - RustCrypto's Scrypt implementation}
-      \item{\href{https://github.com/Keats/rust-bcrypt}{\texttt{rust-bcrypt}} - a pure Rust Bcrypt implementation}
-      \item{\href{https://github.com/sru-systems/rust-argon2}{\texttt{rust-argon2}} - a pure Rust Argon2 implementation}
-      \item{\href{https://github.com/RustCrypto/traits/tree/master/password-hash}{password-hash} - trait to allow implementations to be generic over the password hashing algorithm used}
+      \item{\href{https://github.com/RustCrypto/password-hashes/tree/master/argon2}{\texttt{argon2}} -- RustCrypto's Argon2 implementation}
+      \item{\href{https://github.com/RustCrypto/password-hashes/tree/master/pbkdf2}{\texttt{pbkdf2}} -- RustCrypto's PBKDF2 implementation}
+      \item{\href{https://github.com/RustCrypto/password-hashes/tree/master/scrypt}{\texttt{scrypt}} -- RustCrypto's Scrypt implementation}
+      \item{\href{https://github.com/Keats/rust-bcrypt}{\texttt{rust-bcrypt}} -- a pure Rust Bcrypt implementation}
+      \item{\href{https://github.com/sru-systems/rust-argon2}{\texttt{rust-argon2}} -- a pure Rust Argon2 implementation}
+      \item{\href{https://github.com/RustCrypto/traits/tree/master/password-hash}{password-hash} -- trait to allow implementations to be generic over the password hashing algorithm used}
     \end{itemize}
   }
 
   \item{
     The elliptic curve:
     \begin{itemize}
-      \item{\href{https://github.com/dalek-cryptography/curve25519-dalek}{\texttt{curve25519-dalek}} - Dalek Cryptography's implementation of Curve25519 and Ristretto255 \cite{ristretto255}}
-      \item{\href{https://github.com/RustCrypto/traits/tree/master/elliptic-curve}{\texttt{elliptic-curve}} - traits for operating over a generic elliptic curve, part of RustCrypto}
-      \item{\href{https://github.com/RustCrypto/elliptic-curves}{\texttt{elliptic-curves}} - RustCrypto's meta-repo holding implementations for the following curves: brainpoolP256r1/t1, brainpoolP384r1/t1, Secp256k1, P-224, P-256, P-384, 1P-52}
+      \item{\href{https://github.com/dalek-cryptography/curve25519-dalek}{\texttt{curve25519-dalek}} -- Dalek Cryptography's implementation of Curve25519 and Ristretto255 \cite{ristretto255}}
+      \item{\href{https://github.com/RustCrypto/traits/tree/master/elliptic-curve}{\texttt{elliptic-curve}} -- traits for operating over a generic elliptic curve, part of RustCrypto}
+      \item{\href{https://github.com/RustCrypto/elliptic-curves}{\texttt{elliptic-curves}} -- RustCrypto's meta-repo holding implementations for the following curves: brainpoolP256r1/t1, brainpoolP384r1/t1, Secp256k1, P-224, P-256, P-384, 1P-52}
     \end{itemize}
   }
 
   \item{
     The \textsf{Map2Point} function:
     \begin{itemize}
-      \item{\href{https://github.com/dalek-cryptography/curve25519-dalek}{\texttt{curve25519-dalek}} - includes \verb|RistrettoPoint::from_uniform_bytes| which implements Ristretto flavoured Elligator2}
-      \item{\href{https://github.com/RustCrypto/traits/tree/master/elliptic-curve}{\texttt{elliptic-curve}} - includes \texttt{MapToCurve} which implements the hash-to-curve operation for NIST P-256 and Secp256k1}
+      \item{\href{https://github.com/dalek-cryptography/curve25519-dalek}{\texttt{curve25519-dalek}} -- includes \verb|RistrettoPoint::from_uniform_bytes| which implements Ristretto flavoured Elligator2}
+      \item{\href{https://github.com/RustCrypto/traits/tree/master/elliptic-curve}{\texttt{elliptic-curve}} -- includes \texttt{MapToCurve} which implements the hash-to-curve operation for NIST P-256 and Secp256k1}
     \end{itemize}
   }
 
   \item{
     The hash function:
     \begin{itemize}
-      \item{\href{https://github.com/RustCrypto/traits/tree/master/digest}{\texttt{digest}} - a trait for operating generically over hash functions, from RustCrypto}
-      \item{\href{https://github.com/RustCrypto/hashes}{\texttt{hashes}} - RustCrypto's meta-repo holding implementations for the following hashes: Ascon, BLAKE2. KangarooTwelve, SHA2, SHA3, Tiger, Whirlpool, and several more.}
+      \item{\href{https://github.com/RustCrypto/traits/tree/master/digest}{\texttt{digest}} -- a trait for operating generically over hash functions, from RustCrypto}
+      \item{\href{https://github.com/RustCrypto/hashes}{\texttt{hashes}} -- RustCrypto's meta-repo holding implementations for the following hashes: Ascon, BLAKE2. KangarooTwelve, SHA2, SHA3, Tiger, Whirlpool, and several more.}
     \end{itemize}
   }
 \end{itemize}
 
-\subsection{Picking crates for the required primitives}
+\subsection{Picking Crates for the Required Primitives}
 Where possible the implementation should match the reference implementation.
 These choices are what the designers have determined as secure presets so the are good choices should a suitable crate exist.
 
@@ -130,7 +130,7 @@ These choices are what the designers have determined as secure presets so the ar
 Instead of picking a \gls{pbkdf} up front, the \texttt{PasswordHasher} trait from \href{https://github.com/RustCrypto/traits/tree/master/password-hash}{password-hash} allows us to be generic over the \gls{pbkdf} when implementing the library.
 Allowing users of the library to pick from either Argon2, Scrypt or PBKDF2 at their discretion, or to implement their own algorithm and supply an implementation of \texttt{PasswordHasher} for it.
 
-\subsubsection{Choosing the Curve and \textsf{Map2Point} operation}
+\subsubsection{Choosing the Curve and \textsf{Map2Point} Operation}
 Although the \texttt{elliptic-curves} repo implements many different elliptic curves, it doesn't implement Curve25519\footnote{there is currently a push to have it included in the crate, though it is still early on and the implementation is not fit for use}, and the \texttt{hash2curve} \gls{api} for \gls{nist} P-256 uses the \gls{osswu} map \cite{osswu-map}, which is known to be less efficient than the Elligator2 map defined for Montgomery curves \cite{elligator2}.
 There have also been questions about whether the coefficients used in \gls{nist}'s suite of curves have been deliberately tampered with \cite{curve-rigidity}.
 
@@ -140,11 +140,11 @@ However we can eliminate the need for handling cofactors altogether by using a p
 Ristretto255 \cite{ristretto255} is one such group built on top of Curve25519.
 The \texttt{curve25519-dalek} crate implements Ristretto255 as well as the Ristretto flavoured Elligator2 map \cite{elligator2} which implements the required \textsf{Map2Point} operation.
 
-\subsubsection{Choosing the hash function}
+\subsubsection{Choosing the Hash Function}
 The hash function is another parameter that is easy to be generic over, thanks to the \texttt{digest} crate.
 This allows users to pick from the plethora of hashes implemented by \texttt{RustCrypto/hashes}, enabling them to choose whichever hash function is best suited for their application.
 
-\section{Initial designs for the structure of the library}
+\section{Initial Designs for the Structure of the Library}
 Rust is very flexible in regards to how you wish to structure a library, there are many patterns that are known to work well in Rust and as such have become Rust idioms.
 Rust is fairly unique among programming languages as it offers very little in the way of inheritance, unlike classes in Java or C++, Rust's structs cannot inherit from each other.
 Instead if you want to implement some functionality on top of another type you must in some way store a value of that type.
@@ -159,11 +159,11 @@ This preference for Owned values leads to one slightly messy but easy to impleme
 While easy to implement this approach does have some drawbacks, some of the state might only be needed for one operation then it is worthless, however having everything in one struct means that the space is still allocated whether you need it or not.
 Being aware of this is especially pertinent as the amount of state required gets larger.
 
-\subsection{There are other PAKEs implemented in Rust, how are they designed?}
-RustCrypto have implemented two \glspl{pake} - \gls{srp} and \glslink{spake}{SPAKE2}.
+\subsection{There Are Other PAKEs Implemented in Rust, How Are They Designed?}
+RustCrypto have implemented two \glspl{pake} -- \gls{srp} and \glslink{spake}{SPAKE2}.
 \glslink{spake}{SPAKE2} is the simpler of the two protocols so lets analyse it first.
 
-\subsubsection{Exploring RustCrypto's SPAKE2 implementation}
+\subsubsection{Exploring RustCrypto's SPAKE2 Implementation}
 A diagram of the \glslink{spake}{SPAKE2} protocol can be found in \cref{fig:spake2}.
 The core of the implementation is the following struct:
 \rustcode{SPAKE2 Struct}{assets/spake2.rs}
@@ -176,7 +176,7 @@ The message can then be sent to the other party and when the response is receive
 
 In summary it is implemented as one large struct with many helper methods for all the different ways to start the protocol.
 
-\subsubsection{Exploring RustCrypto's SRP implementation}
+\subsubsection{Exploring RustCrypto's SRP Implementation}
 A diagram of the \gls{srp} protocol can be found in \cref{fig:srp}.
 
 As \gls{srp} is an \gls{apake} it is implemented with a separate \texttt{Client} and \texttt{Server} struct as seen below.
@@ -195,7 +195,7 @@ where the \gls{aucpace} implementation will be added as a new crate in the Cargo
 
 As a prototype for the library functionality a design in the style of RustCrypto's \gls{srp} implementation was created to explore how the computations required by \gls{aucpace} look in rust and how the different libraries interact together.
 
-After this prototype version several attempts were made at a more user-friendly / intuitive, eventually settling on a design where the User "moves" between various structs by passing messages between the server and client.
+After this prototype version several attempts were made at a more user-friendly / intuitive, eventually settling on a design where the User \enquote{moves} between various structs by passing messages between the server and client.
 Each move returns either just the next state, or a tuple of a message and the next state, it is then the user's job to manage just the communication of messages between the client and server.
-This approach reduces the cognitive overhead of the developer and allows them to just focus on the core of a protocol - passing messages.
+This approach reduces the cognitive overhead of the developer and allows them to just focus on the core of a protocol -- passing messages.
 

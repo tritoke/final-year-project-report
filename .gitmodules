@@ -7,3 +7,6 @@
 [submodule "aucpace_embedded"]
 	path = aucpace_embedded
 	url = https://github.com/tritoke/aucpace_embedded
+[submodule "opaque_embedded"]
+	path = opaque_embedded
+	url = https://github.com/tritoke/opaque_embedded

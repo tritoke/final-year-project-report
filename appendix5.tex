@@ -1,0 +1,8 @@
+\chapter{Embedded Rust application implementing OPAQUE}
+\label{chap:appendix-opaque-embedded}
+
+The client code uses \texttt{opaque-ke} to implement the client side of \gls{opaque}.
+The server code uses \texttt{opaque-ke} to implement the server side of \gls{opaque} for a Nucleo-64 (STM32F401RE) \gls{mcu}.
+
+\rustcode[minted options={firstline=57,lastline=152}]{Client Negotiate}{opaque_embedded/client/src/main.rs}
+\rustcode[minted options={firstline=77,lastline=235}]{Server Negotiate}{opaque_embedded/server/src/main.rs}

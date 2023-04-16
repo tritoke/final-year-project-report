@@ -21,7 +21,7 @@ Understanding how to responsibly handle disclosing a vulnerability and rapidly r
 I have two main regrets from this project as a whole.
 Firstly I wish I had implemented from the \gls{ietf} draft of the \gls{aucpace} protocol instead of from the paper itself.
 \gls{ietf} drafts and standards are intended to be used as reference for those implementing the protocol.
-If I had followed their draft standard I would not have had anything like the trouble I did implementing Strong \gls{aucpace} and I wouldn't have had my catastrophic "neutral point" bug.
+If I had followed their draft standard I would not have had anything like the trouble I did implementing Strong \gls{aucpace} and I wouldn't have had my catastrophic \enquote{neutral point} bug.
 I consider that bug to be a direct consequence of my decision to follow the paper instead of the draft.
 
 Secondly I wish I had contacted Bj\"orn Haase earlier on, when I did contact him late in the project there was limited scope left for collaboration simply due to the lack of remaining time.
@@ -43,7 +43,7 @@ If I had more time I would have liked to have also implemented the CHIP+CRISP \g
 On a more practical level, \gls{aucpace} is an \gls{apake} built on top of the \gls{cpace} \gls{bpake}, future work could include breaking this underlying implementation out into it's own crate.
 
 \subsection{Post Quantum PAKE}
-With the rapid emergence of quantum technologies, stopgap solutions such as the "quantum annoying" property of \gls{aucpace} and similar \glspl{pake} simply won't be enough, an implementation of a truly "post quantum" \gls{pake} would make for an excellent project.
+With the rapid emergence of quantum technologies, stopgap solutions such as the \enquote{quantum annoying} property of \gls{aucpace} and similar \glspl{pake} simply won't be enough, an implementation of a truly \enquote{post quantum} \gls{pake} would make for an excellent project.
 An interesting candidate for this would be LATKE \cite{latke}, an \gls{ipake} instantiated from lattice assumptions.
 
 \section{Conclusion}

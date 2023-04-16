@@ -187,14 +187,8 @@
   [\vspace{1ex}\titlerule]
 }
 
-% make everything title case
-\usepackage{sectsty}
-\usepackage{titlecaps}
-\sectionfont{\titlecap}
-\subsectionfont{\titlecap}
-
 % glossary stuff
-\usepackage[toc]{glossaries}
+\usepackage[acronyms,toc]{glossaries}
 \setacronymstyle{long-short}
 \loadglsentries{glossary}
 \makenoidxglossaries{}
@@ -254,13 +248,19 @@
 \newcommand{\mathAdded}[1]{\textcolor{green!60!gray}{\mathbf{#1}}}
 \newcommand{\textAdded}[1]{\textcolor{green!60!gray}{\textbf{#1}}}
 
+% I hate quotes
+\usepackage{csquotes}
+
+% am bri'ish
+\usepackage[british]{babel}
+
 % cleverly decides how to reference a given ref
 % must be loaded after hyperref and amsmath
 \usepackage{cleveref}
 
 % only work on a chapter at a time to improve compile times
 % \includeonly{chapter3}
-\usepackage{showframe}
+% \usepackage{showframe}
 
 % specify how the document should handle hyphenation at page borders
 \tolerance=1
@@ -295,8 +295,9 @@
 
 % print the glossary
 \PreContentTitleFormat
-\printnoidxglossaries{}
+\printnoidxglossaries
 
+% print the bibliography
 \printbibliography{}
 
 %% Appendices start here
@@ -306,5 +307,6 @@
 \include{appendix2}
 \include{appendix3}
 \include{appendix4}
+\include{appendix5}
 
 \end{document}

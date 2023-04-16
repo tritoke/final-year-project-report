@@ -3,11 +3,11 @@
 
 Today's standards for Encryption and Authentication are fundamentally broken.
 The age old standard practice of obtaining an encrypted connection to a server, then sending a cleartext password to authenticate users is flawed.
-\glspl{pake} are a profoundly different way of looking at how encryption and authentication are performed, and could represent the basis for a safer and more secure future even in the face of the ever increasing threat quantum computers represent to encryption.
+\glspl{pake} are a profoundly different way of looking at how encryption and authentication are performed, and could represent the basis for a safer and more secure future, even in the face of the ever increasing threat quantum computers pose to encryption.
 
 \section{Aims}
 This project aims to understand the nature of how \glspl{pake} work, what they can and cannot do, and how they can be used to improve the security of almost all password based authentication systems.
-The "quantum annoying" property of \glspl{pake} will also be explored, to understand how \glspl{pake} can be used to delay the need for post-quantum cryptography by years or even decades \cite{quantum-annoying}.
+The \enquote{quantum annoying} property of \glspl{pake} will also be explored, to understand how \glspl{pake} can be used to delay the need for post-quantum cryptography by years or even decades \cite{quantum-annoying}.
 Additionally an implementation of a modern \gls{pake} protocol (\gls{aucpace}) will be created and and contributed back to the RustCrypto open source project.
 
 \section{Deliverables}
@@ -23,10 +23,10 @@ A lack of understanding of one particular area proved fatal when a catastrophic 
 \section{Structure}
 The report will follow the following structure:
 \begin{itemize}
-    \item{\Cref{chap:intro} introduces the project and provides an explanation of the objectives.}
-    \item{\Cref{chap:context} goes into detail on the history of \gls{pake} algorithms and elliptic curve cryptography.}
+    \item{\Cref{chap:intro} introduces the project and provides an explanation of the aims and deliverables.}
+    \item{\Cref{chap:context} goes into detail on the history of \gls{pake} algorithms and explains elliptic curve cryptography.}
     \item{\Cref{chap:design} explains the design decisions made around the implementation of \gls{aucpace}.}
-    \item{\Cref{chap:impl}}
-    \item{\Cref{chap:testing}}
-    \item{\Cref{chap:conclusion} wraps up the project, reflecting on the project and giving a conclusion.}
+    \item{\Cref{chap:impl} talks about how the library was implemented, how Rust's type and trait systems were effectively utilised to make the library as easy to use as possible.}
+    \item{\Cref{chap:testing} covers the extensive testing of the library, from unit and integration testing to running the protocol on real hardware. A comparison to an equivalent \gls{pake} (\gls{opaque}) is made by benchmarking both libraries. Finally the bug from above is explored, the fix and future prevention are explained.}
+    \item{\Cref{chap:conclusion} wraps up the project, with a reflection and an analysis of possible future work.}
 \end{itemize}

@@ -1,7 +1,7 @@
 \chapter{Implementation}
 \label{chap:impl}
 
-\section{Creating the initial prototype}
+\section{Creating the Initial Prototype}
 The initial prototype was based around the \gls{srp} implementation from RustCrypto.
 
 \rustcode{AuCPace Server Prototype}{assets/aucpace_server_prototype.rs}
@@ -10,7 +10,7 @@ The initial prototype was based around the \gls{srp} implementation from RustCry
 This struct then implemented methods for each of the computations needed by the protocol.
 There wasn't anything especially wrong with an implementation like this, but I felt like a higher level \gls{api} would be nicer to work with and would reduce the cognitive load on any developer using the library.
 
-\section{Forming the struct based API}
+\section{Forming the Struct-Based API}
 The first step to developing the struct-based \gls{api} was deciding what structs were needed, and at what point structs should be created in the protocol.
 Two models were considered, one where all inputs to the protocol are done up front and the structs solely represent different steps in the protocol, and another where a struct is declared at each point there is an input to the protocol diagram.
 
@@ -116,7 +116,7 @@ In summary this layout provides a high level of modularity, meaning that both pr
   \label{fig:actual-lib-structure}
 \end{figure}
 
-\subsection{Modeling lookupW in Rust's type system}
+\subsection{Modeling lookupW in Rust’s Type System}
 The \textit{loopupW} operation from the protocol diagram is how the \gls{veri} is retrieved from the database.
 However this proves to be quite from a library implementation point of view, we want to support as many different use cases as possible.
 But this means that we cannot have some struct which we use as the database as everyone will have different needs for the database.
@@ -158,7 +158,7 @@ The implementation of this operation is shown below in listing \ref{strong-expon
 
 \rustcode[label=strong-exponent]{Strong AuCPace Salt Unblinding}{assets/strong_salt.rs}
 
-\subsection{Adding feature flags}
+\subsection{Adding Feature Flags}
 Including all of these protocol variants in the library even when a user doesn't need them would cause the library to take up more space than it needs.
 On \glspl{mcu} where keeping space used to a minimum is criticially important, this just isn't acceptable.
 However Rust has a solution designed for exactly this -- feature flags.
@@ -166,12 +166,11 @@ Feature flags are introduced in a Rust project's \texttt{Cargo.toml} file, then 
 There are a few rules which come with Rust feature flags, for various reasons it is a best practice to keep them as strictly additive, this means that you don't remove functionality with a feature flag, and feature flags should only introduce more \glspl{api} to the user.
 
 Adding feature flags to the library turned out to be one of the most time consuming parts of the entire process.
-Feature flags can go wrong in a myriad of wonderful ways, especially when crates are located in a cargo "workspace" as is true of the \glspl{pake} repository.
+Feature flags can go wrong in a myriad of wonderful ways, especially when crates are located in a cargo \enquote{workspace} as is true of the \glspl{pake} repository.
 This is due to workspaces having special rules for how feature flags are compiled across libraries, however that is beyond the scope of this report.
 
 Notwithstanding the difficulties of adding features across the whole project, individually they are quite simple, as they are just adding an attribute to all functions and structs you want to be feature gated, e.g. \verb|#[cfg(feature = "strong_aucpace")]|.
 
-% \subsectionfont{\large}
 \subsection{Making It \texttt{\#[no\_std]} Friendly}
 \verb|#[no_std]| is a Rust attribute that removes the standard library.
 This is to allow compiling for targets where linking against the standard library is either not appropriate or impossible, e.g. \glspl{mcu} where there simply isn't the space, or in kernel modules where certain operations aren't allowed.
@@ -186,12 +185,11 @@ But this conflicts with our requirements from \verb|#[no_std]|.
 
 Initially I explored an API which would introduce a new feature flag -- \texttt{alloc} and then switch it's behaviour based on whether alloc was enabled.
 Using a fixed size buffer when \texttt{alloc} was disabled.
-However this proved to be very difficult test and ran contrary to the "strictly additive" guideline for Rust feature flags.
+However this proved to be very difficult test and ran contrary to the \enquote{strictly additive} guideline for Rust feature flags.
 After some discussion with RustCrypto in their online Zulip chat (\url{https://rustcrypto.zulipchat.com}), Tony Arcieri
 suggested adding a new \gls{api} which was feature flagged behind \texttt{alloc}, then users could use the allocating \gls{api} if they have an allocator and they can use fixed sized buffer implementation if they didn't.
 This approach ended up being the best, it even has the benefit that the two methods can be directly tested against each other to ensure they give the same results.
 
-% \subsectionfont{\titlecap}
 \subsection{Documentation}
 As the library is being open sourced back to RustCrypto, great care was taken that everything that needs documentation has it.
 Rust makes ensuring that everything is documented significantly easier than most languages, it has an attribute -- \verb|#![warn(missing_docs)]| that can be used to enable a warning for any item that is missing documentation.
