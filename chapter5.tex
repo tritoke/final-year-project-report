@@ -92,8 +92,6 @@ The malignant crate turned out to be \texttt{serde-arrays} which, although not c
 The solution was very simple thankfully, just weeks prior to attmpting this embedded example, a new crate was released \texttt{serde-byte-arrays}, this solved my problem better than \texttt{serde-arrays}, was marked \verb|#[no_std]| and was more efficient at the same time!
 Once these two primitives were reliable, it was quite straightforward to implement the protocol in full.
 
-% mention hitting NLL problem case 3?
-
 \subsection{benchmarking}
 Benchmarking was performed by switching feature flags on and off on both the client and server.
 An additional element of the compiler flags was added because Rust's compiler allows you to make tradeoffs between code-size and speed quite easily.
@@ -126,90 +124,98 @@ These are based on just one measurement of the time, this is due to the use of c
 \end{figure}
 
 \begin{center}
+  \small
   \rowcolors{0}{}{mintbg}
   \captionof{table}{Code size and Compute time by feature flag with \texttt{profile=server}}
   \label{tab:aucpace-embedded-benchmarks-server}
-  \begin{tabular}{ ccccc }
+  \begin{tabular}{ cccccc }
     \toprule
-    \texttt{strong} & \texttt{implicit} & \texttt{partial} & code size (Kib) & Compute time (ms) \\
+    \texttt{strong} & \texttt{implicit} & \texttt{partial} & Code Size (Kib) & Compute Time (ms) & Data Sent (bytes) \\
     \midrule
-    \xmark & \xmark & \xmark & 82 & 169 \\
-    \xmark & \xmark & \cmark & 83 & 139 \\
-    \xmark & \cmark & \xmark & 83 & 135 \\
-    \xmark & \cmark & \cmark & 83 & 103 \\
-    \cmark & \xmark & \xmark & 88 & 171 \\
-    \cmark & \xmark & \cmark & 88 & 138 \\
-    \cmark & \cmark & \xmark & 87 & 134 \\
-    \cmark & \cmark & \cmark & 88 & 103 \\
+    \xmark & \xmark & \xmark & 82 & 169 & \\
+    \xmark & \xmark & \cmark & 83 & 139 & \\
+    \xmark & \cmark & \xmark & 83 & 135 & \\
+    \xmark & \cmark & \cmark & 83 & 103 & \\
+    \cmark & \xmark & \xmark & 88 & 171 & \\
+    \cmark & \xmark & \cmark & 88 & 138 & \\
+    \cmark & \cmark & \xmark & 87 & 134 & \\
+    \cmark & \cmark & \cmark & 88 & 103 & \\
     \bottomrule
   \end{tabular}
 \end{center}
 
 \begin{center}
+  \small
   \rowcolors{0}{}{mintbg}
   \captionof{table}{Code size and Compute time by feature flag with \texttt{profile=server} and a static SSID}
   \label{tab:aucpace-embedded-benchmarks-server-static}
-  \begin{tabular}{ ccccc }
+  \begin{tabular}{ cccccc }
     \toprule
-    \texttt{strong} & \texttt{implicit} & \texttt{partial} & code size (Kib) & Compute time (ms) \\
+    \texttt{strong} & \texttt{implicit} & \texttt{partial} & Code Size (Kib) & Compute Time (ms) & Data Sent (bytes) \\
     \midrule
-    \xmark & \xmark & \xmark & 81 & 169 \\
-    \xmark & \xmark & \cmark & 82 & 139 \\
-    \xmark & \cmark & \xmark & 82 & 134 \\
-    \xmark & \cmark & \cmark & 82 & 103 \\
-    \cmark & \xmark & \xmark & 86 & 171 \\
-    \cmark & \xmark & \cmark & 87 & 139 \\
-    \cmark & \cmark & \xmark & 87 & 135 \\
-    \cmark & \cmark & \cmark & 87 & 102 \\
+    \xmark & \xmark & \xmark & 81 & 169 & \\
+    \xmark & \xmark & \cmark & 82 & 139 & \\
+    \xmark & \cmark & \xmark & 82 & 134 & \\
+    \xmark & \cmark & \cmark & 82 & 103 & \\
+    \cmark & \xmark & \xmark & 86 & 171 & \\
+    \cmark & \xmark & \cmark & 87 & 139 & \\
+    \cmark & \cmark & \xmark & 87 & 135 & \\
+    \cmark & \cmark & \cmark & 87 & 102 & \\
     \bottomrule
   \end{tabular}
 \end{center}
 
 \begin{center}
+  \small
   \rowcolors{0}{}{mintbg}
   \captionof{table}{Code size and Compute time by feature flag with \texttt{profile=release}}
   \label{tab:aucpace-embedded-benchmarks-release}
-  \begin{tabular}{ ccccc }
+  \begin{tabular}{ cccccc }
     \toprule
-    \texttt{strong} & \texttt{implicit} & \texttt{partial} & code size (Kib) & Compute time (ms) \\
+    \texttt{strong} & \texttt{implicit} & \texttt{partial} & Code Size (Kib) & Compute Time (ms) & Data Sent (bytes) \\
     \midrule
-    \xmark & \xmark & \xmark & 131 & 148 \\
-    \xmark & \xmark & \cmark & 136 & 121 \\
-    \xmark & \cmark & \xmark & 131 & 117 \\
-    \xmark & \cmark & \cmark & 137 & 89 \\
-    \cmark & \xmark & \xmark & 138 & 148 \\
-    \cmark & \xmark & \cmark & 141 & 118 \\
-    \cmark & \cmark & \xmark & 138 & 117 \\
-    \cmark & \cmark & \cmark & 141 & 89 \\
+    \xmark & \xmark & \xmark & 132 & 148 & 342 \\
+    \xmark & \xmark & \cmark & 137 & 119 & 342 \\
+    \xmark & \cmark & \xmark & 132 & 117 & 206 \\
+    \xmark & \cmark & \cmark & 138 & 90  & 206 \\
+    \cmark & \xmark & \xmark & 139 & 148 & 383 \\
+    \cmark & \xmark & \cmark & 142 & 120 & 383 \\
+    \cmark & \cmark & \xmark & 139 & 116 & 247 \\
+    \cmark & \cmark & \cmark & 142 & 89  & 247 \\
     \bottomrule
   \end{tabular}
 \end{center}
 
 \begin{center}
+  \small
   \rowcolors{0}{}{mintbg}
   \captionof{table}{Code size and Compute time by feature flag with \texttt{profile=release} and a static SSID}
   \label{tab:aucpace-embedded-benchmarks-release-static}
-  \begin{tabular}{ ccccc }
+  \begin{tabular}{ cccccc }
     \toprule
-    \texttt{strong} & \texttt{implicit} & \texttt{partial} & code size (Kib) & Compute time (ms) \\
+    \texttt{strong} & \texttt{implicit} & \texttt{partial} & Code Size (Kib) & Compute Time (ms) & Data Sent (bytes) \\
     \midrule
-    \xmark & \xmark & \xmark & 130 & 145 \\
-    \xmark & \xmark & \cmark & 135 & 119 \\
-    \xmark & \cmark & \xmark & 131 & 115 \\
-    \xmark & \cmark & \cmark & 136 & 88 \\
-    \cmark & \xmark & \xmark & 137 & 146 \\
-    \cmark & \xmark & \cmark & 140 & 120 \\
-    \cmark & \cmark & \xmark & 137 & 117 \\
-    \cmark & \cmark & \cmark & 141 & 89 \\
+    \xmark & \xmark & \xmark & 131 & 145 & 302 \\
+    \xmark & \xmark & \cmark & 136 & 120 & 302 \\
+    \xmark & \cmark & \xmark & 132 & 115 & 166 \\
+    \xmark & \cmark & \cmark & 137 & 88  & 166 \\
+    \cmark & \xmark & \xmark & 138 & 148 & 343 \\
+    \cmark & \xmark & \cmark & 141 & 120 & 343 \\
+    \cmark & \cmark & \xmark & 138 & 116 & 207 \\
+    \cmark & \cmark & \cmark & 142 & 89  & 207 \\
     \bottomrule
   \end{tabular}
 \end{center}
 
 \begin{figure}[H]
   \centering
-  \includegraphics{assets/feature_effects.eps}
+  \includegraphics[width=\linewidth]{assets/feature_effects.eps}
   \caption{Plot of the effect of different feature flags and compiler modes}
 \end{figure}
+
+% TODO: remake graphs and stuff from new data
+% TODO: include analysis of messsage size
+% TODO: do comparison with OPAQUE one
 
 \clearpage
 

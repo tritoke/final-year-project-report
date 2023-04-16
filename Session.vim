@@ -14,16 +14,31 @@ else
   set shortmess=aoO
 endif
 badd +1 report.tex
-badd +1 refs.bib
-badd +1 merci.tex
-badd +394 chapter1.tex
-badd +1 glossary.tex
-badd +3 abstract.tex
+badd +0 chapter1.tex
 badd +0 chapter2.tex
+badd +0 chapter3.tex
+badd +0 chapter4.tex
+badd +0 chapter5.tex
+badd +0 chapter6.tex
+badd +0 glossary.tex
+badd +0 refs.bib
 argglobal
 %argdel
 $argadd report.tex
+$argadd chapter1.tex
+$argadd chapter2.tex
+$argadd chapter3.tex
+$argadd chapter4.tex
+$argadd chapter5.tex
+$argadd chapter6.tex
+$argadd glossary.tex
+$argadd refs.bib
 set stal=2
+tabnew +setlocal\ bufhidden=wipe
+tabnew +setlocal\ bufhidden=wipe
+tabnew +setlocal\ bufhidden=wipe
+tabnew +setlocal\ bufhidden=wipe
+tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
@@ -40,15 +55,16 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 168 - ((26 * winheight(0) + 28) / 56)
+let s:l = 168 - ((37 * winheight(0) + 38) / 76)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 168
-normal! 05|
+normal! 0
 tabnext
-edit chapter2.tex
+edit chapter1.tex
 argglobal
+2argu
 balt report.tex
 setlocal fdm=manual
 setlocal fde=0
@@ -60,35 +76,37 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 15 - ((14 * winheight(0) + 28) / 56)
+let s:l = 4 - ((3 * winheight(0) + 38) / 76)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 4
+normal! 0
+tabnext
+edit chapter2.tex
+argglobal
+3argu
+balt report.tex
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=99
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 15 - ((14 * winheight(0) + 38) / 76)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 15
 normal! 0
 tabnext
-edit glossary.tex
+edit chapter3.tex
 argglobal
-balt chapter1.tex
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=99
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 118 - ((53 * winheight(0) + 28) / 56)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 118
-normal! 038|
-tabnext
-edit refs.bib
-argglobal
+4argu
 balt report.tex
 setlocal fdm=manual
 setlocal fde=0
@@ -100,13 +118,118 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 289 - ((53 * winheight(0) + 28) / 56)
+let s:l = 4 - ((3 * winheight(0) + 38) / 76)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 4
+normal! 0
+tabnext
+edit chapter4.tex
+argglobal
+5argu
+balt report.tex
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=99
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 215 - ((75 * winheight(0) + 38) / 76)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 215
+normal! 02|
+tabnext
+edit chapter5.tex
+argglobal
+6argu
+balt report.tex
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=99
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 212 - ((66 * winheight(0) + 38) / 76)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 212
+normal! 041|
+tabnext
+edit chapter6.tex
+argglobal
+7argu
+balt report.tex
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=99
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 25 - ((24 * winheight(0) + 38) / 76)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 25
+normal! 0
+tabnext
+edit glossary.tex
+argglobal
+8argu
+balt report.tex
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=99
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 118 - ((38 * winheight(0) + 38) / 76)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 118
+normal! 0
+tabnext
+edit refs.bib
+argglobal
+9argu
+balt report.tex
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=99
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 289 - ((37 * winheight(0) + 38) / 76)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 289
 normal! 0
-tabnext 2
+tabnext 6
 set stal=1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
@@ -120,6 +243,7 @@ if filereadable(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
 set hlsearch
+nohlsearch
 doautoall SessionLoadPost
 unlet SessionLoad
 " vim: set ft=vim :

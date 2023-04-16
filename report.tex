@@ -188,10 +188,10 @@
 }
 
 % make everything title case
-% \usepackage{sectsty}
-% \usepackage{titlecaps}
-% \sectionfont{\titlecap}
-% \subsectionfont{\titlecap}
+\usepackage{sectsty}
+\usepackage{titlecaps}
+\sectionfont{\titlecap}
+\subsectionfont{\titlecap}
 
 % glossary stuff
 \usepackage[toc]{glossaries}
@@ -260,6 +260,7 @@
 
 % only work on a chapter at a time to improve compile times
 % \includeonly{chapter3}
+\usepackage{showframe}
 
 % specify how the document should handle hyphenation at page borders
 \tolerance=1
@@ -293,11 +294,13 @@
 \include{chapter6}
 
 % print the glossary
+\PreContentTitleFormat
 \printnoidxglossaries{}
 
 \printbibliography{}
 
 %% Appendices start here
+\ContentTitleFormat
 \appendix
 \include{appendix1}
 \include{appendix2}
