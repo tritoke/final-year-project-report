@@ -7,7 +7,7 @@ The initial prototype was based around the \gls{srp} implementation from RustCry
 \rustcode{AuCPace Server Prototype}{assets/aucpace_server_prototype.rs}
 \rustcode{AuCPace Client Prototype}{assets/aucpace_client_prototype.rs}
 
-This struct then implemented methods for each of the computations needed by the protocol.
+These structs then implemented methods for each of the computations needed by the protocol.
 There wasn't anything especially wrong with an implementation like this, but I felt like a higher level \gls{api} would be nicer to work with and would reduce the cognitive load on any developer using the library.
 
 \section{Forming the Struct-Based API}
@@ -48,10 +48,10 @@ The two protocols would look like this:
 
 At first this layout looks highly desirable, you have the minimum number of messages between each side, and theres only a few structs on each side.
 However this poses a few problems when it comes to protocol flexibility and message ordering.
-This layout only allows one message ordering and one protocol variant.
-There are many reasons that one might want to change the message ordering or protocol variant.
+This layout only allows one ordering of messages and one protocol variant.
+There are many reasons that one might want to change these.
 Message ordering is often dependent on external factors such as what the your transport layer provides etc, rigidity in this can make implementing a full protocol far more complicated than it needs to be.
-Only implementing on protocol variant is a viable choice, though it means you are inflicting your choices on the users of your library.
+Only implementing one protocol variant is a viable choice, though it means you are inflicting your choices on the users of your library.
 If you are making a library which is deliberately opinionated then this might even be desirable, however to support the most number of use cases possible flexibility is highly desirable.
 
 The layout in \cref{fig:actual-lib-structure} provides the flexibility called for.
@@ -117,8 +117,8 @@ In summary this layout provides a high level of modularity, meaning that both pr
 \end{figure}
 
 \subsection{Modeling lookupW in Rust’s Type System}
-The \textit{loopupW} operation from the protocol diagram is how the \gls{veri} is retrieved from the database.
-However this proves to be quite from a library implementation point of view, we want to support as many different use cases as possible.
+The \textit{lookupW} operation from the protocol diagram is how the \gls{veri} is retrieved from the database.
+However this proves to be quite difficult from a library implementation point of view, we want to support as many different use cases as possible.
 But this means that we cannot have some struct which we use as the database as everyone will have different needs for the database.
 For example a user who wants to store data in their flash storage probably wants a very different implementation to someone who wants to store data in sqlite3.
 As a single implementation is not suitable for all users, we need to define a Rust trait for users to implement so they can use whatever implementation best fits their needs.
@@ -160,7 +160,7 @@ The implementation of this operation is shown below in listing \ref{strong-expon
 
 \subsection{Adding Feature Flags}
 Including all of these protocol variants in the library even when a user doesn't need them would cause the library to take up more space than it needs.
-On \glspl{mcu} where keeping space used to a minimum is criticially important, this just isn't acceptable.
+On \glspl{mcu} where keeping space used to a minimum is critically important, this just isn't acceptable.
 However Rust has a solution designed for exactly this -- feature flags.
 Feature flags are introduced in a Rust project's \texttt{Cargo.toml} file, then they can be used inside of code to turn parts on / off.
 There are a few rules which come with Rust feature flags, for various reasons it is a best practice to keep them as strictly additive, this means that you don't remove functionality with a feature flag, and feature flags should only introduce more \glspl{api} to the user.
@@ -171,8 +171,8 @@ This is due to workspaces having special rules for how feature flags are compile
 
 Notwithstanding the difficulties of adding features across the whole project, individually they are quite simple, as they are just adding an attribute to all functions and structs you want to be feature gated, e.g. \verb|#[cfg(feature = "strong_aucpace")]|.
 
-\subsection{Making It \texttt{\#[no\_std]} Friendly}
-\verb|#[no_std]| is a Rust attribute that removes the standard library.
+\subsection{Making It \texttt{\#![no\_std]} Friendly}
+\verb|#![no_std]| is a Rust attribute that removes the standard library.
 This is to allow compiling for targets where linking against the standard library is either not appropriate or impossible, e.g. \glspl{mcu} where there simply isn't the space, or in kernel modules where certain operations aren't allowed.
 However this comes with a wide range of disadvantages, namely you cannot using anything which allocates memory, and you cannot use anything which interacts with the \gls{os}.
 Care was taken to avoid using the standard library during development, however there are a few places where allocating \glspl{api} were used to ease development.
@@ -181,9 +181,9 @@ This is due to a conflict between the \gls{api} of the \texttt{password\_hash} l
 The \texttt{PasswordHasher} trait from \texttt{password\_hash} allows us to be generic over the $\textsf{PBKDF}_{\sigma}$ from the protocol definition, however it's interface only takes in a password and a salt.
 This means that to hash together the username, password and salt we need to encode the username and password together in the same piece of data and then pass this to the hasher.
 The only way to do this for any given username and password is to allocate a buffer big enough to store both items on the heap.
-But this conflicts with our requirements from \verb|#[no_std]|.
+But this conflicts with our requirements from \verb|#![no_std]|.
 
-Initially I explored an API which would introduce a new feature flag -- \texttt{alloc} and then switch it's behaviour based on whether alloc was enabled.
+Initially I explored an API which would introduce a new feature flag -- \texttt{alloc} and then switch it's behaviour based on whether \texttt{alloc} was enabled.
 Using a fixed size buffer when \texttt{alloc} was disabled.
 However this proved to be very difficult test and ran contrary to the \enquote{strictly additive} guideline for Rust feature flags.
 After some discussion with RustCrypto in their online Zulip chat (\url{https://rustcrypto.zulipchat.com}), Tony Arcieri

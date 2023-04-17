@@ -124,6 +124,7 @@ In \cref{chap:appendix-eke} you can find a Python implementation of this scheme.
 \begin{itemize}
   \item $\shortleftarrow$: Assignment -- $x \shortleftarrow \ 5$ means x is assigned a value of 5.
   \item $\cryptoSample$: Sampling from a given set -- $x \cryptoSample \ \mathbb{R}$ means to choose $x$ at random from the set of real numbers.
+  \item $||$: Concatenation -- $x || y$ means $x$ concatenated with $y$.
 \end{itemize}
 
 \begin{center}
@@ -485,7 +486,6 @@ There were a number of factors to consider when choosing which \gls{pake} to imp
 After a conversation with the RustCrypto core team on Zulip, it was agreed that an implementation of any of these protocols would be readily accepted into their collection of \glspl{pake} -- \url{https://github.com/RustCrypto/PAKEs}.
 RustCrypto will be discussed further in \cref{sec:whom-rustcrypto}.
 Considerations about open source contribution will be omitted for this reason.
-For now I will omit considerations about open source contribution.
 
 \begin{center}
   \rowcolors{0}{}{mintbg}
@@ -544,7 +544,7 @@ There are four phases to the protocol some of which can be made optional or can 
     Explicit mutual authentication
     \begin{itemize}
       \item{both compute authenticators $T_a, T_b$}
-      \item{each party sends a different}
+      \item{each party sends a different authenticator}
       \item{if either authenticator is invalid the protocol is aborted}
       \item{finally the shared key $sk$ is computed}
     \end{itemize}
@@ -588,7 +588,7 @@ There are three different configurations which can be adjusted to make tradeoffs
     \< \< \pclb[-0.5\baselineskip]
     \pcintertext[center]{AuCPace Augmentation Layer} \\[-1.5\baselineskip][\hline]
     x \sample \{1 \dots m_{\mathcal{J}}\} \< \< \\
-    X = B^{c_{\mathcal{J}}} \< \< \\
+    X = B^{x\ c_{\mathcal{J}}} \< \< \\
     \< \sendmessageleft*{\text{username}} \< \\
     W,\text{salt} = \text{lookup$W$(user)} \< \< \\
     \< \sendmessageright*{\mathcal{J},X,\text{salt},\sigma} \< \\
@@ -598,14 +598,14 @@ There are three different configurations which can be adjusted to make tradeoffs
     %
     \< \< \pclb[-0.5\baselineskip]
     \pcintertext[center]{CPace substep} \\[-1.5\baselineskip][\hline]
-    g' = \text{H}_1(ssid||PRS||CI) \< \< g' = \text{H}_1(ssid||PRS||CI) \\
+    g' = \textsf{H}_1(ssid||PRS||CI) \< \< g' = \textsf{H}_1(ssid||PRS||CI) \\
     G = \textsf{Map2Point}(g') \< \< G = \textsf{Map2Point}(g') \\
     y_a \sample \{ 1 \dots m_{\mathcal{J}} \} \< \< y_b \sample \{ 1 \dots m_{\mathcal{J}} \} \\
     Y_a = G^{y_a\ c_{\mathcal{J}}} \< \< Y_b = G^{y_b\ c_{\mathcal{J}}} \\
     \< \sendmessageright*{Y_a} \< \\
     \< \sendmessageleft*{Y_b} \< \\
     K = Y_b^{y_a\ c_{\mathcal{J}}} \< \< K = Y_a^{y_b\ c_{\mathcal{J}}} \\
-    \text{abort if $Y_b$ invalid} \< \< \text{abort if $Y_b$ invalid} \\
+    \text{abort if $Y_b$ invalid} \< \< \text{abort if $Y_a$ invalid} \\
     sk_1 = \textsf{H}_2(ssid||K) \< \< sk_1 = \textsf{H}_2(ssid||K) \\[][\hline]
     %
     \< \< \pclb[-0.5\baselineskip]
@@ -622,8 +622,8 @@ There are three different configurations which can be adjusted to make tradeoffs
   \label{fig:aucpace-protocol}
 \end{figure}
 
-All of these options lead to 8 different sub-protocols.
-What's special about these sub-protocols is how little they change the overall protocol.
+All of these options lead to eight different sub-protocols.
+What is special about these sub-protocols is how little they change the overall protocol.
 Below are protocol diagrams illustrating what changes with each configuration change, and a table showing the high level tradeoffs that are made by picking each protocol variant.
 
 \begin{figure}[H]
@@ -643,7 +643,7 @@ Below are protocol diagrams illustrating what changes with each configuration ch
   \pseudocodeblock[head=AuCPace Augmentation Layer,codesize=\footnotesize,width=\linewidth]{
     \textbf{Server} \< \< \textbf{Client} \\
     \hcancel{x \sample \{1 \dots m_{\mathcal{J}}\}} \< \< \\
-    \hcancel{X = B^{c_{\mathcal{J}}}} \< \< \\
+    \hcancel{X = B^{x\ c_{\mathcal{J}}}} \< \< \\
     \< \sendmessageleft*{\text{username}} \< \\
     \mathAdded{x,X,}W,\text{salt} = \text{lookup$W$(user)} \< \< \\
     \< \sendmessageright*{\mathcal{J},X,\text{salt},\sigma} \< \\
@@ -674,7 +674,7 @@ Below are protocol diagrams illustrating what changes with each configuration ch
   \pseudocodeblock[head=strong AuCPace Augmentation Layer,codesize=\footnotesize,width=\linewidth]{
     \textbf{Server} \< \< \textbf{Client} \\
     x \sample \{1 \dots m_{\mathcal{J}}\} \< \< \mathAdded{r \sample \{ 1 \dots m_{\mathcal{J}}\}} \\
-    X = B^{c_{\mathcal{J}}} \< \< \mathAdded{Z = \textsf{Map2Point}(\textsf{H}_1(\text{username}||pw))} \\
+    X = B^{x c_{\mathcal{J}}} \< \< \mathAdded{Z = \textsf{Map2Point}(\textsf{H}_1(\text{username}||pw))} \\
     \< \< \mathAdded{U = Z^{r\ c_{\mathcal{J}}}} \\
     \< \sendmessageleft*{\text{username}\mathAdded{,U}} \< \\
     W,\textAdded{q}\hcancel{\text{salt}} = \text{lookup$W$(user)} \< \< \\
@@ -702,7 +702,7 @@ Below are protocol diagrams illustrating what changes with each configuration ch
     \< \sendmessageright*{Y_a} \< \\
     \< \sendmessageleft*{Y_b} \< \\
     K = Y_b^{y_a\ c_{\mathcal{J}}} \< \< K = Y_a^{y_b\ c_{\mathcal{J}}} \\
-    \text{abort if $Y_b$ invalid} \< \< \text{abort if $Y_b$ invalid} \\
+    \text{abort if $Y_b$ invalid} \< \< \text{abort if $Y_a$ invalid} \\
     sk_1 = \textsf{H}_2(ssid||K) \< \< sk_1 = \textsf{H}_2(ssid||K) \\
     \mathAdded{sk = \textsf{H}_5(ssid||sk_1)} \< \< \mathAdded{sk = \textsf{H}_5(ssid||sk_1)} \\[][\hline]
   }
@@ -734,11 +734,11 @@ Below are protocol diagrams illustrating what changes with each configuration ch
 \section{Who Are RustCrypto?}
 \label{sec:whom-rustcrypto}
 
-RustCrypto is a GitHub Organisation / online community who are dedicated to implementing fast and secure cryptography in pure rust.
-Pure rust in this context means that all of the code is in rust and there are no \gls{ffi} bindings to other (normally C) libraries which implement the functionality (see \cref{fig:pure-vs-wrapper}).
+RustCrypto is a GitHub Organisation / online community who are dedicated to implementing fast and secure cryptography in pure Rust.
+Pure Rust in this context means that all of the code is in Rust and there are no \gls{ffi} bindings to other (normally C) libraries which implement the functionality (see \cref{fig:pure-vs-wrapper}).
 RustCrypto have implemented many cryptographic primitives and also have an existing repository for \gls{pake} algorithms.
 Using RustCrypto's libraries provides a good foundation for building any protocol as well as opening up opportunities to open source the implementation back to them.
-A number of major companies also use RustCrypto's code to secure their applications, e.g. 1Password who use RustCrypto for their Password Manager.
+A number of major companies also use RustCrypto's code to secure their applications, e.g. 1Password who use RustCrypto for their password manager.
 The decision to use Rust will be discussed further in \cref{sec:why-rust}.
 
 \begin{figure}[H]
@@ -763,7 +763,7 @@ The decision to use Rust will be discussed further in \cref{sec:why-rust}.
     \node[above right] at (gmp-items.north west) (rug-label) [] {\texttt{rug}};
     \node[above right] at (mpfr-items.north west) {\texttt{rug}};
     \node[inner sep=5pt, rounded corners, draw, fit=(gmp-items) (mpfr-items) (rug-label)] (rug) {};
-    \node[above right, yshift=0.1cm] at (rug.north west) (rust-label) [] {\texttt{rust}};
+    \node[above right, yshift=0.1cm] at (rug.north west) (rust-label) [] {\texttt{Rust}};
 
     % num text items
     \node(BInt) at (9, 10)  {\texttt{BigInt}};

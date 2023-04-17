@@ -3,19 +3,19 @@
 
 Through the course of this project a fully-featured and developer focused, implementation of \gls{aucpace} was created in Rust.
 It was then open sourced through the RustCrypto organisation.
-A severe bug in the code was remediated effictively and swiftly.
 Contributing to the \gls{iiot} security ecosystem in a practical and direct way.
+A severe bug in the code was remediated effictively and swiftly.
 
 \section{Achievements}
 Beginning this project my understanding of \gls{ecc} was effectively zero, I had heard of it before, and knew that it was somehow better than traditional primitives, but actually getting to understand and effectively leverage \gls{ecc} took many hours of research and was genuinely something I struggled with.
 
-The \gls{aucpace} I have created is both fast and has a tiny code footprint, this was no small engineering feat and took great care over the entire length of the project to ensure that the implementation was truly viable for real world use.
+The \gls{aucpace} implementation I have created is both fast and has a tiny code footprint, this was no small engineering feat and took great care over the entire length of the project to ensure that the implementation was truly viable for real world use.
 
 Open sourcing the implementation through RustCrypto will allow for the greatest number of people to make use of the library, and proves that the implementation is of high enough quality to be suitable for real world applications.
 
 Realising that several months of your work are completely and fundamentally broken is completely crushing.
 Working through and understanding the vulnerability I had unknowingly let into my code proved to be a very valuable experience.
-Understanding how to responsibly handle disclosing a vulnerability and rapidly rolling out a fix taught me a lot about the pressures of working in cybersecurity and how no matter how careful you are, there is always something lurking that you hadn't considered.
+Understanding how to responsibly handle disclosing a vulnerability and rapidly rolling out a fix taught me a lot about the pressures of working in cybersecurity and that no matter how careful you are, there is always something lurking that you hadn't considered.
 
 \section{Reflection}
 I have two main regrets from this project as a whole.
@@ -37,16 +37,18 @@ There are so many directions future work in this area could go.
 \glspl{pake} are a fascinating topic with a bright future in many areas of cybersecurity.
 
 \subsection{CHIP+CRISP}
-If I had more time I would have liked to have also implemented the CHIP+CRISP \gls{ipake} compilers from \citeauthor{chip+crisp}, I believe these two protocol compilers are fascinating pieces of technology that ara truly innovative.
+If I had more time I would have liked to have also implemented the CHIP+CRISP \gls{ipake} compilers from \citeauthor{chip+crisp}, I believe these two protocol compilers are fascinating pieces of technology that are truly innovative.
 
 \subsection{CPace}
 On a more practical level, \gls{aucpace} is an \gls{apake} built on top of the \gls{cpace} \gls{bpake}, future work could include breaking this underlying implementation out into it's own crate.
 
 \subsection{Post Quantum PAKE}
-With the rapid emergence of quantum technologies, stopgap solutions such as the \enquote{quantum annoying} property of \gls{aucpace} and similar \glspl{pake} simply won't be enough, an implementation of a truly \enquote{post quantum} \gls{pake} would make for an excellent project.
-An interesting candidate for this would be LATKE \cite{latke}, an \gls{ipake} instantiated from lattice assumptions.
+With the rapid emergence of quantum technologies, stopgap solutions such as the \enquote{quantum annoying} property of \gls{aucpace} and similar \glspl{pake} simply won't be enough.
+An implementation of a truly \enquote{post quantum} \gls{pake} would make for an excellent project.
+One interesting candidate for this would be LATKE \cite{latke}, an \gls{ipake} instantiated from lattice assumptions.
 
 \section{Conclusion}
 \gls{pake} algorithms can be used to improve the security of a wide variety of domains.
-The \gls{iiot} stands to gain particular benefit from improving \gls{pake} algorithms and support, especially as lower power algorithms and those directly targetting embedded devices emerge.
+The \gls{iiot} stands to gain particular benefit from improving \gls{pake} algorithms and support.
+Especially as algorithms with lower power consumption and those directly targeting embedded devices emerge.
 The Rust implementation of \gls{aucpace} directly contributes to the ever growing \gls{iiot} security landscape, by contributing a \gls{pake} with a low code-footprint, efficient computation and no patent barriers.

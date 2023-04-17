@@ -7,12 +7,12 @@
 \gls{aucpace} explicitly targets \gls{iiot} in it's design.
 Rust is rapidly becoming a popular choice for \gls{iot} and embedded software applications.
 This is due to it's focus on memory safety, developer experience and it's strong embedded ecosystem.
-Libraries like Embassy and RTIC allow the user to program high level logic and use powerful abstractions to interact with the hardware through Rust objects, while still compiling down to small and efficient binaries.
+Libraries like Embassy and \gls{rtic} allow the user to program high level logic and use powerful abstractions to interact with the hardware through Rust objects, while still compiling down to small and efficient binaries.
 Embassy is especially impressive as they have implemented an async executor so that multitasking in embedded applications can be performed with the same async/await framework that programmers are familiar with.
 A short Embassy examples is shown in listing \ref{embassy-example}.
-Tools such as \texttt{probe-rs} allow developers to maintain the same workflow they would when working on a normal rust binary, by implementing a \texttt{cargo} runner which flashes the binary to the embedded device then using \gls{rtt} to receive debug messages from the device.
+Tools such as \texttt{probe-rs} allow developers to maintain the same workflow they would when working on a normal Rust binary, by implementing a \texttt{cargo} runner which flashes the binary to the embedded device then uses \gls{rtt} to receive debug messages from the device.
 Those debug messages can be setup automatically using libraries such as \texttt{defmt\_rtt} which use \gls{rtt} to send a compressed representation of the debug message to be formatted later on using a technique called deferred formatting, allowing for debug messages to take up a fraction of the size of the original message.
-Together this makes rust a compelling choice for writing embedded code.
+Together this makes Rust a compelling choice for writing embedded code.
 
 \medskip{}
 
@@ -29,7 +29,7 @@ This is especially important for systems which might need to interact with legac
 
 \section{Planning the Library}
 Before implementing \gls{aucpace} it was necessary to plan ahead what libraries to use.
-Without planning it would be easy to end up in a situation where different libraries aren't compatible with each other, or have become superseded by another library as this information is not readily available on \href{https://crates.io/}{crates.io} (crates.io is the package repository for all public rust packages).
+Without planning it would be easy to end up in a situation where different libraries aren't compatible with each other, or have become superseded by another library as this information is not readily available on \href{https://crates.io/}{crates.io} (crates.io is the package repository for all public Rust packages).
 
 \subsection{What Primitives Do We Need To Implement AuCPace?}
 \gls{aucpace} has many parameters which can be changed to drastically change how the protocol works, this is by design to allow customisability for each user's needs, however it can be quite confusing to navigate.
@@ -78,8 +78,8 @@ So in summary we need the following primitives:
   \item{a hash function}
 \end{itemize}
 
-\subsection{What rust libraries actually exist for cryptography?}
-There are many sites online which act as collections of rust packages that you can search by topic to find similar or related packages.
+\subsection{What Rust Libraries Actually Exist For Cryptography?}
+There are many sites online which act as collections of Rust packages that you can search by topic to find similar or related packages.
 The \gls{rcig} maintain a list of Rust's Cryptographic libraries at \url{https://cryptography.rs/}, this proved to be a great help while researching libraries.
 
 For the required primitives the following Rust crates were identified as potential candidates:
@@ -101,7 +101,7 @@ For the required primitives the following Rust crates were identified as potenti
     \begin{itemize}
       \item{\href{https://github.com/dalek-cryptography/curve25519-dalek}{\texttt{curve25519-dalek}} -- Dalek Cryptography's implementation of Curve25519 and Ristretto255 \cite{ristretto255}}
       \item{\href{https://github.com/RustCrypto/traits/tree/master/elliptic-curve}{\texttt{elliptic-curve}} -- traits for operating over a generic elliptic curve, part of RustCrypto}
-      \item{\href{https://github.com/RustCrypto/elliptic-curves}{\texttt{elliptic-curves}} -- RustCrypto's meta-repo holding implementations for the following curves: brainpoolP256r1/t1, brainpoolP384r1/t1, Secp256k1, P-224, P-256, P-384, 1P-52}
+      \item{\href{https://github.com/RustCrypto/elliptic-curves}{\texttt{elliptic-curves}} -- RustCrypto's meta-repo holding implementations for the following curves: brainpoolP256r1/t1, brainpoolP384r1/t1, Secp256k1, P-224, P-256, P-384, P-521}
     \end{itemize}
   }
 
@@ -124,7 +124,7 @@ For the required primitives the following Rust crates were identified as potenti
 
 \subsection{Picking Crates for the Required Primitives}
 Where possible the implementation should match the reference implementation.
-These choices are what the designers have determined as secure presets so the are good choices should a suitable crate exist.
+These choices are what the designers have determined as secure presets so they are good choices should a suitable crate exist.
 
 \subsubsection{Choosing the PBKDF}
 Instead of picking a \gls{pbkdf} up front, the \texttt{PasswordHasher} trait from \href{https://github.com/RustCrypto/traits/tree/master/password-hash}{password-hash} allows us to be generic over the \gls{pbkdf} when implementing the library.
@@ -151,7 +151,8 @@ Instead if you want to implement some functionality on top of another type you m
 As such wrapper structs are common in Rust, the most common use of these would be the iterator adapters.
 The \texttt{Iterator} trait from the standard library has many methods for providing common operations which are agnostic to what is being iterated over, e.g. \texttt{Iterator::filter}, \texttt{Iterator::map} and \texttt{Iterator::rev}.
 Each of these methods returns a specialised struct which contains the initial iterator, specifically \texttt{std::iter::Filter}, \texttt{std::iter::Map} and \texttt{std::iter::Rev} for the aforementioned methods.
-These structs are all \textit{owning}, the concept of Ownership is central to Rust, it forms the basis for how the borrow checker works and is the main mechanism by which Rust can guarantee memory safety.
+These structs are all \textit{owning}, meaning they own the data they contain.
+The concept of Ownership is central to Rust, it forms the basis for how the borrow checker works and is the main mechanism by which Rust can guarantee memory safety.
 In general owned types are always easier to work with than borrowed ones, you don't have to keep track of lifetimes and in general life is easier.
 The main use-case for references is for when you have some value that you either cannot copy, (e.g. a Mutex), or really don't want to copy (e.g. 10Gb worth of data).
 
@@ -193,9 +194,9 @@ This does expose a very flexible API and store the absolute minimum amount of da
 To support contributing the implementation back to RustCrypto, the library will be implemented as a fork of \url{https://github.com/RustCrypto/PAKEs},
 where the \gls{aucpace} implementation will be added as a new crate in the Cargo workspace.
 
-As a prototype for the library functionality a design in the style of RustCrypto's \gls{srp} implementation was created to explore how the computations required by \gls{aucpace} look in rust and how the different libraries interact together.
+As a prototype for the library functionality a design in the style of RustCrypto's \gls{srp} implementation was created to explore how the computations required by \gls{aucpace} look in Rust and how the different libraries interact together.
 
-After this prototype version several attempts were made at a more user-friendly / intuitive, eventually settling on a design where the User \enquote{moves} between various structs by passing messages between the server and client.
+After this prototype version several attempts were made at a more user-friendly / intuitive design, eventually settling on one where the user \enquote{moves} between various structs by passing messages between the server and client.
 Each move returns either just the next state, or a tuple of a message and the next state, it is then the user's job to manage just the communication of messages between the client and server.
 This approach reduces the cognitive overhead of the developer and allows them to just focus on the core of a protocol -- passing messages.
 

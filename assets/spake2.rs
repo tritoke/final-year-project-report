@@ -1,7 +1,6 @@
 /// SPAKE2 algorithm.
 #[derive(Eq, PartialEq)]
 pub struct Spake2<G: Group> {
-    //where &G::Scalar: Neg {
     side: Side,
     xy_scalar: G::Scalar,
     password_vec: Vec<u8>,
