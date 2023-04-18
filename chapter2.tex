@@ -212,7 +212,7 @@ Finally we will look at \gls{srp} an \gls{apake} first published in 1998, unlike
 However it is quite weird for what it does and there is no security proof for it \cite{srp-blog}. An implementation of the protocol in Python can be found in \cref{chap:appendix-srp}.
 
 \begin{center}
-  rowcolors{0}{}{mintbg}
+  \rowcolors{0}{}{mintbg}
   \captionof{table}{\gls{srp} parameters}
   \begin{tabularx}{\linewidth}{ ccX }
     \toprule
@@ -479,7 +479,6 @@ There were a number of factors to consider when choosing which \gls{pake} to imp
   \item{How widely applicable is the protocol?}
   \item{Are there patents covering the protocol?}
   \item{How many existing implementations are there?}
-  \item{How good are existing solutions (solutions that aren't the given protocol)?}
   \item{Is there potential to contribute an implementation back to an open source project?}
 \end{itemize}
 
@@ -491,13 +490,13 @@ Considerations about open source contribution will be omitted for this reason.
   \rowcolors{0}{}{mintbg}
   \small
   \captionof{table}{Modern \gls{pake} Protocol Comparison}
-  \begin{tabular}{ llp{2.8cm}ll }
+  \begin{tabular}{ cccc }
     \toprule
-    Protocol & Applicability & Implementations & Existing Solutions & Patented \\
+    Protocol & Applicability & Implementations Solutions & Patented \\
     \midrule
-    CHIP+CRISP & WiFi & C++ reference impl & \gls{psk} & Yes (IB-KA)\\
-    \gls{khape} & Replacing \gls{pki} & Educational Rust impl & \gls{opaque} & Yes (HMQV)\\
-    \gls{aucpace} & \gls{iiot} & C reference impl + Go impl & hard coding the key & No\\
+    CHIP+CRISP & WiFi & C++ reference impl &  Yes (IB-KA)\\
+    \gls{khape} & General Authentication & Educational Rust impl &  Yes (HMQV)\\
+    \gls{aucpace} & \gls{iiot} & C reference impl + Go impl & No\\
     \bottomrule
   \end{tabular}
 \end{center}
@@ -626,6 +625,18 @@ All of these options lead to eight different sub-protocols.
 What is special about these sub-protocols is how little they change the overall protocol.
 Below are protocol diagrams illustrating what changes with each configuration change, and a table showing the high level tradeoffs that are made by picking each protocol variant.
 
+\begin{center}
+  \captionof{table}{Notation key for the below diagrams}
+  \begin{tabularx}{\linewidth}{ cX }
+    \toprule
+    Syntax & Explanation \\
+    \midrule
+    $\hcancel{quick\_maths \gets 9 + 10 == 21}$ & The operation $quick\_maths \gets 9 + 10 = 21$ was removed from the protocol in the given variant. \\
+    $\mathAdded{maths \gets 3^2 + 4^2 = 5^2}$ & The operation $maths \gets 3^2 + 4^2 = 5^2$ was added to the protocol in the given variant. \\
+    \bottomrule
+  \end{tabularx}
+\end{center}
+
 \begin{figure}[H]
   \pseudocodeblock[head=Store password operation for AuCPace,codesize=\footnotesize,width=\linewidth]{
     \textbf{Server} \< \< \textbf{Client} \\
@@ -677,10 +688,10 @@ Below are protocol diagrams illustrating what changes with each configuration ch
     X = B^{x c_{\mathcal{J}}} \< \< \mathAdded{Z = \textsf{Map2Point}(\textsf{H}_1(\text{username}||pw))} \\
     \< \< \mathAdded{U = Z^{r\ c_{\mathcal{J}}}} \\
     \< \sendmessageleft*{\text{username}\mathAdded{,U}} \< \\
-    W,\textAdded{q}\hcancel{\text{salt}} = \text{lookup$W$(user)} \< \< \\
+    W,\textAdded{q}\ \hcancel{\text{salt}} = \text{lookup$W$(user)} \< \< \\
     \mathAdded{UQ = U^{q\ c_{\mathcal{J}}}}\< \< \\
     \textAdded{abort if UQ invalid}\< \< \\
-    \< \sendmessageright*{\mathcal{J},X,\mathAdded{UQ}\hcancel{\text{salt}},\sigma} \< \\
+    \< \sendmessageright*{\mathcal{J},X,\mathAdded{UQ}\ \hcancel{\text{salt}},\sigma} \< \\
     \< \< \mathAdded{\text{salt} = UQ^{\frac{1}{r\ (c_{\mathcal{J}})^2} c_{\mathcal{J}}}} \\
     \< \< \textAdded{abort if salt invalid} \\
     \< \< w = \textsf{PBKDF}_{\sigma}(pw, \text{user, salt}) \\
