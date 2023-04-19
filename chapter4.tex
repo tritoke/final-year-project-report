@@ -46,7 +46,7 @@ The two protocols would look like this:
   \label{fig:all-inputs-at-start}
 \end{figure}
 
-At first this layout looks highly desirable, you have the minimum number of messages between each side, and theres only a few structs on each side.
+At first this layout looks highly desirable, you have the minimum number of messages between each side, and there's only a few structs on each side.
 However this poses a few problems when it comes to protocol flexibility and message ordering.
 This layout only allows one ordering of messages and one protocol variant.
 There are many reasons that one might want to change these.
@@ -57,7 +57,7 @@ If you are making a library which is deliberately opinionated then this might ev
 The layout in \cref{fig:actual-lib-structure} provides the flexibility called for.
 Although there are many more structs, only one need exist at once, meaning that memory can be reused by allocating each in-place on the stack.
 While it may also appear that this version requires more individual messages, it is possible to batch the messages together in the same request as there is nothing to stop each side advancing until they need to receive the next message each time.
-This layout also has the advantage that each individual struct is less complicated and individual functionality can be tested easier.
+This layout also has the advantage that each individual struct is less complicated and individual functionality can be tested more easily.
 Protocol flexibility is also provided by this layout, implementing (strong) \gls{aucpace} is just changing out the aug layer, implementing implicit authentication is just bypassing the last struct.
 In summary this layout provides a high level of modularity, meaning that both protocol and messaging flexibility can be provided for.
 
@@ -116,12 +116,12 @@ In summary this layout provides a high level of modularity, meaning that both pr
   \label{fig:actual-lib-structure}
 \end{figure}
 
-\subsection{Modeling lookupW in Rust’s Type System}
+\subsection{Modelling lookupW in Rust’s Type System}
 The \textit{lookupW} operation from the protocol diagram is how the \gls{veri} is retrieved from the database.
-However this proves to be quite difficult from a library implementation point of view, we want to support as many different use cases as possible.
-But this means that we cannot have some struct which we use as the database as everyone will have different needs for the database.
-For example a user who wants to store data in their flash storage probably wants a very different implementation to someone who wants to store data in sqlite3.
-As a single implementation is not suitable for all users, we need to define a Rust trait for users to implement so they can use whatever implementation best fits their needs.
+However this proves to be quite difficult from a library implementation point of view, as we want to support as many different use cases as possible.
+This means that we cannot have some struct which we use as the database as everyone will have different needs for the database.
+For example a user who wants to store data in their flash storage probably wants something very different from to someone who wants to store data in sqlite3.
+As a single implementation is not suitable for all users, we need to define a Rust trait for users to implement so they can use whatever fits their needs best.
 
 We have a few requirements for this trait:
 \begin{itemize}
@@ -134,7 +134,7 @@ We have a few requirements for this trait:
 
 The implementation in listing \ref{database-trait} is the result of several iterations.
 It meets all of the requirements set out above, as well encoding the optional nature of the \texttt{uad} component directly into the type system.
-The \texttt{type PasswordVerifier} part of the listing is what allows implementations to be generic over the type of the \gls{veri}, implementors of this trait must specify which type of \gls{veri} their database stores.
+The \texttt{type PasswordVerifier} part of the listing is what allows implementations to be generic over the type of the \gls{veri}, implementers of this trait must specify which type of \gls{veri} their database stores.
 An example implementation of the trait is shown in \cref{chap:appendix-database-example}.
 
 \subsection{Adding Implicit Authentication}
@@ -149,7 +149,7 @@ This time storing a public/private keypair instead of a verifier.
 
 \subsection{Adding Strong AuCPace}
 Strong \gls{aucpace} was by far the hardest to implement, it came with several challenges.
-As with Partial Augmentation there is a database component, this was solved in the same way by introducing a new trait that models the database from the strong \gls{aucpace} protocol.
+As with Partial Augmentation there was a database component, this was solved in the same way by introducing a new trait that models the database from the strong \gls{aucpace} protocol.
 However Strong \gls{aucpace} also changes the registration step and the Augmentation Layer, these required new methods to be added to the Client, Server, ClientPreAug and ServerAugLayer structs.
 On top of this the data which is sent in messages is different for Strong \gls{aucpace}, this required adding additional messages for both the client and server.
 Finally there is the salt unblinding operation: $\text{salt} = UQ^{\frac{1}{r\ (c_{\mathcal{J}})^2} c_{\mathcal{J}}}$, which certainly isn't intuitive.
@@ -183,9 +183,9 @@ This means that to hash together the username, password and salt we need to enco
 The only way to do this for any given username and password is to allocate a buffer big enough to store both items on the heap.
 But this conflicts with our requirements from \verb|#![no_std]|.
 
-Initially I explored an API which would introduce a new feature flag -- \texttt{alloc} and then switch it's behaviour based on whether \texttt{alloc} was enabled.
+Initially I explored an API which would introduce a new feature flag -- \texttt{alloc} and then switch it's behaviour based on whether \texttt{alloc} was enabled or not.
 Using a fixed size buffer when \texttt{alloc} was disabled.
-However this proved to be very difficult test and ran contrary to the \enquote{strictly additive} guideline for Rust feature flags.
+However this proved to be very difficult to test and ran contrary to the \enquote{strictly additive} guideline for Rust feature flags.
 After some discussion with RustCrypto in their online Zulip chat (\url{https://rustcrypto.zulipchat.com}), Tony Arcieri
 suggested adding a new \gls{api} which was feature flagged behind \texttt{alloc}, then users could use the allocating \gls{api} if they have an allocator and they can use fixed sized buffer implementation if they didn't.
 This approach ended up being the best, it even has the benefit that the two methods can be directly tested against each other to ensure they give the same results.
@@ -193,7 +193,7 @@ This approach ended up being the best, it even has the benefit that the two meth
 \subsection{Documentation}
 As the library is being open sourced back to RustCrypto, great care was taken that everything that needs documentation has it.
 Rust makes ensuring that everything is documented significantly easier than most languages, it has an attribute -- \verb|#![warn(missing_docs)]| that can be used to enable a warning for any item that is missing documentation.
-This allows guaranteeing a very high level of coverage in docs.
+This guarantees a very high level of coverage for the documentation.
 In total there are thirty four individual pages of documentation, the main documentation page for the library can be seen in \cref{fig:main-doc-page} and the documentation for one of the structs can be seen in \cref{fig:aucpace-client-doc-page}.
 
 \begin{figure}[H]

@@ -7,12 +7,12 @@ In the modern day when you login to a website a \gls{tls} encrypted channel is e
 The server then computes the hash of your password, sometimes with a salt or some other additional data.
 This hash is then compared with whatever is stored in the server's database for your account, and access is granted based on whether the hash matched.
 
-This approach is fundamentally flawed, allowing the plaintext password to leave your device gives attackers many more opportunities at which they can steal your password.
+This approach is fundamentally flawed, allowing the plaintext password to leave your device gives attackers many more opportunities to steal your password.
 Be that from compromising the \gls{tls} channel via a \gls{downgrade-attack} or by malware on the server intercepting your password as the server processes it.
 
 \glspl{pake} solve this problem in a fundamentally different way, and they have many benefits because of this.
-Namely with \glspl{pake} your password never leaves your device, it is used to calculate a secret key which is shared with the server.
-Another property of how \glspl{pake} are constructed is that you and the server are both \enquote{authenticated} with each other once you acquire the shared key.
+With \glspl{pake} your password never leaves your device, it is used to calculate a secret key which is shared with the server.
+Another property of how \glspl{pake} are constructed is that you and the server are both \enquote{authenticated} when you acquire the shared key.
 This is in contrast with the approach of \gls{tls} and certificates, where only the server is authenticated.
 
 % Horizontal version
@@ -45,7 +45,7 @@ This is in contrast with the approach of \gls{tls} and certificates, where only 
 
 \clearpage
 \subsection{What Is a PAKE?}
-\glspl{pake} are interactive, two party cryptographic protocols where each party shares knowledge of a password (a low entropy secret) and seeks to obtain a strong shared key e.g. for use later with a symmetric cipher. Critically an eavesdropper who can listen to all messages of the key negotiation cannot learn enough information to bruteforce the password. Another way of phrasing this is that brute force attacks on the key must be \enquote{\glslink{ocrypto}{online}}.
+\glspl{pake} are interactive, two party cryptographic protocols where each party shares knowledge of a password (a low entropy secret) and seeks to obtain a strong shared key e.g. for use later with a symmetric cipher. Critically an eavesdropper who can listen to all messages of the key negotiation cannot learn enough information to brute-force the password. Another way of phrasing this is that brute-force attacks on the key must be \enquote{\glslink{ocrypto}{online}}.
 
 There are two main types of \gls{pake} algorithm -- \glspl{apake} and \glspl{bpake}.
 \begin{itemize}
@@ -100,19 +100,20 @@ There are two main types of \gls{pake} algorithm -- \glspl{apake} and \glspl{bpa
 \end{figure}
 
 \subsection{How Can PAKEs Thwart the Effectiveness of Quantum Computers?}
-With quantum computing advancing ever faster, classical cryptography systems such as those based on the hardness of the factoring problem\footnote{Finding $p,$ given $N = p * q$ where $p$ and $q$ are large prime numbers.} (\gls{rsa}), or the discrete-logarithm problem\footnote{Finding $a$ given $g^a mod p$ for large $a$ and prime $p$} (\gls{dh}, \gls{ecdh}) are increasingly coming into question as quantum computers can solve these problems efficiently.
+With quantum computing advancing ever faster classical cryptography systems such as those based on the hardness of the factoring problem\footnote{Finding $p,$ given $N = p * q$ where $p$ and $q$ are large prime numbers.} (\gls{rsa}), or the discrete-logarithm problem\footnote{Finding $a$ given $g^a \mod p$ for large $a$ and prime $p$} (\gls{dh}, \gls{ecdh}) are increasingly coming into question as quantum computers can solve these problems efficiently.
 During the \gls{cfrg}'s recent \gls{pake} standardisation efforts a new property of \glspl{pake} emerged called \enquote{quantum annoying}.
-In their paper \citetitle{quantum-annoying} \cite{quantum-annoying}, \citeauthor{quantum-annoying} define the \enquote{quantum annoying} property of \glspl{pake} as a scheme where a quantum computer can compromise a scheme, but that solving one discrete logarithm problem only gives one guess at the password.
-This makes \glspl{pake} incredibly attractive as stopgap solution giving researchers a few more vital years to research and test post-quantum cryptography.
+In their paper \citetitle{quantum-annoying} \cite{quantum-annoying}, \citeauthor{quantum-annoying} define the \enquote{quantum annoying} property of \glspl{pake} as ``a scheme where a quantum computer can compromise a scheme, but only by solving one discrete logarithm for each guess of a password''.
+This means that instead of only having to solve one discrete logarithm problem, it must be solved many times as the attackers guess many different passwords.
+As solving just one discrete logarithm problem is expected to take a long time for early quantum computers, incorporating a large password space should make attacking \glspl{pake} take a prohibitively long amount of time -- millions of years or more for a large password space.
+For example if we assume it takes ten seconds to solve a discrete logarithm problem for an early quantum computer, then an alphanumeric password of just ten characters would take roughly 133,070,041,519 years to crack, or roughly one hundred and thirty billion years.
+This makes \glspl{pake} incredibly attractive as stop-gap solution giving researchers a few more vital years to research and test post-quantum cryptography.
 The need for these years of research was made painfully clear by \textcite{break-sidh} when they recently broke the \gls{sidh} post-quantum cryptography scheme.
-
-\clearpage
 
 \subsection{A Brief History of PAKE Algorithms}
 The first \gls{pake} algorithm was Bellovin and Merritt's \gls{eke} scheme \cite{eke}.
 It works using a mix of \gls{symcrypto} and \gls{asymcrypto} to perform a key exchange.
-This comes with many challenges and subtle mistakes that are easy to make;
-primarily for the security of the system whatever is encrypted by the shared secret key(P) must be indistinguishable from random data.
+This comes with many challenges and subtle mistakes that are easy to make.
+Primarily for the security of the system whatever is encrypted by the shared secret key $P$ must be indistinguishable from random data.
 Otherwise an attacker can determine whether their guess at a trial decryption is valid.
 The \gls{rsa} variant of \gls{eke} has this issue -- the \gls{rsa} parameter $e$ is what is encrypted and sent in the first message.
 For \gls{rsa} all valid values of $e$ are odd, so this would prevent it being used.
@@ -127,16 +128,16 @@ In \cref{chap:appendix-eke} you can find a Python implementation of this scheme.
   \item $||$: Concatenation -- $x || y$ means $x$ concatenated with $y$.
 \end{itemize}
 
-\begin{center}
-  \captionof{table}{\gls{eke} shared parameters}
-  \begin{tabular}{ ccl }
-    \toprule
-    Shared Parameter & Secret & Explanation \\
-    \midrule
-    $P$ & yes & the shared password \\
-    \bottomrule
-  \end{tabular}
-\end{center}
+% \begin{center}
+%   \captionof{table}{\gls{eke} shared parameters}
+%   \begin{tabular}{ ccl }
+%     \toprule
+%     Shared Parameter & Secret & Explanation \\
+%     \midrule
+%     $P$ & yes & the shared password \\
+%     \bottomrule
+%   \end{tabular}
+% \end{center}
 
 \begin{figure}[H]
   \pseudocodeblock[head=EKE-RSA]{
@@ -253,6 +254,7 @@ Many modern cryptographic protocols make use of a mathematical object known as a
 First proposed for use in cryptography in 1985 independently by Neal Koblitz \cite{ecc-first-use-koblitz} and Victor S. Miller \cite{ecc-first-use-miller}.
 Elliptic curves are attractive to cryptographers as they maintain a very high level of strength at smaller key sizes, this allows for protocols to consume less bandwidth, less memory and execute faster \cite{state-of-ecc}.
 To illustrate just how great the size savings are -- \gls{nist} suggests that an elliptic curve key of just 256 bits provides the same level of security as an \gls{rsa} key of 3072 bits \cite{nist-ecc-reqs}.
+These savings come from the fact there is no way
 
 \subsection{But What Actually Is an Elliptic Curve?}
 With regards to cryptography elliptic curves tend to come in one of two forms:
@@ -411,7 +413,7 @@ However it's not quite that simple for us. We cannot use $\RR$ as computers only
 
 \clearpage
 
-This now looks very different to when we were looking at them in $\RR$, however it shows very clearly what the elements of our set look like.
+This now looks very different compared to when we were looking at them in $\RR$, however it shows very clearly what the elements of our set look like.
 They are points in the 2d coordinate plane with a symmetry around $p/2$.
 This might not feel intuitive but it is actually exactly what we should expect to happen, in our finite field when we negate our point's y coordinate, instead of flipping it around the y-axis, our points get wrapped around $y=p$.
 Hence our new point is the same distance from $y=p$ as our first point was with $y=0$, this is where our symmetry arises.
@@ -470,7 +472,7 @@ Although \gls{aucpace} \cite{aucpace} didn't quite make the cut for \gls{ietf} s
 Designed specifically for use in \gls{iiot} applications, \gls{aucpace} is an \gls{apake} protocol intended for use in situations where traditional \gls{pki} simply isn't available.
 The protocol is modelled around a powerful \gls{hmi} client device and a weak server device, as this setup is common in \gls{iiot} applications, e.g. one PC being used to configure many sensors/actuators.
 Efficiency is at the core of this protocol, it is taken into consideration at every level, from the high-level protocol design to the low-level arithmetic.
-A unique bonus of this protocol as well is it takes into account the real-world issue of patents and aims to provide a practical protocol which is free from patents so as to promote the widest possible adoption of the protocol.
+An additional unique bonus of this protocol as well is it takes into account the real-world issue of patents and aims to provide a practical protocol which is free from patents so as to promote the widest possible adoption.
 
 \clearpage
 \section{Choosing a PAKE To Implement}
@@ -482,7 +484,7 @@ There were a number of factors to consider when choosing which \gls{pake} to imp
   \item{Is there potential to contribute an implementation back to an open source project?}
 \end{itemize}
 
-After a conversation with the RustCrypto core team on Zulip, it was agreed that an implementation of any of these protocols would be readily accepted into their collection of \glspl{pake} -- \url{https://github.com/RustCrypto/PAKEs}.
+After a conversation with the RustCrypto core team on Zulip, it was agreed that an implementation of any of the protocols from \cref{tab:modern-pakes} would be readily accepted into their collection of \glspl{pake} -- \url{https://github.com/RustCrypto/PAKEs}.
 RustCrypto will be discussed further in \cref{sec:whom-rustcrypto}.
 Considerations about open source contribution will be omitted for this reason.
 
@@ -490,6 +492,7 @@ Considerations about open source contribution will be omitted for this reason.
   \rowcolors{0}{}{mintbg}
   \small
   \captionof{table}{Modern \gls{pake} Protocol Comparison}
+  \label{tab:modern-pakes}
   \begin{tabular}{ cccc }
     \toprule
     Protocol & Applicability & Implementations Solutions & Patented \\
@@ -502,12 +505,12 @@ Considerations about open source contribution will be omitted for this reason.
 \end{center}
 
 \gls{aucpace} is the only \gls{pake} in the list where there is a completely inadequate current solution.
-\gls{aucpace} also targets a rapidly growing area, the combined risk of these factors means that \gls{aucpace} is uniquely positioned to make a large difference to the security of the \gls{iiot} landscape.
-Additionally it is the only one which is not under patent of any kind.
+\gls{aucpace} also targets a rapidly growing area. The combination of these two factors means that means that \gls{aucpace} is uniquely positioned to make a large difference to the security of the \gls{iiot} landscape.
+Additionally, it is the only protocol which is not under patent of any kind.
 It is for these reasons that I have chosen to create an implementation of \gls{aucpace} and to contribute it back to the open source community via RustCrypto.
 
 \section{AuCPace in Detail}
-Now that we have chosen to implemented \gls{aucpace} it is worth going over the protocol itself to understand better what implementing it will entail.
+Having chosen to implemented \gls{aucpace} it is worth going over the protocol itself to understand better what implementing it will entail.
 \Cref{fig:aucpace-store-pwd,fig:aucpace-protocol} contain protocol diagrams reproduced from \cite{aucpace}.
 There are four phases to the protocol some of which can be made optional or can be adjusted based on the sub-variant of the protocol in use.
 
@@ -731,7 +734,7 @@ Below are protocol diagrams illustrating what changes with each configuration ch
     Configuration & Advantage & Disadvantage \\
     \midrule
     partial \newline augmentation & removes an expensive exponentiation operation for the server,
-                                    halving the computational complexity for the server
+                                    halving the computational complexity
       & an attacker can impersonate the client by compromising a server \\
     strong \newline \gls{aucpace} & pre-computation attack resistance
       & increases the computational requirements for both the client and server \\
@@ -745,7 +748,7 @@ Below are protocol diagrams illustrating what changes with each configuration ch
 \section{Who Are RustCrypto?}
 \label{sec:whom-rustcrypto}
 
-RustCrypto is a GitHub Organisation / online community who are dedicated to implementing fast and secure cryptography in pure Rust.
+RustCrypto is a GitHub Organisation / online community which is dedicated to implementing fast and secure cryptography in pure Rust.
 Pure Rust in this context means that all of the code is in Rust and there are no \gls{ffi} bindings to other (normally C) libraries which implement the functionality (see \cref{fig:pure-vs-wrapper}).
 RustCrypto have implemented many cryptographic primitives and also have an existing repository for \gls{pake} algorithms.
 Using RustCrypto's libraries provides a good foundation for building any protocol as well as opening up opportunities to open source the implementation back to them.

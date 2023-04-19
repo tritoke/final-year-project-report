@@ -1,17 +1,18 @@
 \chapter{Summary and Conclusion}
 \label{chap:conclusion}
 
-Through the course of this project a fully-featured and developer focused, implementation of \gls{aucpace} was created in Rust.
-It was then open sourced through the RustCrypto organisation.
-Contributing to the \gls{iiot} security ecosystem in a practical and direct way.
-A severe bug in the code was remediated effictively and swiftly.
+Through the course of this project a fully-featured, and developer focused, implementation of \gls{aucpace} was created in Rust.
+It was then open sourced through the RustCrypto organisation, contributing to the \gls{iiot} security ecosystem in a practical and direct way.
+A severe bug in the code was remediated effectively and swiftly.
 
 \section{Achievements}
-Beginning this project my understanding of \gls{ecc} was effectively zero, I had heard of it before, and knew that it was somehow better than traditional primitives, but actually getting to understand and effectively leverage \gls{ecc} took many hours of research and was genuinely something I struggled with.
+As I began this project my understanding of \gls{ecc} was effectively zero.
+I had heard of it before, and knew that it was somehow better than traditional primitives, but actually getting to understand and effectively leverage \gls{ecc} took many hours of research and was genuinely something I struggled with.
 
-The \gls{aucpace} implementation I have created is both fast and has a tiny code footprint, this was no small engineering feat and took great care over the entire length of the project to ensure that the implementation was truly viable for real world use.
+The \gls{aucpace} implementation I have created is both fast and has a tiny code footprint.
+This was no small engineering feat and I took great care over the entire length of the project to ensure that the implementation was truly viable for real world use.
 
-Open sourcing the implementation through RustCrypto will allow for the greatest number of people to make use of the library, and proves that the implementation is of high enough quality to be suitable for real world applications.
+Open sourcing the implementation through RustCrypto will allow for the greatest number of people to make use of the library and proves that the implementation is of high enough quality to be suitable for real world applications.
 
 Realising that several months of your work are completely and fundamentally broken is completely crushing.
 Working through and understanding the vulnerability I had unknowingly let into my code proved to be a very valuable experience.
@@ -19,12 +20,13 @@ Understanding how to responsibly handle disclosing a vulnerability and rapidly r
 
 \section{Reflection}
 I have two main regrets from this project as a whole.
-Firstly I wish I had implemented from the \gls{ietf} draft of the \gls{aucpace} protocol instead of from the paper itself.
-\gls{ietf} drafts and standards are intended to be used as reference for those implementing the protocol.
+Firstly, I wish I had implemented from the \gls{ietf} draft of the \gls{aucpace} protocol instead of from the paper itself.
+\gls{ietf} drafts and standards are intended to be used as a reference for those implementing the protocol.
 If I had followed their draft standard I would not have had anything like the trouble I did implementing Strong \gls{aucpace} and I wouldn't have had my catastrophic \enquote{neutral point} bug.
 I consider that bug to be a direct consequence of my decision to follow the paper instead of the draft.
 
-Secondly I wish I had contacted Bj\"orn Haase earlier on, when I did contact him late in the project there was limited scope left for collaboration simply due to the lack of remaining time.
+Secondly, I wish I had contacted Bj\"orn Haase earlier on.
+When I did contact him late in the project there was limited scope left for collaboration simply due to the lack of remaining time.
 I believe his input especially around test vector generation could have been very helpful.
 
 That said, I am immensely proud of what I have achieved over the course of this project.

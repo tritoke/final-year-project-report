@@ -2,12 +2,12 @@
 \label{chap:testing}
 
 \section{Testing for Correctness of Functionality}
-As the library is built on other crates, the only tests which can be performed are those on individual components of the protocol, and full run-throughs of the entire protocol.
+As the library is built on other crates the only tests which can be performed are those on individual components of the protocol and full run-throughs of the entire protocol.
 
 \subsection{Testing Individual Components}
-Traditionally in cryptographic software, test-vectors have been used to test for the correct functionality of various componenets.
+Traditionally in cryptographic software test-vectors have been used to test for the correct functionality of various components.
 However due to the use of Ristretto255, instead of raw Curve25519, there are no test-vectors available.
-Once the implementation was feature complete, I emailed Bj\"orn Haase to discuss test vector creation\footnote{Bj\"orn is the creator of AuCPace}.
+Once the implementation was feature complete I emailed Bj\"orn Haase to discuss test vector creation\footnote{Bj\"orn is the creator of AuCPace}.
 He was interested in the project and mentioned they were interested in a second implementation of \gls{aucpace} at Endress+Hauser.
 However he did not have the time to create test vectors and by this point in the project I was too busy to do so as well.
 So while test vectors have not yet been created, it is likely they will be in the near future.
@@ -31,7 +31,7 @@ To perform integration testing, the tests were split into four categories based 
   \end{tabularx}
 \end{center}
 
-Inside of each test file there are two main scaffolding functions: \texttt{init} and \texttt{test\_core}, the former Perfoms the initial setup of the client, server and database, and the latter performs all the functionality which is common to every test.
+Inside of each test file there are two main scaffolding functions: \texttt{init} and \texttt{test\_core}, the former performs the initial setup of the client, server and database, and the latter performs all the functionality which is common to every test.
 From there there are four tests in each file, each testing the following:
 
 \begin{center}
@@ -55,7 +55,7 @@ As with any piece of software the ultimate test is to get the entire thing runni
 
 \subsection{Choosing the Microcontroller / Platform}
 Because \gls{aucpace} is intended for use in the \gls{iiot}, it was decided that an \gls{stm} based \gls{mcu} would be a good fit.
-\gls{stm} \glspl{mcu} are very prevelant in industry, have many dev boards supporting a wide variety of different chips, and they also have excellent Rust support.
+\gls{stm} \glspl{mcu} are very prevalent in industry, have many dev boards supporting a wide variety of different chips, and they also have excellent Rust support.
 Following this decision the NUCLEO-F401RE dev board was selected.
 It is a small \gls{mcu} with a modest 512K of flash memory.
 While certainly not the least powerful platform around it should be representative of a majority of \gls{iot} systems.
@@ -82,25 +82,30 @@ After establishing a reliable serial connection work could now begin on implemen
 
 \subsection{Implementing the AuCPace Protocol}
 The server side of \texttt{examples/key\_agreement.rs} was initially adapted to fit the code structure of the embedded app.
-However this immediately brought around a problem with the \gls{aucpace} implementation, it was refusing to compile.
+However this immediately brought up a problem with the \gls{aucpace} implementation, namely it was refusing to compile.
 As it happened this was a quirk of how Rust works that I wasn't aware of.
 Care was taken to develop the library using the \verb|#![no_std]| attribute, this tells the compiler that this code isn't allowed to use the Rust standard library.
-Even the \texttt{examples/key\_agreement\_no\_std.rs} example program wasn't enough to weed this out.
+Even the \texttt{examples/key\_agreement\_no\_std.rs} example program wasn't enough resolve this issue.
 Because the standard library is still available when linking on x86, the \verb|#![no_std]| example still compiles, despite containing code from the standard library.
-When it was adapted for the microcontroller, it was targeting \texttt{thumbv7em-none-eabihf}, the standard library is simply not available for this target as it doesn't have an operating system.
+When it was adapted for the microcontroller, it was targeting \texttt{thumbv7em-none-eabihf}.
+The standard library was not available for this target as it doesn't have an operating system.
 The malignant crate turned out to be \texttt{serde-arrays} which, although not containing any code that should require the standard library, it was not marked as \verb|#![no_std]| and thus fails to compile as it implicitly links to the standard library.
-The solution was very simple thankfully, just weeks prior to attmpting this embedded example, a new crate was released \texttt{serde-byte-arrays}, this solved my problem better than \texttt{serde-arrays}, was marked \verb|#![no_std]| and was more efficient at the same time!
+The solution was very simple thankfully, just weeks prior to attempting this embedded example, a new crate was released \texttt{serde-byte-arrays}, this solved my problem better than \texttt{serde-arrays}, was marked \verb|#![no_std]| and was more efficient at the same time!
 Once these two primitives were reliable, it was quite straightforward to implement the protocol in full.
 
 \subsection{Benchmarking}
 Benchmarking was performed by switching feature flags on and off on both the client and server.
 An additional element of the compiler flags was added because Rust's compiler allows you to make tradeoffs between code-size and speed quite easily.
-The easiest method for doing this is by creating a profile for the Rust compiler to use, there are two profiles normally available -- \texttt{debug} and \texttt{release}; \texttt{debug} is intended to be used during development and is tuned for fast compile times and extensive debug info. \texttt{release} is tuned for speed and removes all debug info normally.
-In listing \ref{server-profile} the debug information is re-enabled for \texttt{release} mode, this means that the Rust compiler includes \gls{dwarf} debug infomation in the compiled binary.
-A \texttt{server} profile is also listed, this profile inherits from \texttt{release} meaning that initially it is the same as \texttt{release}, \texttt{opt-level} is then set to \texttt{\enquote{s}}, this makes the compiler instead optimise for code size instead of speed.
+The easiest method for doing this is by creating a profile for the Rust compiler to use.
+There are two profiles normally available -- \texttt{debug} and \texttt{release}.
+\texttt{debug} is intended to be used during development and is tuned for fast compile times and extensive debug info. \texttt{release} is tuned for speed and removes all debug info normally.
+In listing \ref{server-profile} the debug information is re-enabled for \texttt{release} mode, this means that the Rust compiler includes \gls{dwarf} debug information in the compiled binary.
+A \texttt{server} profile is also listed.
+This profile inherits from \texttt{release} meaning that initially it is the same as \texttt{release}.
+\texttt{opt-level} is then set to \texttt{\enquote{s}}, this makes the compiler instead optimise for code size rather than speed.
 The two remaining options -- \texttt{lto} and \texttt{codegen-units} are less significant and are just there to improve the information available to the compiler to allow it to generate more efficient code.
 
-The \enquote{Compute time} was based on the compute time calculated by the server as it ran through the protocol as can be seen in \cref{fig:aucpace-embedded-server}.
+The \enquote{Compute time} was based on the compute time calculated by the server as it ran through the protocol once as can be seen in \cref{fig:aucpace-embedded-server}.
 These are based on just one measurement of the time, this is due to the use of constant time algorithms wherever possible, when the number of ticks was measured directly, the variance was on the order of 5 ticks, which is just 0.005ms ($5\mu$s), this variance is not big enough to effect the results.
 
 \Cref{tab:aucpace-embedded-benchmarks-server,tab:aucpace-embedded-benchmarks-server-static,tab:aucpace-embedded-benchmarks-release,tab:aucpace-embedded-benchmarks-release-static} show the code size, compute time and the amount of data sent for each of the protocol variants supported via feature flags, each table is then split by compiler mode and whether a static SSID was used.
@@ -218,10 +223,10 @@ These are based on just one measurement of the time, this is due to the use of c
 \end{figure}
 
 \subsection{Comparison With OPAQUE}
-In order to evaluate the performance of the \gls{aucpace} implementation an implementation of an equivalent protocol to compare against is required.
+In order to evaluate the performance of the \gls{aucpace} implementation a comparative implementation of a similar protocol was required.
 \gls{opaque} is another modern \gls{apake}, it was the winner of the \gls{ietf}'s \gls{pake} selection competition, edging out \gls{aucpace} in the final round.
 This makes it a perfect comparison protocol for \gls{aucpace}.
-The implementation of \gls{opaque} we are going to compare against is \texttt{opaque-ke}, an implementation from Whatsapp.
+The implementation of \gls{opaque} I chose to compare against is \texttt{opaque-ke}, an implementation from Whatsapp.
 It was picked as it is the most downloaded version on \href{https://crates.io/}{crates.io}.
 The data for \gls{opaque} can be found in \cref{tab:opaque-embedded-benchmarks}.
 The mean code size for \gls{aucpace} was 85Kib in server mode and 137Kib in release mode, this is marginally less than \gls{opaque} with the difference being more significant in the release compilation mode.
@@ -247,7 +252,7 @@ In summary \gls{aucpace} takes up less space, takes less time to compute and sen
 \end{center}
 
 \section{Breaking Everything}
-By happenstance I was reading NCC Group's recent review of Whatsapp's \texttt{opaque-ke} crate \cite{whatsapp-are-dumb-too, whatsapp-are-dumb-too-report}.
+By happenstance I was reading NCC Group's recent review of WhatsApp's \texttt{opaque-ke} crate \cite{whatsapp-are-dumb-too, whatsapp-are-dumb-too-report}.
 While reading the report the following finding caught my eye:
 \begin{figure}[H]
   \centering
@@ -257,7 +262,7 @@ While reading the report the following finding caught my eye:
   \label{fig:high-severity-finding}
 \end{figure}
 
-In Whatsapp's implementation of OPAQUE \cite{opaque}, they used the \texttt{RistrettoPoint} type from \texttt{curve25519-dalek}, and while deserialising this type they didn't have any checks to see if this point was the identity point.
+In WhatsApp's implementation of OPAQUE \cite{opaque}, they used the \texttt{RistrettoPoint} type from \texttt{curve25519-dalek}, and while deserialising this type they didn't have any checks to see if this point was the identity point.
 \Citeauthor{whatsapp-are-dumb-too-report} point out that this leads all subsequent point operations to \enquote{zero out} and thus cause the shared key to have a known value.
 Unsure of whether this would also break my \gls{aucpace} implementation I modified \texttt{key\_agreement.rs} to have the client act as a malicious adversary and to send this identity point.
 
@@ -272,7 +277,7 @@ Unsure of whether this would also break my \gls{aucpace} implementation I modifi
 \end{figure}
 
 To my dismay it worked.
-I immediately imformed RustCrypto of the problem and started working on a fix.
+I immediately informed RustCrypto of the problem and started working on a fix.
 
 \subsection{Identifying the Extent of the Damage}
 So what could a malicious attacker do with this bug?
@@ -298,7 +303,7 @@ There are several reasons why this wasn't caught earlier:
 \begin{enumerate}
   \item{My lack of familiarity with \gls{ecc} -- this was my first time ever using \gls{ecc} and it was simply not something I knew to look out for.}
   \item{My decision to implement based on the paper not the \gls{ietf} document -- the paper mentions only to abort if a point is invalid. However there are two ways a point can be invalid, it can be off the curve, and it can be the identity point. \texttt{curve25519-dalek} makes the former unrepresentable using Rust's type system, hence my belief that this check was unnecessary. However the \gls{ietf} draft of \gls{aucpace} mentions explicitly to check for the identity element \cite{ietf-aucpace}.}
-  \item{This is quite a subtle bug -- it is hard to spot when you are unfamiliar with \gls{ecc}, case and point Whatsapp made this mistake as well, and so did the the core developers of Java. Java's CVE-2022-21449 \enquote{Psychic Signatures} \cite{java-psychic-signatures}, had the same bug in their implementation of \gls{ecdsa}. Introduced in commit \texttt{3c12c4b0f35} Dec 2018 fixed in \texttt{e2f8ce9c3ff} Jan 2022, all in it took 3 years for this same bug to get found and patched in Java.}
+  \item{This is quite a subtle bug -- it is hard to spot when you are unfamiliar with \gls{ecc}. As a case in point Whatsapp made this mistake as well, and so did the the core developers of Java. Java's CVE-2022-21449 \enquote{Psychic Signatures} \cite{java-psychic-signatures}, had the same bug in their implementation of \gls{ecdsa}. Introduced in commit \texttt{3c12c4b0f35} Dec 2018 fixed in \texttt{e2f8ce9c3ff} Jan 2022, all in it took 3 years for this same bug to get found and patched in Java.}
 \end{enumerate}
 
 \subsection{How To Prevent This Bug From Ever Happening Again?}

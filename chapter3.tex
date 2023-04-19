@@ -11,7 +11,8 @@ Libraries like Embassy and \gls{rtic} allow the user to program high level logic
 Embassy is especially impressive as they have implemented an async executor so that multitasking in embedded applications can be performed with the same async/await framework that programmers are familiar with.
 A short Embassy examples is shown in listing \ref{embassy-example}.
 Tools such as \texttt{probe-rs} allow developers to maintain the same workflow they would when working on a normal Rust binary, by implementing a \texttt{cargo}\footnote{cargo is the standard build system for Rust.} runner which flashes the binary to the embedded device then uses \gls{rtt} to receive debug messages from the device.
-Those debug messages can be setup automatically using libraries such as \texttt{defmt\_rtt} which use \gls{rtt} to send a compressed representation of the debug message to be formatted later on using a technique called deferred formatting, allowing for debug messages to take up a fraction of the size of the original message.
+Those debug messages can be setup automatically using libraries such as \texttt{defmt\_rtt} which use \gls{rtt} to send a compressed representation of the debug message to be formatted later on using a technique called deferred formatting.
+Allowing for debug messages to take up a fraction of the size of the original message.
 Together this makes Rust a compelling choice for writing embedded code.
 
 \medskip{}
@@ -22,17 +23,19 @@ Rust is also very well suited for implementing cryptographic software.
 It's lifetimes system and compile time safety guarantees make it ideal for building security focused software.
 Rust was recently added to \gls{nist}'s list of \enquote{Safer Languages} which it recommends for writing safety focused programs in \cite{nist-safer-languages}.
 
-As well as this many algorithms, formats and primitives are implemented, and freely available as crates\footnote{\enquote{crates} in Rust are code libraries which are publically available for anyone to use via cargo -- the Rust toolchain} for anyone to use.
-Rust's trait system also lends itself well to this, it is possible to use implement a trait representing an elliptic curve and then an algorithm can be written to be agnostic about the curve that it is using for instance.
+As well as this many algorithms, formats and primitives are implemented, and freely available as crates\footnote{\enquote{crates} in Rust are code libraries which are publicly available for anyone to use via cargo -- the Rust toolchain} for anyone to use.
+Rust's trait system also lends itself well to this sort of work.
+For instance it is possible to use implement a trait representing an elliptic curve and then an algorithm can be written to be agnostic about the curve that it is using for instance.
 This allows library writers to easily write generic code to give user's of the libraries as much flexibility and choice around how they implement their program.
 This is especially important for systems which might need to interact with legacy systems or that need to provide a certain level of security for \gls{fips} standards like \gls{fips}-140-2 \cite{fips-140-2}.
 
 \section{Planning the Library}
-Before implementing \gls{aucpace} it was necessary to plan ahead what libraries to use.
-Without planning it would be easy to end up in a situation where different libraries aren't compatible with each other, or have become superseded by another library as this information is not readily available on \href{https://crates.io/}{crates.io} (crates.io is the package repository for all public Rust packages).
+Before implementing \gls{aucpace} it was necessary to plan ahead which libraries to use.
+Without planning it would be easy to end up in a situation where different libraries were not compatible with each other, or had become superseded by another library as this information is not readily available on \href{https://crates.io/}{crates.io} (crates.io is the package repository for all public Rust packages).
 
 \subsection{What Primitives Do We Need To Implement AuCPace?}
-\gls{aucpace} has many parameters which can be changed to drastically change how the protocol works, this is by design to allow customisability for each user's needs, however it can be quite confusing to navigate.
+\gls{aucpace} has many parameters which can be changed to drastically alter how the protocol works.
+This is by design to allow customisability for each user's needs, however it can be quite confusing to navigate.
 As such it is worthwhile to look at the parameters are and thus what primitives we will need.
 \Cref{tab:aucpace-params,tab:aucpace-selected-params} are partially reproduced from \cite{aucpace} just in significantly fewer words.
 
@@ -128,20 +131,21 @@ These choices are what the designers have determined as secure presets so they a
 
 \subsubsection{Choosing the PBKDF}
 Instead of picking a \gls{pbkdf} up front, the \texttt{PasswordHasher} trait from \href{https://github.com/RustCrypto/traits/tree/master/password-hash}{password-hash} allows us to be generic over the \gls{pbkdf} when implementing the library.
-Allowing users of the library to pick from either Argon2, Scrypt or PBKDF2 at their discretion, or to implement their own algorithm and supply an implementation of \texttt{PasswordHasher} for it.
+This allows users of the library to pick from either Argon2, Scrypt or PBKDF2 at their discretion, or to implement their own algorithm and supply an implementation of \texttt{PasswordHasher} for it.
 
 \subsubsection{Choosing the Curve and \textsf{Map2Point} Operation}
-Although the \texttt{elliptic-curves} repo implements many different elliptic curves, it doesn't implement Curve25519\footnote{there is currently a push to have it included in the crate, though it is still early on and the implementation is not fit for use}, and the \texttt{hash2curve} \gls{api} for \gls{nist} P-256 uses the \gls{osswu} map \cite{osswu-map}, which is known to be less efficient than the Elligator2 map defined for Montgomery curves \cite{elligator2}.
+Although the \texttt{elliptic-curves} repo implements many different elliptic curves it doesn't implement Curve25519\footnote{there is currently a push to have it included in the crate, though it is still early on and the implementation is not fit for use}.
+Furthermore, the \texttt{hash2curve} \gls{api} for \gls{nist} P-256 uses the \gls{osswu} map \cite{osswu-map}, which is known to be less efficient than the Elligator2 map defined for Montgomery curves \cite{elligator2}.
 There have also been questions about whether the coefficients used in \gls{nist}'s suite of curves have been deliberately tampered with \cite{curve-rigidity}.
 
 Another issue to consider when picking a curve and group is the problem of cofactor handling.
-To avoid mishandling group cofactors \gls{aucpace} shows everywhere a cofactor multiplication is necessary, failing to perform one of these multiplications would be a serious bug.
+To avoid mishandling group cofactors \gls{aucpace} shows every instance where a cofactor multiplication is necessary, failing to perform one of these multiplications would be a serious bug.
 However we can eliminate the need for handling cofactors altogether by using a prime order group, that is a group with a prime number of elements in it.
 Ristretto255 \cite{ristretto255} is one such group built on top of Curve25519.
 The \texttt{curve25519-dalek} crate implements Ristretto255 as well as the Ristretto flavoured Elligator2 map \cite{elligator2} which implements the required \textsf{Map2Point} operation.
 
 \subsubsection{Choosing the Hash Function}
-The hash function is another parameter that is easy to be generic over, thanks to the \texttt{digest} crate.
+The hash function is another parameter that can be handled generically, thanks to the \texttt{digest} crate.
 This allows users to pick from the plethora of hashes implemented by \texttt{RustCrypto/hashes}, enabling them to choose whichever hash function is best suited for their application.
 
 \section{Initial Designs for the Structure of the Library}
@@ -149,15 +153,16 @@ Rust is very flexible in regards to how you wish to structure a library, there a
 Rust is fairly unique among programming languages as it offers very little in the way of inheritance, unlike classes in Java or C++, Rust's structs cannot inherit from each other.
 Instead if you want to implement some functionality on top of another type you must in some way store a value of that type.
 As such wrapper structs are common in Rust, the most common use of these would be the iterator adapters.
-The \texttt{Iterator} trait from the standard library has many methods for providing common operations which are agnostic to what is being iterated over, e.g. \texttt{Iterator::filter}, \texttt{Iterator::map} and \texttt{Iterator::rev}.
+The \texttt{Iterator} trait from the standard library has many methods for providing common operations which are agnostic about what is being iterated over, e.g. \texttt{Iterator::filter}, \texttt{Iterator::map} and \texttt{Iterator::rev}.
 Each of these methods returns a specialised struct which contains the initial iterator, specifically \texttt{std::iter::Filter}, \texttt{std::iter::Map} and \texttt{std::iter::Rev} for the aforementioned methods.
 These structs are all \textit{owning}, meaning they own the data they contain.
 The concept of Ownership is central to Rust, it forms the basis for how the borrow checker works and is the main mechanism by which Rust can guarantee memory safety.
 In general owned types are always easier to work with than borrowed ones, you don't have to keep track of lifetimes and in general life is easier.
 The main use-case for references is for when you have some value that you either cannot copy, (e.g. a Mutex), or really don't want to copy (e.g. 10Gb worth of data).
 
-This preference for Owned values leads to one slightly messy but easy to implement pattern whereby one struct is used to implement all of the functionality and all of the state is bundled in this one struct.
-While easy to implement this approach does have some drawbacks, some of the state might only be needed for one operation then it is worthless, however having everything in one struct means that the space is still allocated whether you need it or not.
+This preference for Owned values leads to one slightly messy, but easy to implement, pattern whereby one struct is used to implement all of the functionality and all of the state is bundled in this one struct.
+While easy to implement this approach does have some drawbacks, for instance some of the state might only be needed for one operation then it would be redundant.
+However having everything in one struct means that the space is still allocated whether you need it or not.
 Being aware of this is especially pertinent as the amount of state required gets larger.
 
 \subsection{There Are Other PAKEs Implemented in Rust, How Are They Designed?}
@@ -169,13 +174,13 @@ A diagram of the \glslink{spake}{SPAKE2} protocol can be found in \cref{fig:spak
 The core of the implementation is the following struct:
 \rustcode{SPAKE2 Struct}{assets/spake2.rs}
 
-It contains an owned copy of every piece of data needed to run the entire protocol, although there are quite a few members here, \glslink{spake}{SPAKE2} effectively requires it as the final key $SK_B$ is calculated as $H(A, B, X^*, Y^*, Kb)$, in addition this is a very simple protocol at only one message each way.
+This struct contains an owned copy of every piece of data needed to run the entire protocol, although there are quite a few members here, \glslink{spake}{SPAKE2} effectively requires it as the final key $SK_B$ is calculated as $H(A, B, X^*, Y^*, Kb)$, in addition this is a very simple protocol at only one message each way.
 This means that there isn't as much overhead for keeping lots of data around.
 
 The \gls{api} exposed by the struct is also very simple, there are number of \texttt{start\_*} methods which begin the protocol and generate initial values from the \gls{csprng}, all of these methods return a tuple \texttt{(<state>, <message>)}.
 The message can then be sent to the other party and when the response is received there is a single \texttt{finish} method which takes in this response and produces a \texttt{Result<Vec<u8>>}\footnote{Rust's Result type is used to return a value or an error, the type system forces handling this value and the code will panic if a value is expected and an error occurs. It is very similar to Haskell's Maybe type.}, this contains the shared key if everything went well and an error otherwise.
 
-In summary it is implemented as one large struct with many helper methods for all the different ways to start the protocol.
+In summary RustCrypto's \glslink{spake}{SPAKE2} implementation uses one large struct with many helper methods for all the different ways to start the protocol, together with one method for finishing it.
 
 \subsubsection{Exploring RustCrypto's SRP Implementation}
 A diagram of the \gls{srp} protocol can be found in \cref{fig:srp}.
