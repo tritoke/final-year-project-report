@@ -160,14 +160,14 @@
 %% more ways of modifying headers (texdoc fancyhdr will show you the
 %% docs) 
 
-\usepackage{fancyhdr}
-\setlength{\headheight}{14.5pt} % silence warnings
-\pagestyle{fancy}
-\lhead{Draft: \today}  % left head
-\chead{} % centre head
-\lfoot{}
-\cfoot{\thepage}
-\rfoot{}
+% \usepackage{fancyhdr}
+% \setlength{\headheight}{14.5pt} % silence warnings
+% \pagestyle{fancy}
+% \lhead{Draft: \today}  % left head
+% \chead{} % centre head
+% \lfoot{}
+% \cfoot{\thepage}
+% \rfoot{}
 
 % title stuff
 \usepackage{titlesec}
@@ -262,10 +262,13 @@
 % \includeonly{chapter3}
 % \usepackage{showframe}
 
-% specify how the document should handle hyphenation at page borders
-\tolerance=1
-\emergencystretch=\maxdimen
-\hbadness=10000
+% % specify how the document should handle hyphenation at page borders
+% \tolerance=1
+% \emergencystretch=\maxdimen
+% \hbadness=10000
+
+% allow hyphenation inside of \texttt
+\newcommand\textvtt[1]{{\normalfont\fontfamily{cmvtt}\selectfont #1}}
 
 \title{Exploring Password-Authenticated Key-Exchange Algorithms}
 \author{Sam Leonard}
